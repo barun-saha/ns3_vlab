@@ -1,0 +1,6 @@
+file /home/barun/Desktop/ns3/ns-allinone-3.10/nsc-0.5.2/SConstruct,line 125:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking target architecure...
+scons: Configure: (cached) x86
+
+
