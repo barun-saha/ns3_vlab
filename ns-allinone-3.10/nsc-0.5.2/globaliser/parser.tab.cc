@@ -1,10 +1,8 @@
+/* A Bison parser, made by GNU Bison 2.5.  */
 
-/* A Bison parser, made by GNU Bison 2.4.1.  */
-
-/* Skeleton implementation for Bison's Yacc-like parsers in C
+/* Bison implementation for Yacc-like parsers in C
    
-      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
-   Free Software Foundation, Inc.
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -46,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.4.1"
+#define YYBISON_VERSION "2.5"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -67,7 +65,7 @@
 
 /* Copy the first part of user declarations.  */
 
-/* Line 189 of yacc.c  */
+/* Line 268 of yacc.c  */
 #line 33 "globaliser/parser.yc"
 
 #include <stdio.h>
@@ -103,8 +101,8 @@ static void yyerror(const char *s);
 
 
 
-/* Line 189 of yacc.c  */
-#line 108 "globaliser/parser.tab.cc"
+/* Line 268 of yacc.c  */
+#line 106 "globaliser/parser.tab.cc"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -214,8 +212,8 @@ typedef int YYSTYPE;
 /* Copy the second part of user declarations.  */
 
 
-/* Line 264 of yacc.c  */
-#line 219 "globaliser/parser.tab.cc"
+/* Line 343 of yacc.c  */
+#line 217 "globaliser/parser.tab.cc"
 
 #ifdef short
 # undef short
@@ -265,7 +263,7 @@ typedef short int yytype_int16;
 #define YYSIZE_MAXIMUM ((YYSIZE_T) -1)
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -318,11 +316,11 @@ YYID (yyi)
 #    define alloca _alloca
 #   else
 #    define YYSTACK_ALLOC alloca
-#    if ! defined _ALLOCA_H && ! defined _STDLIB_H && (defined __STDC__ || defined __C99__FUNC__ \
+#    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 #     include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
-#     ifndef _STDLIB_H
-#      define _STDLIB_H 1
+#     ifndef EXIT_SUCCESS
+#      define EXIT_SUCCESS 0
 #     endif
 #    endif
 #   endif
@@ -345,24 +343,24 @@ YYID (yyi)
 #  ifndef YYSTACK_ALLOC_MAXIMUM
 #   define YYSTACK_ALLOC_MAXIMUM YYSIZE_MAXIMUM
 #  endif
-#  if (defined __cplusplus && ! defined _STDLIB_H \
+#  if (defined __cplusplus && ! defined EXIT_SUCCESS \
        && ! ((defined YYMALLOC || defined malloc) \
 	     && (defined YYFREE || defined free)))
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
-#   ifndef _STDLIB_H
-#    define _STDLIB_H 1
+#   ifndef EXIT_SUCCESS
+#    define EXIT_SUCCESS 0
 #   endif
 #  endif
 #  ifndef YYMALLOC
 #   define YYMALLOC malloc
-#   if ! defined malloc && ! defined _STDLIB_H && (defined __STDC__ || defined __C99__FUNC__ \
+#   if ! defined malloc && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 void *malloc (YYSIZE_T); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 #  ifndef YYFREE
 #   define YYFREE free
-#   if ! defined free && ! defined _STDLIB_H && (defined __STDC__ || defined __C99__FUNC__ \
+#   if ! defined free && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
@@ -391,23 +389,7 @@ union yyalloc
      ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE)) \
       + YYSTACK_GAP_MAXIMUM)
 
-/* Copy COUNT objects from FROM to TO.  The source and destination do
-   not overlap.  */
-# ifndef YYCOPY
-#  if defined __GNUC__ && 1 < __GNUC__
-#   define YYCOPY(To, From, Count) \
-      __builtin_memcpy (To, From, (Count) * sizeof (*(From)))
-#  else
-#   define YYCOPY(To, From, Count)		\
-      do					\
-	{					\
-	  YYSIZE_T yyi;				\
-	  for (yyi = 0; yyi < (Count); yyi++)	\
-	    (To)[yyi] = (From)[yyi];		\
-	}					\
-      while (YYID (0))
-#  endif
-# endif
+# define YYCOPY_NEEDED 1
 
 /* Relocate STACK from its old location to the new one.  The
    local variables YYSIZE and YYSTACKSIZE give the old and new number of
@@ -426,6 +408,26 @@ union yyalloc
     while (YYID (0))
 
 #endif
+
+#if defined YYCOPY_NEEDED && YYCOPY_NEEDED
+/* Copy COUNT objects from FROM to TO.  The source and destination do
+   not overlap.  */
+# ifndef YYCOPY
+#  if defined __GNUC__ && 1 < __GNUC__
+#   define YYCOPY(To, From, Count) \
+      __builtin_memcpy (To, From, (Count) * sizeof (*(From)))
+#  else
+#   define YYCOPY(To, From, Count)		\
+      do					\
+	{					\
+	  YYSIZE_T yyi;				\
+	  for (yyi = 0; yyi < (Count); yyi++)	\
+	    (To)[yyi] = (From)[yyi];		\
+	}					\
+      while (YYID (0))
+#  endif
+# endif
+#endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  99
@@ -904,8 +906,8 @@ static const yytype_uint8 yyr2[] =
        1,     1,     1,     1
 };
 
-/* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
-   STATE-NUM when YYTABLE doesn't specify something else to do.  Zero
+/* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE doesn't specify something else to do.  Zero
    means the default is an error.  */
 static const yytype_uint16 yydefact[] =
 {
@@ -1100,8 +1102,7 @@ static const yytype_int16 yypgoto[] =
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
-   number is the opposite.  If zero, do what YYDEFACT says.
-   If YYTABLE_NINF, syntax error.  */
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
 #define YYTABLE_NINF -1
 static const yytype_uint16 yytable[] =
 {
@@ -1345,6 +1346,12 @@ static const yytype_uint16 yytable[] =
        0,    16,     0,     0,    18,    19,    20,    21,     0,     0,
       22
 };
+
+#define yypact_value_is_default(yystate) \
+  ((yystate) == (-533))
+
+#define yytable_value_is_error(yytable_value) \
+  YYID (0)
 
 static const yytype_int16 yycheck[] =
 {
@@ -1674,9 +1681,18 @@ static const yytype_uint16 yystos[] =
 
 /* Like YYERROR except do call yyerror.  This remains here temporarily
    to ease the transition to the new meaning of YYERROR, for GCC.
-   Once GCC version 2 has supplanted version 1, this can go.  */
+   Once GCC version 2 has supplanted version 1, this can go.  However,
+   YYFAIL appears to be in use.  Nevertheless, it is formally deprecated
+   in Bison 2.4.2's NEWS entry, where a plan to phase it out is
+   discussed.  */
 
 #define YYFAIL		goto yyerrlab
+#if defined YYFAIL
+  /* This is here to suppress warnings from the GCC cpp's
+     -Wunused-macros.  Normally we don't worry about that warning, but
+     some users do, and we want to make it easy for users to remove
+     YYFAIL uses, which will produce warnings from Bison 2.5.  */
+#endif
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
@@ -1686,7 +1702,6 @@ do								\
     {								\
       yychar = (Token);						\
       yylval = (Value);						\
-      yytoken = YYTRANSLATE (yychar);				\
       YYPOPSTACK (1);						\
       goto yybackup;						\
     }								\
@@ -1728,19 +1743,10 @@ while (YYID (0))
 #endif
 
 
-/* YY_LOCATION_PRINT -- Print the location on the stream.
-   This macro was not mandated originally: define only if we know
-   we won't break user code: when these are the locations we know.  */
+/* This macro is provided for backward compatibility. */
 
 #ifndef YY_LOCATION_PRINT
-# if YYLTYPE_IS_TRIVIAL
-#  define YY_LOCATION_PRINT(File, Loc)			\
-     fprintf (File, "%d.%d-%d.%d",			\
-	      (Loc).first_line, (Loc).first_column,	\
-	      (Loc).last_line,  (Loc).last_column)
-# else
-#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-# endif
+# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 #endif
 
 
@@ -1932,7 +1938,6 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
 
 #if YYERROR_VERBOSE
 
@@ -2035,115 +2040,142 @@ yytnamerr (char *yyres, const char *yystr)
 }
 # endif
 
-/* Copy into YYRESULT an error message about the unexpected token
-   YYCHAR while in state YYSTATE.  Return the number of bytes copied,
-   including the terminating null byte.  If YYRESULT is null, do not
-   copy anything; just return the number of bytes that would be
-   copied.  As a special case, return 0 if an ordinary "syntax error"
-   message will do.  Return YYSIZE_MAXIMUM if overflow occurs during
-   size calculation.  */
-static YYSIZE_T
-yysyntax_error (char *yyresult, int yystate, int yychar)
+/* Copy into *YYMSG, which is of size *YYMSG_ALLOC, an error message
+   about the unexpected token YYTOKEN for the state stack whose top is
+   YYSSP.
+
+   Return 0 if *YYMSG was successfully written.  Return 1 if *YYMSG is
+   not large enough to hold the message.  In that case, also set
+   *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
+   required number of bytes is too large to store.  */
+static int
+yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
+                yytype_int16 *yyssp, int yytoken)
 {
-  int yyn = yypact[yystate];
+  YYSIZE_T yysize0 = yytnamerr (0, yytname[yytoken]);
+  YYSIZE_T yysize = yysize0;
+  YYSIZE_T yysize1;
+  enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
+  /* Internationalized format string. */
+  const char *yyformat = 0;
+  /* Arguments of yyformat. */
+  char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+  /* Number of reported tokens (one for the "unexpected", one per
+     "expected"). */
+  int yycount = 0;
 
-  if (! (YYPACT_NINF < yyn && yyn <= YYLAST))
-    return 0;
-  else
+  /* There are many possibilities here to consider:
+     - Assume YYFAIL is not used.  It's too flawed to consider.  See
+       <http://lists.gnu.org/archive/html/bison-patches/2009-12/msg00024.html>
+       for details.  YYERROR is fine as it does not invoke this
+       function.
+     - If this state is a consistent state with a default action, then
+       the only way this function was invoked is if the default action
+       is an error action.  In that case, don't check for expected
+       tokens because there are none.
+     - The only way there can be no lookahead present (in yychar) is if
+       this state is a consistent state with a default action.  Thus,
+       detecting the absence of a lookahead is sufficient to determine
+       that there is no unexpected or expected token to report.  In that
+       case, just report a simple "syntax error".
+     - Don't assume there isn't a lookahead just because this state is a
+       consistent state with a default action.  There might have been a
+       previous inconsistent state, consistent state with a non-default
+       action, or user semantic action that manipulated yychar.
+     - Of course, the expected token list depends on states to have
+       correct lookahead information, and it depends on the parser not
+       to perform extra reductions after fetching a lookahead from the
+       scanner and before detecting a syntax error.  Thus, state merging
+       (from LALR or IELR) and default reductions corrupt the expected
+       token list.  However, the list is correct for canonical LR with
+       one exception: it will still contain any token that will not be
+       accepted due to an error action in a later state.
+  */
+  if (yytoken != YYEMPTY)
     {
-      int yytype = YYTRANSLATE (yychar);
-      YYSIZE_T yysize0 = yytnamerr (0, yytname[yytype]);
-      YYSIZE_T yysize = yysize0;
-      YYSIZE_T yysize1;
-      int yysize_overflow = 0;
-      enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-      char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-      int yyx;
+      int yyn = yypact[*yyssp];
+      yyarg[yycount++] = yytname[yytoken];
+      if (!yypact_value_is_default (yyn))
+        {
+          /* Start YYX at -YYN if negative to avoid negative indexes in
+             YYCHECK.  In other words, skip the first -YYN actions for
+             this state because they are default actions.  */
+          int yyxbegin = yyn < 0 ? -yyn : 0;
+          /* Stay within bounds of both yycheck and yytname.  */
+          int yychecklim = YYLAST - yyn + 1;
+          int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+          int yyx;
 
-# if 0
-      /* This is so xgettext sees the translatable formats that are
-	 constructed on the fly.  */
-      YY_("syntax error, unexpected %s");
-      YY_("syntax error, unexpected %s, expecting %s");
-      YY_("syntax error, unexpected %s, expecting %s or %s");
-      YY_("syntax error, unexpected %s, expecting %s or %s or %s");
-      YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s");
-# endif
-      char *yyfmt;
-      char const *yyf;
-      static char const yyunexpected[] = "syntax error, unexpected %s";
-      static char const yyexpecting[] = ", expecting %s";
-      static char const yyor[] = " or %s";
-      char yyformat[sizeof yyunexpected
-		    + sizeof yyexpecting - 1
-		    + ((YYERROR_VERBOSE_ARGS_MAXIMUM - 2)
-		       * (sizeof yyor - 1))];
-      char const *yyprefix = yyexpecting;
-
-      /* Start YYX at -YYN if negative to avoid negative indexes in
-	 YYCHECK.  */
-      int yyxbegin = yyn < 0 ? -yyn : 0;
-
-      /* Stay within bounds of both yycheck and yytname.  */
-      int yychecklim = YYLAST - yyn + 1;
-      int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
-      int yycount = 1;
-
-      yyarg[0] = yytname[yytype];
-      yyfmt = yystpcpy (yyformat, yyunexpected);
-
-      for (yyx = yyxbegin; yyx < yyxend; ++yyx)
-	if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR)
-	  {
-	    if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-	      {
-		yycount = 1;
-		yysize = yysize0;
-		yyformat[sizeof yyunexpected - 1] = '\0';
-		break;
-	      }
-	    yyarg[yycount++] = yytname[yyx];
-	    yysize1 = yysize + yytnamerr (0, yytname[yyx]);
-	    yysize_overflow |= (yysize1 < yysize);
-	    yysize = yysize1;
-	    yyfmt = yystpcpy (yyfmt, yyprefix);
-	    yyprefix = yyor;
-	  }
-
-      yyf = YY_(yyformat);
-      yysize1 = yysize + yystrlen (yyf);
-      yysize_overflow |= (yysize1 < yysize);
-      yysize = yysize1;
-
-      if (yysize_overflow)
-	return YYSIZE_MAXIMUM;
-
-      if (yyresult)
-	{
-	  /* Avoid sprintf, as that infringes on the user's name space.
-	     Don't have undefined behavior even if the translation
-	     produced a string with the wrong number of "%s"s.  */
-	  char *yyp = yyresult;
-	  int yyi = 0;
-	  while ((*yyp = *yyf) != '\0')
-	    {
-	      if (*yyp == '%' && yyf[1] == 's' && yyi < yycount)
-		{
-		  yyp += yytnamerr (yyp, yyarg[yyi++]);
-		  yyf += 2;
-		}
-	      else
-		{
-		  yyp++;
-		  yyf++;
-		}
-	    }
-	}
-      return yysize;
+          for (yyx = yyxbegin; yyx < yyxend; ++yyx)
+            if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR
+                && !yytable_value_is_error (yytable[yyx + yyn]))
+              {
+                if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
+                  {
+                    yycount = 1;
+                    yysize = yysize0;
+                    break;
+                  }
+                yyarg[yycount++] = yytname[yyx];
+                yysize1 = yysize + yytnamerr (0, yytname[yyx]);
+                if (! (yysize <= yysize1
+                       && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                  return 2;
+                yysize = yysize1;
+              }
+        }
     }
+
+  switch (yycount)
+    {
+# define YYCASE_(N, S)                      \
+      case N:                               \
+        yyformat = S;                       \
+      break
+      YYCASE_(0, YY_("syntax error"));
+      YYCASE_(1, YY_("syntax error, unexpected %s"));
+      YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
+      YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+      YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+      YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+# undef YYCASE_
+    }
+
+  yysize1 = yysize + yystrlen (yyformat);
+  if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+    return 2;
+  yysize = yysize1;
+
+  if (*yymsg_alloc < yysize)
+    {
+      *yymsg_alloc = 2 * yysize;
+      if (! (yysize <= *yymsg_alloc
+             && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
+        *yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
+      return 1;
+    }
+
+  /* Avoid sprintf, as that infringes on the user's name space.
+     Don't have undefined behavior even if the translation
+     produced a string with the wrong number of "%s"s.  */
+  {
+    char *yyp = *yymsg;
+    int yyi = 0;
+    while ((*yyp = *yyformat) != '\0')
+      if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
+        {
+          yyp += yytnamerr (yyp, yyarg[yyi++]);
+          yyformat += 2;
+        }
+      else
+        {
+          yyp++;
+          yyformat++;
+        }
+  }
+  return 0;
 }
 #endif /* YYERROR_VERBOSE */
-
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -2176,6 +2208,7 @@ yydestruct (yymsg, yytype, yyvaluep)
     }
 }
 
+
 /* Prevent warnings from -Wmissing-prototypes.  */
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
@@ -2202,10 +2235,9 @@ YYSTYPE yylval;
 int yynerrs;
 
 
-
-/*-------------------------.
-| yyparse or yypush_parse.  |
-`-------------------------*/
+/*----------.
+| yyparse.  |
+`----------*/
 
 #ifdef YYPARSE_PARAM
 #if (defined __STDC__ || defined __C99__FUNC__ \
@@ -2229,8 +2261,6 @@ yyparse ()
 #endif
 #endif
 {
-
-
     int yystate;
     /* Number of tokens to shift before error messages enabled.  */
     int yyerrstatus;
@@ -2385,7 +2415,7 @@ yybackup:
 
   /* First try to decide what to do without reference to lookahead token.  */
   yyn = yypact[yystate];
-  if (yyn == YYPACT_NINF)
+  if (yypact_value_is_default (yyn))
     goto yydefault;
 
   /* Not known => get a lookahead token if don't already have one.  */
@@ -2416,8 +2446,8 @@ yybackup:
   yyn = yytable[yyn];
   if (yyn <= 0)
     {
-      if (yyn == 0 || yyn == YYTABLE_NINF)
-	goto yyerrlab;
+      if (yytable_value_is_error (yyn))
+        goto yyerrlab;
       yyn = -yyn;
       goto yyreduce;
     }
@@ -2472,76 +2502,76 @@ yyreduce:
     {
         case 3:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 91 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)])); 
-    ;}
+    }
     break;
 
   case 8:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 98 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 9:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 100 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
-    ;}
+    }
     break;
 
   case 10:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 104 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
-    ;}
+    }
     break;
 
   case 11:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 108 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (6)]), (yyvsp[(2) - (6)]), (yyvsp[(3) - (6)]), (yyvsp[(4) - (6)]), (yyvsp[(5) - (6)]), (yyvsp[(6) - (6)]));
-    ;}
+    }
     break;
 
   case 13:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 119 "globaliser/parser.yc"
-    { (yyval)->type = node_t::t_string; ;}
+    { (yyval)->type = node_t::t_string; }
     break;
 
   case 14:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 121 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
         (yyval)->type = node_t::t_string_list;
-    ;}
+    }
     break;
 
   case 16:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 130 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)])); 
-    ;}
+    }
     break;
 
   case 17:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 134 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
@@ -2572,12 +2602,12 @@ yyreduce:
                 (yyvsp[(1) - (4)])->b_ignore = true;
             }
         }
-    ;}
+    }
     break;
 
   case 18:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 165 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
@@ -2586,352 +2616,352 @@ yyreduce:
                 (yyvsp[(1) - (3)])->b_ignore = true;
             }
         }
-    ;}
+    }
     break;
 
   case 19:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 174 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); (yyvsp[(3) - (3)])->s_identifier = string(""); 
-    ;}
+    }
     break;
 
   case 20:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 178 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); (yyvsp[(3) - (3)])->s_identifier = string(""); 
-    ;}
+    }
     break;
 
   case 21:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 182 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); (yyvsp[(3) - (3)])->s_identifier = string(""); 
-    ;}
+    }
     break;
 
   case 22:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 186 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); (yyvsp[(3) - (3)])->s_identifier = string(""); 
-    ;}
+    }
     break;
 
   case 23:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 190 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
-    ;}
+    }
     break;
 
   case 24:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 194 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
-    ;}
+    }
     break;
 
   case 26:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 202 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 28:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 209 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 29:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 210 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 30:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 212 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
         (yyval)->check_for_ampersand_reference_special_case();
-    ;}
+    }
     break;
 
   case 31:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 216 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 32:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 218 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
-    ;}
+    }
     break;
 
   case 33:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 224 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (6)]), (yyvsp[(2) - (6)]), (yyvsp[(3) - (6)]), (yyvsp[(4) - (6)]), (yyvsp[(5) - (6)]), (yyvsp[(6) - (6)]));
-    ;}
+    }
     break;
 
   case 41:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 241 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
-    ;}
+    }
     break;
 
   case 42:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 245 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
-    ;}
+    }
     break;
 
   case 43:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 250 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (6)]), (yyvsp[(2) - (6)]), (yyvsp[(3) - (6)]), (yyvsp[(4) - (6)]), (yyvsp[(5) - (6)]), (yyvsp[(6) - (6)]));
-    ;}
+    }
     break;
 
   case 44:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 255 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));
-    ;}
+    }
     break;
 
   case 45:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 260 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));
-    ;}
+    }
     break;
 
   case 47:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 268 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    
-    ;}
+    }
     break;
 
   case 48:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 272 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 49:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 274 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 51:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 280 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 52:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 282 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 54:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 288 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 55:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 290 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 57:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 296 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 58:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 298 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 59:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 300 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 60:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 302 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 62:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 308 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 63:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 310 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 65:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 316 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 67:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 322 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 69:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 328 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 71:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 334 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 73:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 340 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 75:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 347 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    }
     break;
 
   case 76:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 349 "globaliser/parser.yc"
     {
         /* This is crazy syntax right here! But gcc accepts it... */
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
-    ;}
+    }
     break;
 
   case 78:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 358 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    
-    ;}
+    }
     break;
 
   case 91:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 380 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
-    ;}
+    }
     break;
 
   case 93:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 391 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyval)->type = node_t::t_declaration;
-    ;}
+    }
     break;
 
   case 94:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 396 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         (yyval)->b_ignore = true;
-    ;}
+    }
     break;
 
   case 95:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 404 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
@@ -2964,345 +2994,345 @@ yyreduce:
                 (yyval)->b_ignore = true; // Don't try and handle it again later.
             }
         }
-    ;}
+    }
     break;
 
   case 96:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 437 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         (yyval)->b_ignore = true;
-    ;}
+    }
     break;
 
   case 97:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 445 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 99:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 447 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 101:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 449 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 103:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 455 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
-    ;}
+    }
     break;
 
   case 105:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 459 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 107:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 461 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 110:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 468 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyval)->type = node_t::t_init_declarator_list;
-    ;}
+    }
     break;
 
   case 111:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 476 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyval)->b_init_declarator = true;
         (yyval)->type = node_t::t_init_declarator;
-    ;}
+    }
     break;
 
   case 113:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 486 "globaliser/parser.yc"
     {
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->b_typedef = true;
-    ;}
+    }
     break;
 
   case 114:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 491 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->b_extern = true;
-    ;}
+    }
     break;
 
   case 115:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 496 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->b_static = true;
-    ;}
+    }
     break;
 
   case 117:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 505 "globaliser/parser.yc"
     {
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->b_typedef = true;
-    ;}
+    }
     break;
 
   case 118:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 510 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->b_extern = true;
-    ;}
+    }
     break;
 
   case 119:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 515 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->b_static = true;
-    ;}
+    }
     break;
 
   case 121:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 523 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 122:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 524 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 123:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 525 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 124:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 526 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 125:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 527 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 126:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 528 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 127:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 529 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 128:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 530 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 129:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 531 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 130:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 532 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 131:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 533 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 132:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 535 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->b_typedefed_name = true;
-    ;}
+    }
     break;
 
   case 133:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 540 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
         (yyval)->type = node_t::t_typeof;
-    ;}
+    }
     break;
 
   case 134:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 545 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
         (yyval)->type = node_t::t_typeof;
-    ;}
+    }
     break;
 
   case 137:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 555 "globaliser/parser.yc"
     {
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->b_typedefed_name = true;
-    ;}
+    }
     break;
 
   case 138:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 562 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 139:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 563 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 140:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 564 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 141:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 565 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 142:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 566 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 143:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 567 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 144:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 568 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 145:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 569 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 146:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 570 "globaliser/parser.yc"
-    { (yyval) = (yyvsp[(1) - (1)]); ;}
+    { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 147:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 572 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
-    ;}
+    }
     break;
 
   case 148:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 576 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
-    ;}
+    }
     break;
 
   case 149:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 590 "globaliser/parser.yc"
     {    
         global_define_struct((yyvsp[(2) - (5)])->s_identifier);
@@ -3315,44 +3345,44 @@ yyreduce:
         // structure
         (yyvsp[(4) - (5)])->clear_function_declaration();
         (yyvsp[(4) - (5)])->clear_typedefed();
-    ;}
+    }
     break;
 
   case 150:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 603 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
         (yyvsp[(3) - (4)])->clear_function_declaration();
         (yyvsp[(3) - (4)])->clear_typedefed();
-    ;}
+    }
     break;
 
   case 151:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 610 "globaliser/parser.yc"
     {
             (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 152:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 614 "globaliser/parser.yc"
     {  
         global_define_struct((yyvsp[(2) - (4)])->s_identifier);
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));  
         (yyval)->s_struct = (yyvsp[(2) - (4)])->s_identifier;
         (yyvsp[(2) - (4)])->s_identifier = string("");
-    ;}
+    }
     break;
 
   case 153:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 621 "globaliser/parser.yc"
     { 
         global_declare_struct((yyvsp[(2) - (2)])->s_identifier);
@@ -3361,12 +3391,12 @@ yyreduce:
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
         (yyval)->s_struct = (yyvsp[(2) - (2)])->s_identifier;
         (yyvsp[(2) - (2)])->s_identifier = string("");
-    ;}
+    }
     break;
 
   case 154:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 631 "globaliser/parser.yc"
     { 
         global_declare_struct((yyvsp[(2) - (2)])->s_identifier);
@@ -3374,12 +3404,12 @@ yyreduce:
         (yyval)->s_struct = (yyvsp[(2) - (2)])->s_identifier;
         (yyvsp[(2) - (2)])->s_identifier = string("");
         (yyvsp[(2) - (2)])->b_typedefed_name = false;
-    ;}
+    }
     break;
 
   case 155:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 640 "globaliser/parser.yc"
     {
         global_define_struct((yyvsp[(2) - (5)])->s_identifier);
@@ -3388,53 +3418,53 @@ yyreduce:
         (yyvsp[(2) - (5)])->b_typedefed_name = false;
         (yyvsp[(4) - (5)])->clear_function_declaration();
         (yyvsp[(4) - (5)])->clear_typedefed();
-    ;}
+    }
     break;
 
   case 156:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 651 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 158:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 653 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 163:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 665 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    
-    ;}
+    }
     break;
 
   case 164:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 673 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    
-    ;}
+    }
     break;
 
   case 165:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 677 "globaliser/parser.yc"
     {
 	(yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
-    ;}
+    }
     break;
 
   case 167:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 685 "globaliser/parser.yc"
     {
         if((yyvsp[(1) - (3)]) && (yyvsp[(3) - (3)]))
@@ -3445,12 +3475,12 @@ yyreduce:
             (yyval) = new node_t((yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         else
             (yyval) = new node_t((yyvsp[(2) - (3)]));
-    ;}
+    }
     break;
 
   case 168:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 696 "globaliser/parser.yc"
     {
         if((yyvsp[(1) - (3)]) && (yyvsp[(3) - (3)]))
@@ -3461,21 +3491,21 @@ yyreduce:
             (yyval) = new node_t((yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         else
             (yyval) = new node_t((yyvsp[(2) - (3)]));
-    ;}
+    }
     break;
 
   case 169:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 709 "globaliser/parser.yc"
     {
         (yyval) = NULL;
-    ;}
+    }
     break;
 
   case 170:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 713 "globaliser/parser.yc"
     {
         if((yyvsp[(2) - (2)])) {
@@ -3483,227 +3513,227 @@ yyreduce:
         } else {
             (yyval) = (yyvsp[(1) - (2)]);
         }
-    ;}
+    }
     break;
 
   case 171:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 723 "globaliser/parser.yc"
     {
         (yyval) = NULL;
-    ;}
+    }
     break;
 
   case 172:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 727 "globaliser/parser.yc"
     {
         if((yyvsp[(2) - (2)]))
             (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         else
             (yyval) = new node_t((yyvsp[(1) - (2)]));
-    ;}
+    }
     break;
 
   case 173:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 734 "globaliser/parser.yc"
     {
         if((yyvsp[(2) - (2)]))
             (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         else
             (yyval) = new node_t((yyvsp[(1) - (2)]));
-    ;}
+    }
     break;
 
   case 175:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 746 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 177:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 752 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    }
     break;
 
   case 178:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 754 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 179:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 759 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    
         (yyvsp[(2) - (5)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 180:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 764 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
-    ;}
+    }
     break;
 
   case 181:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 768 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (6)]), (yyvsp[(2) - (6)]), (yyvsp[(3) - (6)]), (yyvsp[(4) - (6)]), (yyvsp[(5) - (6)]), (yyvsp[(6) - (6)]));
         (yyvsp[(2) - (6)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 182:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 773 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    
-    ;}
+    }
     break;
 
   case 183:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 777 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
         (yyvsp[(2) - (2)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 185:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 785 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 186:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 790 "globaliser/parser.yc"
     {
         global_define_variable((yyvsp[(1) - (1)])->s_identifier, false, true, false, false, "");
         (yyvsp[(1) - (1)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 187:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 795 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
         global_define_variable((yyvsp[(1) - (3)])->s_identifier, false, true, false, false, "");
         (yyvsp[(1) - (3)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 189:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 805 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->b_volatile = true;
-    ;}
+    }
     break;
 
   case 190:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 810 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->b_register = true;
-    ;}
+    }
     break;
 
   case 191:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 818 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
         (yyval)->i_function_pointer = 1;
         (yyval)->type = node_t::t_declarator;
-    ;}
+    }
     break;
 
   case 193:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 828 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         (yyval)->i_function_pointer = 1;
         (yyval)->type = node_t::t_declarator;
-    ;}
+    }
     break;
 
   case 195:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 839 "globaliser/parser.yc"
     {
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->type = node_t::t_direct_declarator;
-    ;}
+    }
     break;
 
   case 196:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 844 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyval)->i_function_pointer = (yyvsp[(2) - (3)])->i_function_pointer + 1;
-    ;}
+    }
     break;
 
   case 197:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 849 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
         (yyval)->type = node_t::t_direct_declarator_array;
         (yyval)->b_unbounded_array = true; // For now. Need to think about
                                       // this.
-    ;}
+    }
     break;
 
   case 198:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 856 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyval)->type = node_t::t_direct_declarator_array;
         (yyval)->b_unbounded_array = true;
-    ;}
+    }
     break;
 
   case 199:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 863 "globaliser/parser.yc"
     {   
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
@@ -3715,24 +3745,24 @@ yyreduce:
             (yyval)->b_function_declaration = true;
         }
         (yyvsp[(3) - (4)])->b_declaration_list = true;
-    ;}
+    }
     break;
 
   case 200:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 875 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
         (yyval)->type = node_t::t_function_declaration;
         (yyval)->b_function_declaration = true;
         (yyvsp[(3) - (4)])->b_declaration_list = true;
-    ;}
+    }
     break;
 
   case 201:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 882 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    
@@ -3746,85 +3776,85 @@ yyreduce:
         }
 
         //$$->b_ignore = true;
-    ;}
+    }
     break;
 
   case 202:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 896 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
-    ;}
+    }
     break;
 
   case 203:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 908 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
-    ;}
+    }
     break;
 
   case 204:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 915 "globaliser/parser.yc"
     {
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->type = node_t::t_direct_declarator;
-    ;}
+    }
     break;
 
   case 205:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 920 "globaliser/parser.yc"
     {
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->s_identifier = (yyval)->s_token;
         (yyval)->b_typedefed_name = true;
         (yyval)->type = node_t::t_direct_declarator;
-    ;}
+    }
     break;
 
   case 206:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 927 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyval)->i_function_pointer = (yyvsp[(2) - (3)])->i_function_pointer + 1;
-    ;}
+    }
     break;
 
   case 207:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 932 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
         (yyval)->type = node_t::t_direct_declarator_array;
         (yyval)->b_unbounded_array = true; // For now. Need to think about
                                       // this.
-    ;}
+    }
     break;
 
   case 208:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 939 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyval)->type = node_t::t_direct_declarator_array;
         (yyval)->b_unbounded_array = true;
-    ;}
+    }
     break;
 
   case 209:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 946 "globaliser/parser.yc"
     {   
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
@@ -3836,24 +3866,24 @@ yyreduce:
             (yyval)->b_function_declaration = true;
         }
         (yyvsp[(3) - (4)])->b_declaration_list = true;
-    ;}
+    }
     break;
 
   case 210:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 958 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
         (yyval)->type = node_t::t_function_declaration;
         (yyval)->b_function_declaration = true;
         (yyvsp[(3) - (4)])->b_declaration_list = true;
-    ;}
+    }
     break;
 
   case 211:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 965 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    
@@ -3867,428 +3897,428 @@ yyreduce:
         }
 
         (yyval)->b_ignore = true;
-    ;}
+    }
     break;
 
   case 212:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 981 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 214:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 983 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 215:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 984 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 217:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 989 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 218:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 994 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->type = node_t::t_parameter_type_list;
-    ;}
+    }
     break;
 
   case 219:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 999 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
         (yyval)->type = node_t::t_parameter_type_list;
-    ;}
+    }
     break;
 
   case 221:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1008 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    
-    ;}
+    }
     break;
 
   case 222:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1020 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
-    ;}
+    }
     break;
 
   case 223:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1024 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
-    ;}
+    }
     break;
 
   case 225:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1040 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->b_ignore = true; 
-    ;}
+    }
     break;
 
   case 226:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1045 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
         (yyval)->b_ignore = true;
-    ;}
+    }
     break;
 
   case 228:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1054 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    }
     break;
 
   case 231:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1060 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 232:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1065 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 233:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1067 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    }
     break;
 
   case 234:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1069 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 235:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1071 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 236:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1073 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    }
     break;
 
   case 237:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1075 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    }
     break;
 
   case 238:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1077 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 239:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1079 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 240:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1081 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    }
     break;
 
   case 243:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1087 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 244:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1092 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 245:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1094 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    }
     break;
 
   case 246:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1096 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 247:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1098 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 248:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1100 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    }
     break;
 
   case 249:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1102 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));    }
     break;
 
   case 250:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1104 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 251:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1106 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    }
     break;
 
   case 253:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1113 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));    }
     break;
 
   case 254:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1115 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    }
     break;
 
   case 255:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1117 "globaliser/parser.yc"
-    {   (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));   ;}
+    {   (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));   }
     break;
 
   case 256:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1120 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 257:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1124 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 258:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1128 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 259:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1141 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));
-    ;}
+    }
     break;
 
   case 260:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1146 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));
-    ;}
+    }
     break;
 
   case 261:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1151 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (8)]), (yyvsp[(2) - (8)]), (yyvsp[(3) - (8)]), (yyvsp[(4) - (8)]), (yyvsp[(5) - (8)]), (yyvsp[(6) - (8)]), (yyvsp[(7) - (8)]), (yyvsp[(8) - (8)]));
-    ;}
+    }
     break;
 
   case 262:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1158 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         (yyvsp[(2) - (2)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 263:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1163 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         (yyvsp[(2) - (2)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 264:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1168 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyvsp[(2) - (3)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 265:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1173 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
         (yyvsp[(2) - (3)])->s_identifier = string();
-    ;}
+    }
     break;
 
   case 267:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1182 "globaliser/parser.yc"
     {
 	(yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 269:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1190 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
-    ;}
+    }
     break;
 
   case 278:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1214 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
         /* Ignore label identifiers, we don't want to globalise them */
         (yyvsp[(1) - (3)])->b_ignore = true;
-    ;}
+    }
     break;
 
   case 279:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1221 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));    
-    ;}
+    }
     break;
 
   case 280:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1225 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
    
-    ;}
+    }
     break;
 
   case 281:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1237 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));
-    ;}
+    }
     break;
 
   case 282:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1241 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (6)]), (yyvsp[(2) - (6)]), (yyvsp[(3) - (6)]), (yyvsp[(4) - (6)]), (yyvsp[(5) - (6)]), (yyvsp[(6) - (6)]));
-    ;}
+    }
     break;
 
   case 284:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1259 "globaliser/parser.yc"
     {
         if ((yyvsp[(3) - (3)])) {
@@ -4296,12 +4326,12 @@ yyreduce:
         } else {
             (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]));
         }
-    ;}
+    }
     break;
 
   case 285:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1267 "globaliser/parser.yc"
     {
         if ((yyvsp[(3) - (5)]) && (yyvsp[(5) - (5)])) {
@@ -4316,12 +4346,12 @@ yyreduce:
         else {
             (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(4) - (5)]));
         }
-    ;}
+    }
     break;
 
   case 286:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1282 "globaliser/parser.yc"
     {
         if ((yyvsp[(3) - (7)]) && (yyvsp[(5) - (7)])) {
@@ -4336,275 +4366,275 @@ yyreduce:
         else {
             (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));
         }
-    ;}
+    }
     break;
 
   case 287:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1300 "globaliser/parser.yc"
     {
         (yyval) = NULL;
-    ;}
+    }
     break;
 
   case 290:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1314 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 291:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1326 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));
-    ;}
+    }
     break;
 
   case 292:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1330 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));
-    ;}
+    }
     break;
 
   case 294:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1343 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));
-    ;}
+    }
     break;
 
   case 296:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1357 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 297:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1359 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
         (yyval)->type = node_t::t_compound_statement;
-    ;}
+    }
     break;
 
   case 298:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1367 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]);
         (yyval)->b_declaration_list = true;
-    ;}
+    }
     break;
 
   case 299:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1372 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
         (yyval)->b_declaration_list = true;
-    ;}
+    }
     break;
 
   case 301:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1381 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));
         (yyval)->type = node_t::t_statement_list;
-    ;}
+    }
     break;
 
   case 303:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1389 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 304:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1394 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    
-    ;}
+    }
     break;
 
   case 305:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1398 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));    
-    ;}
+    }
     break;
 
   case 306:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1402 "globaliser/parser.yc"
-    {    (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    ;}
+    {    (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    }
     break;
 
   case 307:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1404 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    
-    ;}
+    }
     break;
 
   case 308:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1411 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (5)]), (yyvsp[(2) - (5)]), (yyvsp[(3) - (5)]), (yyvsp[(4) - (5)]), (yyvsp[(5) - (5)]));    
-    ;}
+    }
     break;
 
   case 309:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1416 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));    
-    ;}
+    }
     break;
 
   case 310:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1420 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (6)]), (yyvsp[(2) - (6)]), (yyvsp[(3) - (6)]), (yyvsp[(4) - (6)]), (yyvsp[(5) - (6)]), (yyvsp[(6) - (6)]));    
-    ;}
+    }
     break;
 
   case 311:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1424 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));    
-    ;}
+    }
     break;
 
   case 312:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1428 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));    
-    ;}
+    }
     break;
 
   case 313:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1432 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (8)]), (yyvsp[(2) - (8)]), (yyvsp[(3) - (8)]), (yyvsp[(4) - (8)]), (yyvsp[(5) - (8)]), (yyvsp[(6) - (8)]), (yyvsp[(7) - (8)]), (yyvsp[(8) - (8)]));    
-    ;}
+    }
     break;
 
   case 314:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1436 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (7)]), (yyvsp[(2) - (7)]), (yyvsp[(3) - (7)]), (yyvsp[(4) - (7)]), (yyvsp[(5) - (7)]), (yyvsp[(6) - (7)]), (yyvsp[(7) - (7)]));    
-    ;}
+    }
     break;
 
   case 315:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1440 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (8)]), (yyvsp[(2) - (8)]), (yyvsp[(3) - (8)]), (yyvsp[(4) - (8)]), (yyvsp[(5) - (8)]), (yyvsp[(6) - (8)]), (yyvsp[(7) - (8)]), (yyvsp[(8) - (8)]));    
-    ;}
+    }
     break;
 
   case 316:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1444 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (8)]), (yyvsp[(2) - (8)]), (yyvsp[(3) - (8)]), (yyvsp[(4) - (8)]), (yyvsp[(5) - (8)]), (yyvsp[(6) - (8)]), (yyvsp[(7) - (8)]), (yyvsp[(8) - (8)]));    
-    ;}
+    }
     break;
 
   case 317:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1448 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (9)]), (yyvsp[(2) - (9)]), (yyvsp[(3) - (9)]), (yyvsp[(4) - (9)]), (yyvsp[(5) - (9)]), (yyvsp[(6) - (9)]), (yyvsp[(7) - (9)]), (yyvsp[(8) - (9)]), (yyvsp[(9) - (9)]));    
-    ;}
+    }
     break;
 
   case 318:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1455 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); 
         /* The identifier after the 'goto' is a label, so we ignore the
            identifier; we do not want to globalise it. */
         (yyvsp[(2) - (3)])->b_ignore = true;
-    ;}
+    }
     break;
 
   case 319:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1461 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 320:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1462 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 321:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1463 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 322:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1464 "globaliser/parser.yc"
-    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); ;}
+    { (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 324:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1472 "globaliser/parser.yc"
     {
         // Post-process the AST, possibly removing nodes we find we don't want.
@@ -4618,31 +4648,31 @@ yyreduce:
         delete (yyval); 
         // Make sure there is a newline at end of file to stop gcc complaining
         fputs("\n", stdout);
-    ;}
+    }
     break;
 
   case 326:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1490 "globaliser/parser.yc"
     { 
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); 
-    ;}
+    }
     break;
 
   case 327:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1497 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]); 
         (yyval)->handle_global_references();
-    ;}
+    }
     break;
 
   case 328:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1502 "globaliser/parser.yc"
     { 
         (yyval) = (yyvsp[(1) - (1)]);
@@ -4661,12 +4691,12 @@ yyreduce:
             // If its a typedef we can ignore it later
             (yyval)->b_ignore = true;
         }
-    ;}
+    }
     break;
 
   case 331:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1526 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (4)]), (yyvsp[(2) - (4)]), (yyvsp[(3) - (4)]), (yyvsp[(4) - (4)]));        
@@ -4674,674 +4704,685 @@ yyreduce:
         (yyvsp[(2) - (4)])->b_declaration_list = true;
         (yyvsp[(3) - (4)])->b_declaration_list = true;
         global_define_function((yyvsp[(2) - (4)])->get_identifier()->s_identifier, false);
-    ;}
+    }
     break;
 
   case 332:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1534 "globaliser/parser.yc"
     {
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));            
         (yyvsp[(2) - (3)])->b_ignore = true;
         (yyvsp[(2) - (3)])->b_declaration_list = true;
         global_define_function((yyvsp[(2) - (3)])->get_identifier()->s_identifier, false);
-    ;}
+    }
     break;
 
   case 333:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1541 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (3)]), (yyvsp[(2) - (3)]), (yyvsp[(3) - (3)]));            
         (yyvsp[(1) - (3)])->b_ignore = true;
         global_define_function((yyvsp[(1) - (3)])->get_identifier()->s_identifier, false);
-    ;}
+    }
     break;
 
   case 334:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1547 "globaliser/parser.yc"
     {    
         (yyval) = new node_t((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)]));                
         (yyvsp[(1) - (2)])->b_ignore = true;
         global_define_function((yyvsp[(1) - (2)])->get_identifier()->s_identifier, false);
-    ;}
+    }
     break;
 
   case 335:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1555 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 336:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1556 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 337:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1557 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 338:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1558 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 339:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1559 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 340:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1560 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 341:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1561 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 342:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1562 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 343:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1563 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 344:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1564 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 345:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1565 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 346:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1566 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 347:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1567 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 348:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1568 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 349:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1569 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 350:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1570 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 351:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1571 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 352:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1572 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 353:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1573 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 354:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1574 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 355:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1575 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 356:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1576 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 357:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1577 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 358:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1578 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 359:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1580 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 360:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1581 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 361:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1582 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 362:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1583 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 363:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1584 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 364:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1585 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 365:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1586 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 366:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1587 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 367:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1588 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 368:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1589 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 369:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1590 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 370:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1591 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 371:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1592 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 372:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1593 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 373:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1594 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 374:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1595 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 375:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1596 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 376:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1597 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 377:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1598 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 378:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1599 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 379:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1600 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 380:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1601 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 381:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1602 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 382:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1603 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 383:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1604 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 384:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1605 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 385:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1606 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 386:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1607 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 387:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1608 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 388:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1609 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 389:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1610 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 390:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1611 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 391:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1612 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 392:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1613 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 393:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1614 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 394:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1615 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 395:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1616 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 396:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1617 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 397:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1618 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 398:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1619 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 399:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1620 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 400:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1621 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 401:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1622 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 402:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1623 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 403:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1624 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 404:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1625 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 405:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1626 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 406:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1627 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 407:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1628 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 408:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1629 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 409:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1630 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 410:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1631 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 411:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1632 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 412:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1633 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 413:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1634 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 414:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1635 "globaliser/parser.yc"
     { (yyval) = new node_t(); 
                                      (yyval)->s_identifier = (yyval)->s_token;
-                                   ;}
+                                   }
     break;
 
   case 415:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1638 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 416:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1639 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 417:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1640 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 418:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1641 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 419:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1643 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 420:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1644 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 421:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1645 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 422:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1646 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
   case 423:
 
-/* Line 1455 of yacc.c  */
+/* Line 1806 of yacc.c  */
 #line 1647 "globaliser/parser.yc"
-    { (yyval) = new node_t(); ;}
+    { (yyval) = new node_t(); }
     break;
 
 
 
-/* Line 1455 of yacc.c  */
-#line 5343 "globaliser/parser.tab.cc"
+/* Line 1806 of yacc.c  */
+#line 5373 "globaliser/parser.tab.cc"
       default: break;
     }
+  /* User semantic actions sometimes alter yychar, and that requires
+     that yytoken be updated with the new translation.  We take the
+     approach of translating immediately before every use of yytoken.
+     One alternative is translating here after every semantic action,
+     but that translation would be missed if the semantic action invokes
+     YYABORT, YYACCEPT, or YYERROR immediately after altering yychar or
+     if it invokes YYBACKUP.  In the case of YYABORT or YYACCEPT, an
+     incorrect destructor might then be invoked immediately.  In the
+     case of YYERROR or YYBACKUP, subsequent parser actions might lead
+     to an incorrect destructor call or verbose syntax error message
+     before the lookahead is translated.  */
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
 
   YYPOPSTACK (yylen);
@@ -5369,6 +5410,10 @@ yyreduce:
 | yyerrlab -- here on detecting error |
 `------------------------------------*/
 yyerrlab:
+  /* Make sure we have latest lookahead translation.  See comments at
+     user semantic actions for why this is necessary.  */
+  yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE (yychar);
+
   /* If not already recovering from an error, report this error.  */
   if (!yyerrstatus)
     {
@@ -5376,37 +5421,36 @@ yyerrlab:
 #if ! YYERROR_VERBOSE
       yyerror (YY_("syntax error"));
 #else
+# define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
+                                        yyssp, yytoken)
       {
-	YYSIZE_T yysize = yysyntax_error (0, yystate, yychar);
-	if (yymsg_alloc < yysize && yymsg_alloc < YYSTACK_ALLOC_MAXIMUM)
-	  {
-	    YYSIZE_T yyalloc = 2 * yysize;
-	    if (! (yysize <= yyalloc && yyalloc <= YYSTACK_ALLOC_MAXIMUM))
-	      yyalloc = YYSTACK_ALLOC_MAXIMUM;
-	    if (yymsg != yymsgbuf)
-	      YYSTACK_FREE (yymsg);
-	    yymsg = (char *) YYSTACK_ALLOC (yyalloc);
-	    if (yymsg)
-	      yymsg_alloc = yyalloc;
-	    else
-	      {
-		yymsg = yymsgbuf;
-		yymsg_alloc = sizeof yymsgbuf;
-	      }
-	  }
-
-	if (0 < yysize && yysize <= yymsg_alloc)
-	  {
-	    (void) yysyntax_error (yymsg, yystate, yychar);
-	    yyerror (yymsg);
-	  }
-	else
-	  {
-	    yyerror (YY_("syntax error"));
-	    if (yysize != 0)
-	      goto yyexhaustedlab;
-	  }
+        char const *yymsgp = YY_("syntax error");
+        int yysyntax_error_status;
+        yysyntax_error_status = YYSYNTAX_ERROR;
+        if (yysyntax_error_status == 0)
+          yymsgp = yymsg;
+        else if (yysyntax_error_status == 1)
+          {
+            if (yymsg != yymsgbuf)
+              YYSTACK_FREE (yymsg);
+            yymsg = (char *) YYSTACK_ALLOC (yymsg_alloc);
+            if (!yymsg)
+              {
+                yymsg = yymsgbuf;
+                yymsg_alloc = sizeof yymsgbuf;
+                yysyntax_error_status = 2;
+              }
+            else
+              {
+                yysyntax_error_status = YYSYNTAX_ERROR;
+                yymsgp = yymsg;
+              }
+          }
+        yyerror (yymsgp);
+        if (yysyntax_error_status == 2)
+          goto yyexhaustedlab;
       }
+# undef YYSYNTAX_ERROR
 #endif
     }
 
@@ -5465,7 +5509,7 @@ yyerrlab1:
   for (;;)
     {
       yyn = yypact[yystate];
-      if (yyn != YYPACT_NINF)
+      if (!yypact_value_is_default (yyn))
 	{
 	  yyn += YYTERROR;
 	  if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
@@ -5524,8 +5568,13 @@ yyexhaustedlab:
 
 yyreturn:
   if (yychar != YYEMPTY)
-     yydestruct ("Cleanup: discarding lookahead",
-		 yytoken, &yylval);
+    {
+      /* Make sure we have latest lookahead translation.  See comments at
+         user semantic actions for why this is necessary.  */
+      yytoken = YYTRANSLATE (yychar);
+      yydestruct ("Cleanup: discarding lookahead",
+                  yytoken, &yylval);
+    }
   /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
@@ -5550,7 +5599,7 @@ yyreturn:
 
 
 
-/* Line 1675 of yacc.c  */
+/* Line 2067 of yacc.c  */
 #line 1649 "globaliser/parser.yc"
 
 

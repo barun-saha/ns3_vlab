@@ -1,5 +1,5 @@
 # 1 "linux-2.6.18/net/core/link_watch.c"
-# 1 "/home/barun/Desktop/ns3/ns-allinone-3.10/nsc-0.5.2//"
+# 1 "/root/ns-allinone-3.10/nsc-0.5.2//"
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 1 "linux-2.6.18/include/linux/config.h" 1
@@ -84,16 +84,16 @@ typedef int __kernel_mqd_t;
 # 1 "linux-2.6.18/include/asm/posix_types.h" 1
 # 10 "linux-2.6.18/include/asm/posix_types.h"
 typedef unsigned long __kernel_ino_t;
-typedef unsigned short __kernel_mode_t;
-typedef unsigned short __kernel_nlink_t;
+typedef unsigned int __kernel_mode_t;
+typedef unsigned long __kernel_nlink_t;
 typedef long __kernel_off_t;
 typedef int __kernel_pid_t;
-typedef unsigned short __kernel_ipc_pid_t;
-typedef unsigned short __kernel_uid_t;
-typedef unsigned short __kernel_gid_t;
-typedef unsigned int __kernel_size_t;
-typedef int __kernel_ssize_t;
-typedef int __kernel_ptrdiff_t;
+typedef int __kernel_ipc_pid_t;
+typedef unsigned int __kernel_uid_t;
+typedef unsigned int __kernel_gid_t;
+typedef unsigned long __kernel_size_t;
+typedef long __kernel_ssize_t;
+typedef long __kernel_ptrdiff_t;
 typedef long __kernel_time_t;
 typedef long __kernel_suseconds_t;
 typedef long __kernel_clock_t;
@@ -103,24 +103,92 @@ typedef int __kernel_daddr_t;
 typedef char * __kernel_caddr_t;
 typedef unsigned short __kernel_uid16_t;
 typedef unsigned short __kernel_gid16_t;
-typedef unsigned int __kernel_uid32_t;
-typedef unsigned int __kernel_gid32_t;
-
-typedef unsigned short __kernel_old_uid_t;
-typedef unsigned short __kernel_old_gid_t;
-typedef unsigned short __kernel_old_dev_t;
 
 
 typedef long long __kernel_loff_t;
 
 
 typedef struct {
-
  int val[2];
-
-
-
 } __kernel_fsid_t;
+
+typedef unsigned short __kernel_old_uid_t;
+typedef unsigned short __kernel_old_gid_t;
+typedef __kernel_uid_t __kernel_uid32_t;
+typedef __kernel_gid_t __kernel_gid32_t;
+
+typedef unsigned long __kernel_old_dev_t;
+
+
+
+
+static __inline__  __attribute__((always_inline)) void __FD_SET(unsigned long fd, __kernel_fd_set *fdsetp)
+{
+ unsigned long _tmp = fd / (8 * sizeof(unsigned long));
+ unsigned long _rem = fd % (8 * sizeof(unsigned long));
+ fdsetp->fds_bits[_tmp] |= (1UL<<_rem);
+}
+
+
+static __inline__  __attribute__((always_inline)) void __FD_CLR(unsigned long fd, __kernel_fd_set *fdsetp)
+{
+ unsigned long _tmp = fd / (8 * sizeof(unsigned long));
+ unsigned long _rem = fd % (8 * sizeof(unsigned long));
+ fdsetp->fds_bits[_tmp] &= ~(1UL<<_rem);
+}
+
+
+static __inline__  __attribute__((always_inline)) int __FD_ISSET(unsigned long fd, __const__ __kernel_fd_set *p)
+{
+ unsigned long _tmp = fd / (8 * sizeof(unsigned long));
+ unsigned long _rem = fd % (8 * sizeof(unsigned long));
+ return (p->fds_bits[_tmp] & (1UL<<_rem)) != 0;
+}
+
+
+
+
+
+
+static __inline__  __attribute__((always_inline)) void __FD_ZERO(__kernel_fd_set *p)
+{
+ unsigned long *tmp = p->fds_bits;
+ int i;
+
+ if (__builtin_constant_p((1024/(8 * sizeof(unsigned long))))) {
+  switch ((1024/(8 * sizeof(unsigned long)))) {
+   case 32:
+     tmp[ 0] = 0; tmp[ 1] = 0; tmp[ 2] = 0; tmp[ 3] = 0;
+     tmp[ 4] = 0; tmp[ 5] = 0; tmp[ 6] = 0; tmp[ 7] = 0;
+     tmp[ 8] = 0; tmp[ 9] = 0; tmp[10] = 0; tmp[11] = 0;
+     tmp[12] = 0; tmp[13] = 0; tmp[14] = 0; tmp[15] = 0;
+     tmp[16] = 0; tmp[17] = 0; tmp[18] = 0; tmp[19] = 0;
+     tmp[20] = 0; tmp[21] = 0; tmp[22] = 0; tmp[23] = 0;
+     tmp[24] = 0; tmp[25] = 0; tmp[26] = 0; tmp[27] = 0;
+     tmp[28] = 0; tmp[29] = 0; tmp[30] = 0; tmp[31] = 0;
+     return;
+   case 16:
+     tmp[ 0] = 0; tmp[ 1] = 0; tmp[ 2] = 0; tmp[ 3] = 0;
+     tmp[ 4] = 0; tmp[ 5] = 0; tmp[ 6] = 0; tmp[ 7] = 0;
+     tmp[ 8] = 0; tmp[ 9] = 0; tmp[10] = 0; tmp[11] = 0;
+     tmp[12] = 0; tmp[13] = 0; tmp[14] = 0; tmp[15] = 0;
+     return;
+   case 8:
+     tmp[ 0] = 0; tmp[ 1] = 0; tmp[ 2] = 0; tmp[ 3] = 0;
+     tmp[ 4] = 0; tmp[ 5] = 0; tmp[ 6] = 0; tmp[ 7] = 0;
+     return;
+   case 4:
+     tmp[ 0] = 0; tmp[ 1] = 0; tmp[ 2] = 0; tmp[ 3] = 0;
+     return;
+  }
+ }
+ i = (1024/(8 * sizeof(unsigned long)));
+ while (i) {
+  i--;
+  *tmp = 0;
+  tmp++;
+ }
+}
 # 48 "linux-2.6.18/include/linux/posix_types.h" 2
 # 15 "linux-2.6.18/include/linux/types.h" 2
 # 1 "linux-2.6.18/include/asm/types.h" 1
@@ -145,10 +213,9 @@ typedef unsigned short __u16;
 typedef __signed__ int __s32;
 typedef unsigned int __u32;
 
-
 typedef __signed__ long long __s64;
 typedef unsigned long long __u64;
-# 39 "linux-2.6.18/include/asm/types.h"
+# 36 "linux-2.6.18/include/asm/types.h"
 typedef signed char s8;
 typedef unsigned char u8;
 
@@ -161,15 +228,8 @@ typedef unsigned int u32;
 typedef signed long long s64;
 typedef unsigned long long u64;
 
-
-
-
-
-
-typedef u32 dma_addr_t;
-
 typedef u64 dma64_addr_t;
-
+typedef u64 dma_addr_t;
 
 typedef u64 sector_t;
 # 16 "linux-2.6.18/include/linux/types.h" 2
@@ -320,188 +380,207 @@ extern long do_no_restart_syscall(struct restart_block *parm);
 # 1 "linux-2.6.18/include/linux/bitops.h" 1
 # 9 "linux-2.6.18/include/linux/bitops.h"
 # 1 "linux-2.6.18/include/asm/bitops.h" 1
-# 9 "linux-2.6.18/include/asm/bitops.h"
+
+
+
+
+
+
+
 # 1 "linux-2.6.18/include/asm/alternative.h" 1
-# 10 "linux-2.6.18/include/asm/alternative.h"
+
+
+
+
+
+
+# 1 "linux-2.6.18/include/asm/cpufeature.h" 1
+# 8 "linux-2.6.18/include/asm/alternative.h" 2
+
 struct alt_instr {
  u8 *instr;
  u8 *replacement;
  u8 cpuid;
  u8 instrlen;
  u8 replacementlen;
- u8 pad;
+ u8 pad[5];
 };
 
 extern void apply_alternatives(struct alt_instr *start, struct alt_instr *end);
 
 struct module;
-
-
-
-
-
-
-
+# 29 "linux-2.6.18/include/asm/alternative.h"
 static inline  __attribute__((always_inline)) void alternatives_smp_module_add(struct module *mod, char *name,
      void *locks, void *locks_end,
      void *text, void *text_end) {}
 static inline  __attribute__((always_inline)) void alternatives_smp_module_del(struct module *mod) {}
 static inline  __attribute__((always_inline)) void alternatives_smp_switch(int smp) {}
-# 10 "linux-2.6.18/include/asm/bitops.h" 2
-# 36 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) void set_bit(int nr, volatile unsigned long * addr)
+# 9 "linux-2.6.18/include/asm/bitops.h" 2
+# 22 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) void set_bit(int nr, volatile void * addr)
 {
  __asm__ __volatile__( ""
   "btsl %1,%0"
   :"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr) : "memory");
 }
-# 53 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) void __set_bit(int nr, volatile unsigned long * addr)
+# 39 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) void __set_bit(int nr, volatile void * addr)
 {
- __asm__(
+ __asm__ volatile(
   "btsl %1,%0"
   :"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr) : "memory");
 }
-# 71 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) void clear_bit(int nr, volatile unsigned long * addr)
+# 57 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) void clear_bit(int nr, volatile void * addr)
 {
  __asm__ __volatile__( ""
   "btrl %1,%0"
   :"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr));
 }
 
-static inline  __attribute__((always_inline)) void __clear_bit(int nr, volatile unsigned long * addr)
+static __inline__  __attribute__((always_inline)) void __clear_bit(int nr, volatile void * addr)
 {
  __asm__ __volatile__(
   "btrl %1,%0"
   :"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr));
 }
-# 98 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) void __change_bit(int nr, volatile unsigned long * addr)
+# 85 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) void __change_bit(int nr, volatile void * addr)
 {
  __asm__ __volatile__(
   "btcl %1,%0"
   :"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr));
 }
-# 116 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) void change_bit(int nr, volatile unsigned long * addr)
+# 102 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) void change_bit(int nr, volatile void * addr)
 {
  __asm__ __volatile__( ""
   "btcl %1,%0"
   :"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr));
 }
-# 133 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) int test_and_set_bit(int nr, volatile unsigned long * addr)
+# 118 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) int test_and_set_bit(int nr, volatile void * addr)
 {
  int oldbit;
 
  __asm__ __volatile__( ""
   "btsl %2,%1\n\tsbbl %0,%0"
   :"=r" (oldbit),"+m" ((*(volatile long *) addr))
-  :"Ir" (nr) : "memory");
+  :"dIr" (nr) : "memory");
  return oldbit;
 }
-# 153 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) int __test_and_set_bit(int nr, volatile unsigned long * addr)
+# 138 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) int __test_and_set_bit(int nr, volatile void * addr)
 {
  int oldbit;
 
  __asm__(
   "btsl %2,%1\n\tsbbl %0,%0"
   :"=r" (oldbit),"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr));
  return oldbit;
 }
-# 173 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) int test_and_clear_bit(int nr, volatile unsigned long * addr)
+# 157 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) int test_and_clear_bit(int nr, volatile void * addr)
 {
  int oldbit;
 
  __asm__ __volatile__( ""
   "btrl %2,%1\n\tsbbl %0,%0"
   :"=r" (oldbit),"+m" ((*(volatile long *) addr))
-  :"Ir" (nr) : "memory");
+  :"dIr" (nr) : "memory");
  return oldbit;
 }
-# 193 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) int __test_and_clear_bit(int nr, volatile unsigned long *addr)
+# 177 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) int __test_and_clear_bit(int nr, volatile void * addr)
 {
  int oldbit;
 
  __asm__(
   "btrl %2,%1\n\tsbbl %0,%0"
   :"=r" (oldbit),"+m" ((*(volatile long *) addr))
-  :"Ir" (nr));
+  :"dIr" (nr));
  return oldbit;
 }
 
 
-static inline  __attribute__((always_inline)) int __test_and_change_bit(int nr, volatile unsigned long *addr)
+static __inline__  __attribute__((always_inline)) int __test_and_change_bit(int nr, volatile void * addr)
 {
  int oldbit;
 
  __asm__ __volatile__(
   "btcl %2,%1\n\tsbbl %0,%0"
   :"=r" (oldbit),"+m" ((*(volatile long *) addr))
-  :"Ir" (nr) : "memory");
+  :"dIr" (nr) : "memory");
  return oldbit;
 }
-# 224 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) int test_and_change_bit(int nr, volatile unsigned long* addr)
+# 208 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) int test_and_change_bit(int nr, volatile void * addr)
 {
  int oldbit;
 
  __asm__ __volatile__( ""
   "btcl %2,%1\n\tsbbl %0,%0"
   :"=r" (oldbit),"+m" ((*(volatile long *) addr))
-  :"Ir" (nr) : "memory");
+  :"dIr" (nr) : "memory");
  return oldbit;
 }
-# 244 "linux-2.6.18/include/asm/bitops.h"
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) int constant_test_bit(int nr, const volatile unsigned long *addr)
+# 228 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) int constant_test_bit(int nr, const volatile void * addr)
 {
- return ((1UL << (nr & 31)) & (addr[nr >> 5])) != 0;
+ return ((1UL << (nr & 31)) & (((const volatile unsigned int *) addr)[nr >> 5])) != 0;
 }
 
-static inline  __attribute__((always_inline)) int variable_test_bit(int nr, const volatile unsigned long * addr)
+static __inline__  __attribute__((always_inline)) int variable_test_bit(int nr, volatile const void * addr)
 {
  int oldbit;
 
  __asm__ __volatile__(
   "btl %2,%1\n\tsbbl %0,%0"
   :"=r" (oldbit)
-  :"m" ((*(volatile long *) addr)),"Ir" (nr));
+  :"m" ((*(volatile long *) addr)),"dIr" (nr));
  return oldbit;
 }
-# 275 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) int find_first_zero_bit(const unsigned long *addr, unsigned size)
+# 251 "linux-2.6.18/include/asm/bitops.h"
+extern long find_first_zero_bit(const unsigned long * addr, unsigned long size);
+extern long find_next_zero_bit (const unsigned long * addr, long size, long offset);
+extern long find_first_bit(const unsigned long * addr, unsigned long size);
+extern long find_next_bit(const unsigned long * addr, long size, long offset);
+
+
+static inline  __attribute__((always_inline)) unsigned long __scanbit(unsigned long val, unsigned long max)
 {
- int d0, d1, d2;
- int res;
+ asm("bsfq %1,%0 ; cmovz %2,%0" : "=&r" (val) : "r" (val), "r" (max));
+ return val;
+}
+# 286 "linux-2.6.18/include/asm/bitops.h"
+extern unsigned long
+find_next_zero_string(unsigned long *bitmap, long start, long nbits, int len);
 
- if (!size)
-  return 0;
+static inline  __attribute__((always_inline)) void set_bit_string(unsigned long *bitmap, unsigned long i,
+      int len)
+{
+ unsigned long end = i + len;
+ while (i < end) {
+  __set_bit(i, bitmap);
+  i++;
+ }
+}
 
- __asm__ __volatile__(
-  "movl $-1,%%eax\n\t"
-  "xorl %%edx,%%edx\n\t"
-  "repe; scasl\n\t"
-  "je 1f\n\t"
-  "xorl -4(%%edi),%%eax\n\t"
-  "subl $4,%%edi\n\t"
-  "bsfl %%eax,%%edx\n"
-  "1:\tsubl %%ebx,%%edi\n\t"
-  "shll $3,%%edi\n\t"
-  "addl %%edi,%%edx"
-  :"=d" (res), "=&c" (d0), "=&D" (d1), "=&a" (d2)
-  :"1" ((size + 31) >> 5), "2" (addr), "b" (addr) : "memory");
- return res;
+static inline  __attribute__((always_inline)) void __clear_bit_string(unsigned long *bitmap, unsigned long i,
+        int len)
+{
+ unsigned long end = i + len;
+ while (i < end) {
+  __clear_bit(i, bitmap);
+  i++;
+ }
 }
 
 
@@ -510,54 +589,39 @@ static inline  __attribute__((always_inline)) int find_first_zero_bit(const unsi
 
 
 
-int find_next_zero_bit(const unsigned long *addr, int size, int offset);
-
-
-
-
-
-
-
-static inline  __attribute__((always_inline)) unsigned long __ffs(unsigned long word)
+static __inline__  __attribute__((always_inline)) unsigned long ffz(unsigned long word)
 {
- __asm__("bsfl %1,%0"
+ __asm__("bsfq %1,%0"
+  :"=r" (word)
+  :"r" (~word));
+ return word;
+}
+
+
+
+
+
+
+
+static __inline__  __attribute__((always_inline)) unsigned long __ffs(unsigned long word)
+{
+ __asm__("bsfq %1,%0"
   :"=r" (word)
   :"rm" (word));
  return word;
 }
-# 329 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) unsigned find_first_bit(const unsigned long *addr, unsigned size)
+
+
+
+
+
+
+
+static __inline__  __attribute__((always_inline)) unsigned long __fls(unsigned long word)
 {
- unsigned x = 0;
-
- while (x < size) {
-  unsigned long val = *addr++;
-  if (val)
-   return __ffs(val) + x;
-  x += (sizeof(*addr)<<3);
- }
- return x;
-}
-
-
-
-
-
-
-
-int find_next_bit(const unsigned long *addr, int size, int offset);
-
-
-
-
-
-
-
-static inline  __attribute__((always_inline)) unsigned long ffz(unsigned long word)
-{
- __asm__("bsfl %1,%0"
+ __asm__("bsrq %1,%0"
   :"=r" (word)
-  :"r" (~word));
+  :"rm" (word));
  return word;
 }
 
@@ -568,35 +632,22 @@ static inline  __attribute__((always_inline)) unsigned long ffz(unsigned long wo
 static inline  __attribute__((always_inline)) int sched_find_first_bit(const unsigned long *b)
 {
 
-
-
-
-
-
-
  if (__builtin_expect(!!(b[0]), 0))
   return __ffs(b[0]);
  if (__builtin_expect(!!(b[1]), 0))
-  return __ffs(b[1]) + 32;
- if (__builtin_expect(!!(b[2]), 0))
-  return __ffs(b[2]) + 64;
- if (b[3])
-  return __ffs(b[3]) + 96;
- return __ffs(b[4]) + 128;
-
-
-
+  return __ffs(b[1]) + 64;
+ return __ffs(b[2]) + 128;
+# 34 "linux-2.6.18/include/asm-generic/bitops/sched.h"
 }
-# 367 "linux-2.6.18/include/asm/bitops.h" 2
-# 376 "linux-2.6.18/include/asm/bitops.h"
-static inline  __attribute__((always_inline)) int ffs(int x)
+# 354 "linux-2.6.18/include/asm/bitops.h" 2
+# 363 "linux-2.6.18/include/asm/bitops.h"
+static __inline__  __attribute__((always_inline)) int ffs(int x)
 {
  int r;
 
  __asm__("bsfl %1,%0\n\t"
-  "jnz 1f\n\t"
-  "movl $-1,%0\n"
-  "1:" : "=r" (r) : "rm" (x));
+  "cmovzl %2,%0"
+  : "=r" (r) : "rm" (x), "r" (-1));
  return r+1;
 }
 
@@ -606,14 +657,26 @@ static inline  __attribute__((always_inline)) int ffs(int x)
 
 
 
-static inline  __attribute__((always_inline)) int fls(int x)
+static __inline__  __attribute__((always_inline)) int fls64(__u64 x)
+{
+ if (x == 0)
+  return 0;
+ return __fls(x) + 1;
+}
+
+
+
+
+
+
+
+static __inline__  __attribute__((always_inline)) int fls(int x)
 {
  int r;
 
  __asm__("bsrl %1,%0\n\t"
-  "jnz 1f\n\t"
-  "movl $-1,%0\n"
-  "1:" : "=r" (r) : "rm" (x));
+  "cmovzl %2,%0"
+  : "=&r" (r) : "rm" (x), "rm" (-1));
  return r+1;
 }
 
@@ -627,24 +690,9 @@ extern unsigned int hweight32(unsigned int w);
 extern unsigned int hweight16(unsigned int w);
 extern unsigned int hweight8(unsigned int w);
 extern unsigned long hweight64(__u64 w);
-# 405 "linux-2.6.18/include/asm/bitops.h" 2
+# 403 "linux-2.6.18/include/asm/bitops.h" 2
 
 
-
-# 1 "linux-2.6.18/include/asm-generic/bitops/fls64.h" 1
-
-
-
-
-
-static inline  __attribute__((always_inline)) int fls64(__u64 x)
-{
- __u32 h = x >> 32;
- if (h)
-  return fls(h) + 32;
- return fls(x);
-}
-# 409 "linux-2.6.18/include/asm/bitops.h" 2
 
 
 
@@ -658,40 +706,19 @@ static inline  __attribute__((always_inline)) int fls64(__u64 x)
 
 
 # 1 "linux-2.6.18/include/asm/byteorder.h" 1
-# 13 "linux-2.6.18/include/asm/byteorder.h"
-static __inline__   __attribute__((always_inline)) __attribute__((__const__)) __u32 ___arch__swab32(__u32 x)
+# 9 "linux-2.6.18/include/asm/byteorder.h"
+static __inline__   __attribute__((always_inline)) __attribute__((__const__)) __u64 ___arch__swab64(__u64 x)
 {
-
- __asm__("bswap %0" : "=r" (x) : "0" (x));
-
-
-
-
-
-
-
+ __asm__("bswapq %0" : "=r" (x) : "0" (x));
  return x;
 }
 
-static __inline__   __attribute__((always_inline)) __attribute__((__const__)) __u64 ___arch__swab64(__u64 val)
+static __inline__   __attribute__((always_inline)) __attribute__((__const__)) __u32 ___arch__swab32(__u32 x)
 {
- union {
-  struct { __u32 a,b; } s;
-  __u64 u;
- } v;
- v.u = val;
-
- asm("bswapl %0 ; bswapl %1 ; xchgl %0,%1"
-     : "=r" (v.s.a), "=r" (v.s.b)
-     : "0" (v.s.a), "1" (v.s.b));
-
-
-
-
-
- return v.u;
+ __asm__("bswapl %0" : "=r" (x) : "0" (x));
+ return x;
 }
-# 56 "linux-2.6.18/include/asm/byteorder.h"
+# 31 "linux-2.6.18/include/asm/byteorder.h"
 # 1 "linux-2.6.18/include/linux/byteorder/little_endian.h" 1
 # 12 "linux-2.6.18/include/linux/byteorder/little_endian.h"
 # 1 "linux-2.6.18/include/linux/byteorder/swab.h" 1
@@ -799,10 +826,10 @@ extern __be32 htonl(__u32);
 extern __u16 ntohs(__be16);
 extern __be16 htons(__u16);
 # 105 "linux-2.6.18/include/linux/byteorder/little_endian.h" 2
-# 57 "linux-2.6.18/include/asm/byteorder.h" 2
+# 32 "linux-2.6.18/include/asm/byteorder.h" 2
 # 6 "linux-2.6.18/include/asm-generic/bitops/le.h" 2
 # 5 "linux-2.6.18/include/asm-generic/bitops/ext2-non-atomic.h" 2
-# 413 "linux-2.6.18/include/asm/bitops.h" 2
+# 409 "linux-2.6.18/include/asm/bitops.h" 2
 
 
 
@@ -810,7 +837,7 @@ extern __be16 htons(__u16);
 
 
 # 1 "linux-2.6.18/include/asm-generic/bitops/minix.h" 1
-# 420 "linux-2.6.18/include/asm/bitops.h" 2
+# 416 "linux-2.6.18/include/asm/bitops.h" 2
 # 10 "linux-2.6.18/include/linux/bitops.h" 2
 
 static __inline__  __attribute__((always_inline)) int get_bitmask_order(unsigned int count)
@@ -866,29 +893,50 @@ static inline  __attribute__((always_inline)) unsigned fls_long(unsigned long l)
 }
 # 21 "linux-2.6.18/include/linux/thread_info.h" 2
 # 1 "linux-2.6.18/include/asm/thread_info.h" 1
-# 13 "linux-2.6.18/include/asm/thread_info.h"
+# 12 "linux-2.6.18/include/asm/thread_info.h"
 # 1 "linux-2.6.18/include/asm/page.h" 1
-# 44 "linux-2.6.18/include/asm/page.h"
-typedef  int  _GLOBAL_1_T; extern  _GLOBAL_1_T  global_nx_enabled[NUM_STACKS];   
-# 56 "linux-2.6.18/include/asm/page.h"
-typedef struct { unsigned long pte_low; } pte_t;
+# 46 "linux-2.6.18/include/asm/page.h"
+typedef  unsigned long   _GLOBAL_1_T; extern  _GLOBAL_1_T  global_end_pfn[NUM_STACKS];    
+
+void clear_page(void *);
+void copy_page(void *, void *);
+# 59 "linux-2.6.18/include/asm/page.h"
+typedef struct { unsigned long pte; } pte_t;
+typedef struct { unsigned long pmd; } pmd_t;
+typedef struct { unsigned long pud; } pud_t;
 typedef struct { unsigned long pgd; } pgd_t;
+
+
 typedef struct { unsigned long pgprot; } pgprot_t;
-# 99 "linux-2.6.18/include/asm/page.h"
-struct vm_area_struct;
+# 105 "linux-2.6.18/include/asm/page.h"
+# 1 "linux-2.6.18/include/asm/bug.h" 1
+
+
+
+# 1 "linux-2.6.18/include/linux/stringify.h" 1
+# 5 "linux-2.6.18/include/asm/bug.h" 2
 
 
 
 
 
-typedef  unsigned int   _GLOBAL_2_T; extern  _GLOBAL_2_T  global___VMALLOC_RESERVE[NUM_STACKS];    
+struct bug_frame {
+ unsigned char ud2[2];
+ unsigned char push;
+ signed int filename;
+ unsigned char ret;
+ unsigned short line;
+} __attribute__((packed)) ;
+# 30 "linux-2.6.18/include/asm/bug.h"
+static inline  __attribute__((always_inline)) void out_of_line_bug(void) { }
 
-typedef  int  _GLOBAL_3_T; extern  _GLOBAL_3_T  global_sysctl_legacy_va_layout[NUM_STACKS];   
 
-extern int page_is_ram(unsigned long pagenr);
-# 141 "linux-2.6.18/include/asm/page.h"
+# 1 "linux-2.6.18/include/asm-generic/bug.h" 1
+# 34 "linux-2.6.18/include/asm/bug.h" 2
+# 106 "linux-2.6.18/include/asm/page.h" 2
+# 138 "linux-2.6.18/include/asm/page.h"
 # 1 "linux-2.6.18/include/asm-generic/memory_model.h" 1
-# 142 "linux-2.6.18/include/asm/page.h" 2
+# 139 "linux-2.6.18/include/asm/page.h" 2
 # 1 "linux-2.6.18/include/asm-generic/page.h" 1
 # 10 "linux-2.6.18/include/asm-generic/page.h"
 static __inline__   __attribute__((always_inline)) __attribute__((__const__)) int get_order(unsigned long size)
@@ -903,254 +951,26 @@ static __inline__   __attribute__((always_inline)) __attribute__((__const__)) in
  } while (size);
  return order;
 }
-# 143 "linux-2.6.18/include/asm/page.h" 2
-# 14 "linux-2.6.18/include/asm/thread_info.h" 2
+# 140 "linux-2.6.18/include/asm/page.h" 2
+# 13 "linux-2.6.18/include/asm/thread_info.h" 2
 
-
-# 1 "linux-2.6.18/include/asm/processor.h" 1
-# 10 "linux-2.6.18/include/asm/processor.h"
-# 1 "linux-2.6.18/include/asm/vm86.h" 1
-# 72 "linux-2.6.18/include/asm/vm86.h"
-struct vm86_regs {
-
-
-
- long ebx;
- long ecx;
- long edx;
- long esi;
- long edi;
- long ebp;
- long eax;
- long __null_ds;
- long __null_es;
- long __null_fs;
- long __null_gs;
- long orig_eax;
- long eip;
- unsigned short cs, __csh;
- long eflags;
- long esp;
- unsigned short ss, __ssh;
-
-
-
- unsigned short es, __esh;
- unsigned short ds, __dsh;
- unsigned short fs, __fsh;
- unsigned short gs, __gsh;
-};
-
-struct revectored_struct {
- unsigned long __map[8];
-};
-
-struct vm86_struct {
- struct vm86_regs regs;
- unsigned long flags;
- unsigned long screen_bitmap;
- unsigned long cpu_type;
- struct revectored_struct int_revectored;
- struct revectored_struct int21_revectored;
-};
+# 1 "linux-2.6.18/include/asm/pda.h" 1
 
 
 
 
 
 
-struct vm86plus_info_struct {
- unsigned long force_return_for_pic:1;
- unsigned long vm86dbg_active:1;
- unsigned long vm86dbg_TFpendig:1;
- unsigned long unused:28;
- unsigned long is_vm86pus:1;
- unsigned char vm86dbg_intxxtab[32];
-};
-
-struct vm86plus_struct {
- struct vm86_regs regs;
- unsigned long flags;
- unsigned long screen_bitmap;
- unsigned long cpu_type;
- struct revectored_struct int_revectored;
- struct revectored_struct int21_revectored;
- struct vm86plus_info_struct vm86plus;
-};
-# 149 "linux-2.6.18/include/asm/vm86.h"
-struct kernel_vm86_regs {
-
-
-
- long ebx;
- long ecx;
- long edx;
- long esi;
- long edi;
- long ebp;
- long eax;
- long __null_ds;
- long __null_es;
- long orig_eax;
- long eip;
- unsigned short cs, __csh;
- long eflags;
- long esp;
- unsigned short ss, __ssh;
-
-
-
- unsigned short es, __esh;
- unsigned short ds, __dsh;
- unsigned short fs, __fsh;
- unsigned short gs, __gsh;
-};
-
-struct kernel_vm86_struct {
- struct kernel_vm86_regs regs;
-# 188 "linux-2.6.18/include/asm/vm86.h"
- unsigned long flags;
- unsigned long screen_bitmap;
- unsigned long cpu_type;
- struct revectored_struct int_revectored;
- struct revectored_struct int21_revectored;
- struct vm86plus_info_struct vm86plus;
- struct pt_regs *regs32;
-# 205 "linux-2.6.18/include/asm/vm86.h"
-};
-# 220 "linux-2.6.18/include/asm/vm86.h"
-static inline  __attribute__((always_inline)) int handle_vm86_trap(struct kernel_vm86_regs *a, long b, int c) {
- return 0;
-}
-# 11 "linux-2.6.18/include/asm/processor.h" 2
-# 1 "linux-2.6.18/include/asm/math_emu.h" 1
-
-
-
-# 1 "linux-2.6.18/include/asm/sigcontext.h" 1
-# 20 "linux-2.6.18/include/asm/sigcontext.h"
-struct _fpreg {
- unsigned short significand[4];
- unsigned short exponent;
-};
-
-struct _fpxreg {
- unsigned short significand[4];
- unsigned short exponent;
- unsigned short padding[3];
-};
-
-struct _xmmreg {
- unsigned long element[4];
-};
-
-struct _fpstate {
-
- unsigned long cw;
- unsigned long sw;
- unsigned long tag;
- unsigned long ipoff;
- unsigned long cssel;
- unsigned long dataoff;
- unsigned long datasel;
- struct _fpreg _st[8];
- unsigned short status;
- unsigned short magic;
-
-
- unsigned long _fxsr_env[6];
- unsigned long mxcsr;
- unsigned long reserved;
- struct _fpxreg _fxsr_st[8];
- struct _xmmreg _xmm[8];
- unsigned long padding[56];
-};
-
-
-
-struct sigcontext {
- unsigned short gs, __gsh;
- unsigned short fs, __fsh;
- unsigned short es, __esh;
- unsigned short ds, __dsh;
- unsigned long edi;
- unsigned long esi;
- unsigned long ebp;
- unsigned long esp;
- unsigned long ebx;
- unsigned long edx;
- unsigned long ecx;
- unsigned long eax;
- unsigned long trapno;
- unsigned long err;
- unsigned long eip;
- unsigned short cs, __csh;
- unsigned long eflags;
- unsigned long esp_at_signal;
- unsigned short ss, __ssh;
- struct _fpstate * fpstate;
- unsigned long oldmask;
- unsigned long cr2;
-};
-# 5 "linux-2.6.18/include/asm/math_emu.h" 2
-
-int restore_i387_soft(void *s387, struct _fpstate *buf);
-int save_i387_soft(void *s387, struct _fpstate *buf);
-
-
-
-
-
-struct info {
- long ___orig_eip;
- long ___ebx;
- long ___ecx;
- long ___edx;
- long ___esi;
- long ___edi;
- long ___ebp;
- long ___eax;
- long ___ds;
- long ___es;
- long ___orig_eax;
- long ___eip;
- long ___cs;
- long ___eflags;
- long ___esp;
- long ___ss;
- long ___vm86_es;
- long ___vm86_ds;
- long ___vm86_fs;
- long ___vm86_gs;
-};
-# 12 "linux-2.6.18/include/asm/processor.h" 2
-# 1 "linux-2.6.18/include/asm/segment.h" 1
-# 13 "linux-2.6.18/include/asm/processor.h" 2
-
-
-
-# 1 "linux-2.6.18/include/asm/cpufeature.h" 1
-# 17 "linux-2.6.18/include/asm/processor.h" 2
-# 1 "linux-2.6.18/include/asm/msr.h" 1
-# 27 "linux-2.6.18/include/asm/msr.h"
-static inline  __attribute__((always_inline)) void wrmsrl (unsigned long msr, unsigned long long val)
-{
- unsigned long lo, hi;
- lo = (unsigned long) val;
- hi = val >> 32;
- __asm__ __volatile__("wrmsr" : : "c" (msr), "a" (lo), "d" (hi));
-}
-# 18 "linux-2.6.18/include/asm/processor.h" 2
-# 1 "linux-2.6.18/include/asm/system.h" 1
+# 1 "linux-2.6.18/include/linux/cache.h" 1
 
 
 
 # 1 "linux-2.6.18/include/linux/kernel.h" 1
 # 10 "linux-2.6.18/include/linux/kernel.h"
-# 1 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stdarg.h" 1 3 4
-# 40 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stdarg.h" 3 4
+# 1 "/usr/lib/gcc/x86_64-linux-gnu/4.4.7/include/stdarg.h" 1 3 4
+# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.7/include/stdarg.h" 3 4
 typedef __builtin_va_list __gnuc_va_list;
-# 102 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stdarg.h" 3 4
+# 102 "/usr/lib/gcc/x86_64-linux-gnu/4.4.7/include/stdarg.h" 3 4
 typedef __gnuc_va_list va_list;
 # 11 "linux-2.6.18/include/linux/kernel.h" 2
 # 1 "linux-2.6.18/include/linux/linkage.h" 1
@@ -1165,15 +985,11 @@ typedef __gnuc_va_list va_list;
 
 
 
-# 1 "linux-2.6.18/include/asm/bug.h" 1
-# 24 "linux-2.6.18/include/asm/bug.h"
-# 1 "linux-2.6.18/include/asm-generic/bug.h" 1
-# 25 "linux-2.6.18/include/asm/bug.h" 2
-# 18 "linux-2.6.18/include/linux/kernel.h" 2
 
-typedef  const char   _GLOBAL_4_T; extern  _GLOBAL_4_T  _GLOBAL_0_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_1_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_2_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_3_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_4_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_5_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_6_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_7_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_8_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_9_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_10_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_11_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_12_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_13_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_14_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_15_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_16_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_17_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_18_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_19_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_20_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_21_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_22_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_23_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_24_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_25_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_26_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_27_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_28_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_29_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_30_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_31_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_32_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_33_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_34_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_35_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_36_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_37_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_38_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_39_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_40_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_41_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_42_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_43_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_44_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_45_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_46_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_47_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_48_linux_banner_I [ ] ; extern  _GLOBAL_4_T  _GLOBAL_49_linux_banner_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_linux_banner_I) *_GLOBAL_linux_banner_0_A[NUM_STACKS];   
+
+typedef  const char   _GLOBAL_2_T; extern  _GLOBAL_2_T  _GLOBAL_0_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_1_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_2_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_3_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_4_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_5_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_6_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_7_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_8_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_9_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_10_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_11_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_12_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_13_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_14_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_15_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_16_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_17_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_18_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_19_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_20_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_21_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_22_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_23_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_24_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_25_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_26_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_27_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_28_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_29_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_30_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_31_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_32_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_33_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_34_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_35_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_36_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_37_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_38_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_39_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_40_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_41_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_42_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_43_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_44_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_45_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_46_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_47_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_48_linux_banner_I [ ] ; extern  _GLOBAL_2_T  _GLOBAL_49_linux_banner_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_linux_banner_I) *_GLOBAL_linux_banner_0_A[NUM_STACKS];   
 # 47 "linux-2.6.18/include/linux/kernel.h"
-typedef  int  _GLOBAL_5_T; extern  _GLOBAL_5_T  _GLOBAL_0_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_1_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_2_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_3_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_4_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_5_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_6_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_7_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_8_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_9_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_10_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_11_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_12_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_13_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_14_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_15_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_16_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_17_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_18_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_19_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_20_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_21_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_22_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_23_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_24_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_25_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_26_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_27_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_28_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_29_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_30_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_31_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_32_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_33_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_34_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_35_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_36_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_37_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_38_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_39_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_40_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_41_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_42_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_43_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_44_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_45_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_46_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_47_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_48_console_printk_I [ ] ; extern  _GLOBAL_5_T  _GLOBAL_49_console_printk_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_console_printk_I) *_GLOBAL_console_printk_1_A[NUM_STACKS] = { &_GLOBAL_0_console_printk_I, &_GLOBAL_1_console_printk_I, &_GLOBAL_2_console_printk_I, &_GLOBAL_3_console_printk_I, &_GLOBAL_4_console_printk_I, &_GLOBAL_5_console_printk_I, &_GLOBAL_6_console_printk_I, &_GLOBAL_7_console_printk_I, &_GLOBAL_8_console_printk_I, &_GLOBAL_9_console_printk_I, &_GLOBAL_10_console_printk_I, &_GLOBAL_11_console_printk_I, &_GLOBAL_12_console_printk_I, &_GLOBAL_13_console_printk_I, &_GLOBAL_14_console_printk_I, &_GLOBAL_15_console_printk_I, &_GLOBAL_16_console_printk_I, &_GLOBAL_17_console_printk_I, &_GLOBAL_18_console_printk_I, &_GLOBAL_19_console_printk_I, &_GLOBAL_20_console_printk_I, &_GLOBAL_21_console_printk_I, &_GLOBAL_22_console_printk_I, &_GLOBAL_23_console_printk_I, &_GLOBAL_24_console_printk_I, &_GLOBAL_25_console_printk_I, &_GLOBAL_26_console_printk_I, &_GLOBAL_27_console_printk_I, &_GLOBAL_28_console_printk_I, &_GLOBAL_29_console_printk_I, &_GLOBAL_30_console_printk_I, &_GLOBAL_31_console_printk_I, &_GLOBAL_32_console_printk_I, &_GLOBAL_33_console_printk_I, &_GLOBAL_34_console_printk_I, &_GLOBAL_35_console_printk_I, &_GLOBAL_36_console_printk_I, &_GLOBAL_37_console_printk_I, &_GLOBAL_38_console_printk_I, &_GLOBAL_39_console_printk_I, &_GLOBAL_40_console_printk_I, &_GLOBAL_41_console_printk_I, &_GLOBAL_42_console_printk_I, &_GLOBAL_43_console_printk_I, &_GLOBAL_44_console_printk_I, &_GLOBAL_45_console_printk_I, &_GLOBAL_46_console_printk_I, &_GLOBAL_47_console_printk_I, &_GLOBAL_48_console_printk_I, &_GLOBAL_49_console_printk_I, };  
+typedef  int  _GLOBAL_3_T; extern  _GLOBAL_3_T  _GLOBAL_0_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_1_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_2_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_3_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_4_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_5_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_6_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_7_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_8_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_9_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_10_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_11_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_12_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_13_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_14_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_15_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_16_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_17_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_18_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_19_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_20_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_21_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_22_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_23_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_24_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_25_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_26_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_27_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_28_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_29_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_30_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_31_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_32_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_33_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_34_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_35_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_36_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_37_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_38_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_39_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_40_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_41_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_42_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_43_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_44_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_45_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_46_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_47_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_48_console_printk_I [ ] ; extern  _GLOBAL_3_T  _GLOBAL_49_console_printk_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_console_printk_I) *_GLOBAL_console_printk_1_A[NUM_STACKS] = { &_GLOBAL_0_console_printk_I, &_GLOBAL_1_console_printk_I, &_GLOBAL_2_console_printk_I, &_GLOBAL_3_console_printk_I, &_GLOBAL_4_console_printk_I, &_GLOBAL_5_console_printk_I, &_GLOBAL_6_console_printk_I, &_GLOBAL_7_console_printk_I, &_GLOBAL_8_console_printk_I, &_GLOBAL_9_console_printk_I, &_GLOBAL_10_console_printk_I, &_GLOBAL_11_console_printk_I, &_GLOBAL_12_console_printk_I, &_GLOBAL_13_console_printk_I, &_GLOBAL_14_console_printk_I, &_GLOBAL_15_console_printk_I, &_GLOBAL_16_console_printk_I, &_GLOBAL_17_console_printk_I, &_GLOBAL_18_console_printk_I, &_GLOBAL_19_console_printk_I, &_GLOBAL_20_console_printk_I, &_GLOBAL_21_console_printk_I, &_GLOBAL_22_console_printk_I, &_GLOBAL_23_console_printk_I, &_GLOBAL_24_console_printk_I, &_GLOBAL_25_console_printk_I, &_GLOBAL_26_console_printk_I, &_GLOBAL_27_console_printk_I, &_GLOBAL_28_console_printk_I, &_GLOBAL_29_console_printk_I, &_GLOBAL_30_console_printk_I, &_GLOBAL_31_console_printk_I, &_GLOBAL_32_console_printk_I, &_GLOBAL_33_console_printk_I, &_GLOBAL_34_console_printk_I, &_GLOBAL_35_console_printk_I, &_GLOBAL_36_console_printk_I, &_GLOBAL_37_console_printk_I, &_GLOBAL_38_console_printk_I, &_GLOBAL_39_console_printk_I, &_GLOBAL_40_console_printk_I, &_GLOBAL_41_console_printk_I, &_GLOBAL_42_console_printk_I, &_GLOBAL_43_console_printk_I, &_GLOBAL_44_console_printk_I, &_GLOBAL_45_console_printk_I, &_GLOBAL_46_console_printk_I, &_GLOBAL_47_console_printk_I, &_GLOBAL_48_console_printk_I, &_GLOBAL_49_console_printk_I, };  
 
 
 
@@ -1184,14 +1000,14 @@ struct completion;
 struct pt_regs;
 struct user;
 # 95 "linux-2.6.18/include/linux/kernel.h"
-typedef  struct atomic_notifier_head   _GLOBAL_6_T; extern  _GLOBAL_6_T  _GLOBAL_0_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_1_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_2_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_3_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_4_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_5_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_6_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_7_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_8_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_9_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_10_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_11_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_12_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_13_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_14_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_15_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_16_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_17_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_18_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_19_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_20_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_21_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_22_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_23_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_24_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_25_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_26_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_27_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_28_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_29_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_30_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_31_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_32_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_33_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_34_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_35_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_36_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_37_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_38_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_39_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_40_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_41_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_42_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_43_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_44_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_45_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_46_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_47_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_48_panic_notifier_list_I; extern  _GLOBAL_6_T  _GLOBAL_49_panic_notifier_list_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_panic_notifier_list_I) *_GLOBAL_panic_notifier_list_2_A[NUM_STACKS];   
-typedef  long   ( *_GLOBAL_8_T  )  ( long  time  ) ; extern  _GLOBAL_8_T global_panic_blink[NUM_STACKS];    
+typedef  struct atomic_notifier_head   _GLOBAL_4_T; extern  _GLOBAL_4_T  _GLOBAL_0_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_1_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_2_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_3_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_4_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_5_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_6_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_7_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_8_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_9_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_10_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_11_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_12_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_13_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_14_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_15_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_16_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_17_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_18_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_19_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_20_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_21_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_22_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_23_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_24_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_25_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_26_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_27_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_28_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_29_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_30_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_31_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_32_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_33_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_34_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_35_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_36_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_37_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_38_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_39_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_40_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_41_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_42_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_43_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_44_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_45_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_46_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_47_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_48_panic_notifier_list_I; extern  _GLOBAL_4_T  _GLOBAL_49_panic_notifier_list_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_panic_notifier_list_I) *_GLOBAL_panic_notifier_list_2_A[NUM_STACKS];   
+typedef  long   ( *_GLOBAL_6_T  )  ( long  time  ) ; extern  _GLOBAL_6_T global_panic_blink[NUM_STACKS];    
  void panic(const char * fmt, ...)
  __attribute__ ((noreturn, format (printf, 1, 2))) ;
 extern void oops_enter(void);
 extern void oops_exit(void);
 extern int oops_may_print(void);
- __attribute__((regparm(3))) void do_exit(long error_code)
+ void do_exit(long error_code)
  __attribute__((noreturn)) ;
  void complete_and_exit(struct completion *, long)
  __attribute__((noreturn)) ;
@@ -1275,15 +1091,15 @@ static inline  __attribute__((always_inline)) void console_verbose(void)
 }
 
 extern void bust_spinlocks(int yes);
-typedef  int  _GLOBAL_9_T; extern  _GLOBAL_9_T  global_oops_in_progress[NUM_STACKS];   
-typedef  int  _GLOBAL_10_T; extern  _GLOBAL_10_T  global_panic_timeout[NUM_STACKS];   
-typedef  int  _GLOBAL_11_T; extern  _GLOBAL_11_T  global_panic_on_oops[NUM_STACKS];   
-typedef  int  _GLOBAL_12_T; extern  _GLOBAL_12_T  global_tainted[NUM_STACKS];   
+typedef  int  _GLOBAL_7_T; extern  _GLOBAL_7_T  global_oops_in_progress[NUM_STACKS];   
+typedef  int  _GLOBAL_8_T; extern  _GLOBAL_8_T  global_panic_timeout[NUM_STACKS];   
+typedef  int  _GLOBAL_9_T; extern  _GLOBAL_9_T  global_panic_on_oops[NUM_STACKS];   
+typedef  int  _GLOBAL_10_T; extern  _GLOBAL_10_T  global_tainted[NUM_STACKS];   
 extern const char *print_tainted(void);
 extern void add_taint(unsigned);
 
 
-typedef  enum system_states { SYSTEM_BOOTING , SYSTEM_RUNNING  , SYSTEM_HALT  , SYSTEM_POWER_OFF  , SYSTEM_RESTART  , SYSTEM_SUSPEND_DISK  , }   _GLOBAL_13_T; extern  _GLOBAL_13_T  global_system_state[NUM_STACKS];    
+typedef  enum system_states { SYSTEM_BOOTING , SYSTEM_RUNNING  , SYSTEM_HALT  , SYSTEM_POWER_OFF  , SYSTEM_RESTART  , SYSTEM_SUSPEND_DISK  , }   _GLOBAL_11_T; extern  _GLOBAL_11_T  global_system_state[NUM_STACKS];    
  
  
  
@@ -1310,7 +1126,38 @@ struct sysinfo {
  unsigned int mem_unit;
  char _f[20-2*sizeof(long)-sizeof(int)];
 };
-# 5 "linux-2.6.18/include/asm/system.h" 2
+# 5 "linux-2.6.18/include/linux/cache.h" 2
+# 1 "linux-2.6.18/include/asm/cache.h" 1
+# 6 "linux-2.6.18/include/linux/cache.h" 2
+# 8 "linux-2.6.18/include/asm/pda.h" 2
+
+
+
+struct x8664_pda {
+ struct task_struct *pcurrent;
+ unsigned long data_offset;
+ unsigned long kernelstack;
+ unsigned long oldrsp;
+
+ unsigned long debugstack;
+
+        int irqcount;
+ int cpunumber;
+ char *irqstackptr;
+ int nodenumber;
+ unsigned int __softirq_pending;
+ unsigned int __nmi_count;
+ int mmu_state;
+ struct mm_struct *active_mm;
+ unsigned apic_timer_irqs;
+} ;
+
+typedef  struct x8664_pda   _GLOBAL_12_T; extern  _GLOBAL_12_T  * _GLOBAL_0__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_1__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_2__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_3__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_4__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_5__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_6__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_7__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_8__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_9__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_10__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_11__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_12__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_13__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_14__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_15__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_16__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_17__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_18__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_19__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_20__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_21__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_22__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_23__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_24__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_25__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_26__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_27__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_28__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_29__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_30__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_31__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_32__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_33__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_34__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_35__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_36__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_37__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_38__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_39__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_40__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_41__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_42__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_43__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_44__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_45__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_46__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_47__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_48__cpu_pda_I [ ]  ; extern  _GLOBAL_12_T  * _GLOBAL_49__cpu_pda_I [ ]  ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__cpu_pda_I) *_GLOBAL__cpu_pda_3_A[NUM_STACKS];   
+typedef  struct x8664_pda   _GLOBAL_13_T; extern  _GLOBAL_13_T  _GLOBAL_0_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_1_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_2_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_3_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_4_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_5_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_6_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_7_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_8_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_9_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_10_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_11_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_12_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_13_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_14_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_15_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_16_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_17_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_18_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_19_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_20_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_21_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_22_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_23_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_24_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_25_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_26_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_27_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_28_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_29_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_30_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_31_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_32_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_33_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_34_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_35_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_36_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_37_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_38_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_39_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_40_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_41_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_42_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_43_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_44_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_45_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_46_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_47_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_48_boot_cpu_pda_I [ ] ; extern  _GLOBAL_13_T  _GLOBAL_49_boot_cpu_pda_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_boot_cpu_pda_I) *_GLOBAL_boot_cpu_pda_4_A[NUM_STACKS];   
+# 42 "linux-2.6.18/include/asm/pda.h"
+extern void __bad_pda_field(void);
+# 15 "linux-2.6.18/include/asm/thread_info.h" 2
+
 
 
 
@@ -1318,49 +1165,164 @@ struct sysinfo {
 
 
 struct task_struct;
-extern struct task_struct * __switch_to(struct task_struct *prev, struct task_struct *next) __attribute__((regparm(3))) ;
-# 153 "linux-2.6.18/include/asm/system.h"
-static inline  __attribute__((always_inline)) unsigned long get_limit(unsigned long segment)
+struct exec_domain;
+# 1 "linux-2.6.18/include/asm/mmsegment.h" 1
+
+
+
+typedef struct {
+ unsigned long seg;
+} mm_segment_t;
+# 25 "linux-2.6.18/include/asm/thread_info.h" 2
+
+struct thread_info {
+ struct task_struct *task;
+ struct exec_domain *exec_domain;
+ __u32 flags;
+ __u32 status;
+ __u32 cpu;
+ int preempt_count;
+
+ mm_segment_t addr_limit;
+ struct restart_block restart_block;
+};
+# 60 "linux-2.6.18/include/asm/thread_info.h"
+static inline  __attribute__((always_inline)) struct thread_info *current_thread_info(void)
 {
- unsigned long __limit;
- __asm__("lsll %1,%0"
-  :"=r" (__limit):"r" (segment));
- return __limit+1;
+
+
+ extern struct thread_info *nsc_get_current_thread_info(void);
+ return nsc_get_current_thread_info();
+
+
+
+
+
 }
 
 
+static inline  __attribute__((always_inline)) struct thread_info *stack_thread_info(void)
+{
+ struct thread_info *ti;
+ __asm__("andq %%rsp,%0; ":"=r" (ti) : "0" (~(((1UL << 12) << 1) - 1)));
+ return ti;
+}
+# 22 "linux-2.6.18/include/linux/thread_info.h" 2
+# 30 "linux-2.6.18/include/linux/thread_info.h"
+static inline  __attribute__((always_inline)) void set_ti_thread_flag(struct thread_info *ti, int flag)
+{
+ set_bit(flag,&ti->flags);
+}
+
+static inline  __attribute__((always_inline)) void clear_ti_thread_flag(struct thread_info *ti, int flag)
+{
+ clear_bit(flag,&ti->flags);
+}
+
+static inline  __attribute__((always_inline)) int test_and_set_ti_thread_flag(struct thread_info *ti, int flag)
+{
+ return test_and_set_bit(flag,&ti->flags);
+}
+
+static inline  __attribute__((always_inline)) int test_and_clear_ti_thread_flag(struct thread_info *ti, int flag)
+{
+ return test_and_clear_bit(flag,&ti->flags);
+}
+
+static inline  __attribute__((always_inline)) int test_ti_thread_flag(struct thread_info *ti, int flag)
+{
+ return (__builtin_constant_p(flag) ? constant_test_bit((flag),(&ti->flags)) : variable_test_bit((flag),(&ti->flags)));
+}
+# 10 "linux-2.6.18/include/linux/preempt.h" 2
+# 50 "linux-2.6.18/include/linux/spinlock.h" 2
 
 
 
 
 
-struct __xchg_dummy { unsigned long a[100]; };
-# 234 "linux-2.6.18/include/asm/system.h"
+
+# 1 "linux-2.6.18/include/asm/system.h" 1
+
+
+
+
+# 1 "linux-2.6.18/include/asm/segment.h" 1
+# 6 "linux-2.6.18/include/asm/system.h" 2
+# 45 "linux-2.6.18/include/asm/system.h"
+extern void load_gs_index(unsigned);
+# 72 "linux-2.6.18/include/asm/system.h"
+static inline  __attribute__((always_inline)) unsigned long read_cr0(void)
+{
+ unsigned long cr0;
+ asm volatile("movq %%cr0,%0" : "=r" (cr0));
+ return cr0;
+}
+
+static inline  __attribute__((always_inline)) void write_cr0(unsigned long val)
+{
+ asm volatile("movq %0,%%cr0" :: "r" (val));
+}
+
+static inline  __attribute__((always_inline)) unsigned long read_cr3(void)
+{
+ unsigned long cr3;
+ asm("movq %%cr3,%0" : "=r" (cr3));
+ return cr3;
+}
+
+static inline  __attribute__((always_inline)) unsigned long read_cr4(void)
+{
+ unsigned long cr4;
+ asm("movq %%cr4,%0" : "=r" (cr4));
+ return cr4;
+}
+
+static inline  __attribute__((always_inline)) void write_cr4(unsigned long val)
+{
+ asm volatile("movq %0,%%cr4" :: "r" (val));
+}
+# 112 "linux-2.6.18/include/asm/system.h"
+static inline  __attribute__((always_inline)) void sched_cacheflush(void)
+{
+ __asm__ __volatile__ ("wbinvd": : :"memory");;
+}
+# 127 "linux-2.6.18/include/asm/system.h"
+static inline  __attribute__((always_inline)) void set_64bit(volatile unsigned long *ptr, unsigned long val)
+{
+ *ptr = val;
+}
+# 139 "linux-2.6.18/include/asm/system.h"
 static inline  __attribute__((always_inline)) unsigned long __xchg(unsigned long x, volatile void * ptr, int size)
 {
  switch (size) {
   case 1:
    __asm__ __volatile__("xchgb %b0,%1"
     :"=q" (x)
-    :"m" (*((struct __xchg_dummy *)(ptr))), "0" (x)
+    :"m" (*((volatile long *)(ptr))), "0" (x)
     :"memory");
    break;
   case 2:
    __asm__ __volatile__("xchgw %w0,%1"
     :"=r" (x)
-    :"m" (*((struct __xchg_dummy *)(ptr))), "0" (x)
+    :"m" (*((volatile long *)(ptr))), "0" (x)
     :"memory");
    break;
   case 4:
-   __asm__ __volatile__("xchgl %0,%1"
+   __asm__ __volatile__("xchgl %k0,%1"
     :"=r" (x)
-    :"m" (*((struct __xchg_dummy *)(ptr))), "0" (x)
+    :"m" (*((volatile long *)(ptr))), "0" (x)
+    :"memory");
+   break;
+  case 8:
+   __asm__ __volatile__("xchgq %0,%1"
+    :"=r" (x)
+    :"m" (*((volatile long *)(ptr))), "0" (x)
     :"memory");
    break;
  }
  return x;
 }
-# 272 "linux-2.6.18/include/asm/system.h"
+# 178 "linux-2.6.18/include/asm/system.h"
 static inline  __attribute__((always_inline)) unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
           unsigned long new, int size)
 {
@@ -1369,68 +1331,265 @@ static inline  __attribute__((always_inline)) unsigned long __cmpxchg(volatile v
  case 1:
   __asm__ __volatile__("" "cmpxchgb %b1,%2"
          : "=a"(prev)
-         : "q"(new), "m"(*((struct __xchg_dummy *)(ptr))), "0"(old)
+         : "q"(new), "m"(*((volatile long *)(ptr))), "0"(old)
          : "memory");
   return prev;
  case 2:
   __asm__ __volatile__("" "cmpxchgw %w1,%2"
          : "=a"(prev)
-         : "r"(new), "m"(*((struct __xchg_dummy *)(ptr))), "0"(old)
+         : "r"(new), "m"(*((volatile long *)(ptr))), "0"(old)
          : "memory");
   return prev;
  case 4:
-  __asm__ __volatile__("" "cmpxchgl %1,%2"
+  __asm__ __volatile__("" "cmpxchgl %k1,%2"
          : "=a"(prev)
-         : "r"(new), "m"(*((struct __xchg_dummy *)(ptr))), "0"(old)
+         : "r"(new), "m"(*((volatile long *)(ptr))), "0"(old)
+         : "memory");
+  return prev;
+ case 8:
+  __asm__ __volatile__("" "cmpxchgq %1,%2"
+         : "=a"(prev)
+         : "r"(new), "m"(*((volatile long *)(ptr))), "0"(old)
          : "memory");
   return prev;
  }
  return old;
 }
-# 462 "linux-2.6.18/include/asm/system.h"
+# 246 "linux-2.6.18/include/asm/system.h"
 # 1 "linux-2.6.18/include/linux/irqflags.h" 1
-# 463 "linux-2.6.18/include/asm/system.h" 2
+# 247 "linux-2.6.18/include/asm/system.h" 2
 
-
-
-
-
-void disable_hlt(void);
-void enable_hlt(void);
-
-typedef  int  _GLOBAL_14_T; extern  _GLOBAL_14_T  global_es7000_plat[NUM_STACKS];   
 void cpu_idle_wait(void);
-
-
-
-
-
-static inline  __attribute__((always_inline)) void sched_cacheflush(void)
-{
- __asm__ __volatile__ ("wbinvd": : :"memory");
-}
 
 extern unsigned long arch_align_stack(unsigned long sp);
 extern void free_init_pages(char *what, unsigned long begin, unsigned long end);
+# 57 "linux-2.6.18/include/linux/spinlock.h" 2
+# 78 "linux-2.6.18/include/linux/spinlock.h"
+# 1 "linux-2.6.18/include/linux/spinlock_types.h" 1
+# 12 "linux-2.6.18/include/linux/spinlock_types.h"
+# 1 "linux-2.6.18/include/linux/lockdep.h" 1
+# 12 "linux-2.6.18/include/linux/lockdep.h"
+# 1 "linux-2.6.18/include/linux/list.h" 1
 
-void default_idle(void);
-# 19 "linux-2.6.18/include/asm/processor.h" 2
-# 1 "linux-2.6.18/include/linux/cache.h" 1
 
 
 
 
-# 1 "linux-2.6.18/include/asm/cache.h" 1
-# 6 "linux-2.6.18/include/linux/cache.h" 2
-# 20 "linux-2.6.18/include/asm/processor.h" 2
+
+# 1 "linux-2.6.18/include/linux/poison.h" 1
+# 8 "linux-2.6.18/include/linux/list.h" 2
+# 1 "linux-2.6.18/include/linux/prefetch.h" 1
+# 14 "linux-2.6.18/include/linux/prefetch.h"
+# 1 "linux-2.6.18/include/asm/processor.h" 1
+# 13 "linux-2.6.18/include/asm/processor.h"
+# 1 "linux-2.6.18/include/asm/sigcontext.h" 1
+# 10 "linux-2.6.18/include/asm/sigcontext.h"
+struct _fpstate {
+ __u16 cwd;
+ __u16 swd;
+ __u16 twd;
+ __u16 fop;
+ __u64 rip;
+ __u64 rdp;
+ __u32 mxcsr;
+ __u32 mxcsr_mask;
+ __u32 st_space[32];
+ __u32 xmm_space[64];
+ __u32 reserved2[24];
+};
+
+struct sigcontext {
+ unsigned long r8;
+ unsigned long r9;
+ unsigned long r10;
+ unsigned long r11;
+ unsigned long r12;
+ unsigned long r13;
+ unsigned long r14;
+ unsigned long r15;
+ unsigned long rdi;
+ unsigned long rsi;
+ unsigned long rbp;
+ unsigned long rbx;
+ unsigned long rdx;
+ unsigned long rax;
+ unsigned long rcx;
+ unsigned long rsp;
+ unsigned long rip;
+ unsigned long eflags;
+ unsigned short cs;
+ unsigned short gs;
+ unsigned short fs;
+ unsigned short __pad0;
+ unsigned long err;
+ unsigned long trapno;
+ unsigned long oldmask;
+ unsigned long cr2;
+ struct _fpstate *fpstate;
+ unsigned long reserved1[8];
+};
+# 14 "linux-2.6.18/include/asm/processor.h" 2
+
 # 1 "linux-2.6.18/include/linux/threads.h" 1
-# 21 "linux-2.6.18/include/asm/processor.h" 2
+# 16 "linux-2.6.18/include/asm/processor.h" 2
+# 1 "linux-2.6.18/include/asm/msr.h" 1
+# 82 "linux-2.6.18/include/asm/msr.h"
+static inline  __attribute__((always_inline)) void cpuid(int op, unsigned int *eax, unsigned int *ebx,
+    unsigned int *ecx, unsigned int *edx)
+{
+ __asm__("cpuid"
+  : "=a" (*eax),
+    "=b" (*ebx),
+    "=c" (*ecx),
+    "=d" (*edx)
+  : "0" (op));
+}
+
+
+static inline  __attribute__((always_inline)) void cpuid_count(int op, int count, int *eax, int *ebx, int *ecx,
+         int *edx)
+{
+ __asm__("cpuid"
+  : "=a" (*eax),
+    "=b" (*ebx),
+    "=c" (*ecx),
+    "=d" (*edx)
+  : "0" (op), "c" (count));
+}
+
+
+
+
+static inline  __attribute__((always_inline)) unsigned int cpuid_eax(unsigned int op)
+{
+ unsigned int eax;
+
+ __asm__("cpuid"
+  : "=a" (eax)
+  : "0" (op)
+  : "bx", "cx", "dx");
+ return eax;
+}
+static inline  __attribute__((always_inline)) unsigned int cpuid_ebx(unsigned int op)
+{
+ unsigned int eax, ebx;
+
+ __asm__("cpuid"
+  : "=a" (eax), "=b" (ebx)
+  : "0" (op)
+  : "cx", "dx" );
+ return ebx;
+}
+static inline  __attribute__((always_inline)) unsigned int cpuid_ecx(unsigned int op)
+{
+ unsigned int eax, ecx;
+
+ __asm__("cpuid"
+  : "=a" (eax), "=c" (ecx)
+  : "0" (op)
+  : "bx", "dx" );
+ return ecx;
+}
+static inline  __attribute__((always_inline)) unsigned int cpuid_edx(unsigned int op)
+{
+ unsigned int eax, edx;
+
+ __asm__("cpuid"
+  : "=a" (eax), "=d" (edx)
+  : "0" (op)
+  : "bx", "cx");
+ return edx;
+}
+# 17 "linux-2.6.18/include/asm/processor.h" 2
+# 1 "linux-2.6.18/include/asm/current.h" 1
+
+
+
+
+struct task_struct;
+# 18 "linux-2.6.18/include/asm/processor.h" 2
+
+
 # 1 "linux-2.6.18/include/asm/percpu.h" 1
+# 21 "linux-2.6.18/include/asm/processor.h" 2
+# 1 "linux-2.6.18/include/linux/personality.h" 1
 
 
 
-# 1 "linux-2.6.18/include/asm-generic/percpu.h" 1
-# 5 "linux-2.6.18/include/asm/percpu.h" 2
+
+
+
+
+struct exec_domain;
+struct pt_regs;
+
+extern int register_exec_domain(struct exec_domain *);
+extern int unregister_exec_domain(struct exec_domain *);
+extern int __set_personality(unsigned long);
+
+
+
+
+
+
+enum {
+ ADDR_NO_RANDOMIZE = 0x0040000,
+ FDPIC_FUNCPTRS = 0x0080000,
+
+
+ MMAP_PAGE_ZERO = 0x0100000,
+ ADDR_COMPAT_LAYOUT = 0x0200000,
+ READ_IMPLIES_EXEC = 0x0400000,
+ ADDR_LIMIT_32BIT = 0x0800000,
+ SHORT_INODE = 0x1000000,
+ WHOLE_SECONDS = 0x2000000,
+ STICKY_TIMEOUTS = 0x4000000,
+ ADDR_LIMIT_3GB = 0x8000000,
+};
+# 47 "linux-2.6.18/include/linux/personality.h"
+enum {
+ PER_LINUX = 0x0000,
+ PER_LINUX_32BIT = 0x0000 | ADDR_LIMIT_32BIT,
+ PER_LINUX_FDPIC = 0x0000 | FDPIC_FUNCPTRS,
+ PER_SVR4 = 0x0001 | STICKY_TIMEOUTS | MMAP_PAGE_ZERO,
+ PER_SVR3 = 0x0002 | STICKY_TIMEOUTS | SHORT_INODE,
+ PER_SCOSVR3 = 0x0003 | STICKY_TIMEOUTS |
+      WHOLE_SECONDS | SHORT_INODE,
+ PER_OSR5 = 0x0003 | STICKY_TIMEOUTS | WHOLE_SECONDS,
+ PER_WYSEV386 = 0x0004 | STICKY_TIMEOUTS | SHORT_INODE,
+ PER_ISCR4 = 0x0005 | STICKY_TIMEOUTS,
+ PER_BSD = 0x0006,
+ PER_SUNOS = 0x0006 | STICKY_TIMEOUTS,
+ PER_XENIX = 0x0007 | STICKY_TIMEOUTS | SHORT_INODE,
+ PER_LINUX32 = 0x0008,
+ PER_LINUX32_3GB = 0x0008 | ADDR_LIMIT_3GB,
+ PER_IRIX32 = 0x0009 | STICKY_TIMEOUTS,
+ PER_IRIXN32 = 0x000a | STICKY_TIMEOUTS,
+ PER_IRIX64 = 0x000b | STICKY_TIMEOUTS,
+ PER_RISCOS = 0x000c,
+ PER_SOLARIS = 0x000d | STICKY_TIMEOUTS,
+ PER_UW7 = 0x000e | STICKY_TIMEOUTS | MMAP_PAGE_ZERO,
+ PER_OSF4 = 0x000f,
+ PER_HPUX = 0x0010,
+ PER_MASK = 0x00ff,
+};
+# 81 "linux-2.6.18/include/linux/personality.h"
+typedef void (*handler_t)(int, struct pt_regs *);
+
+struct exec_domain {
+ const char *name;
+ handler_t handler;
+ unsigned char pers_low;
+ unsigned char pers_high;
+ unsigned long *signal_map;
+ unsigned long *signal_invmap;
+ struct map_segment *err_map;
+ struct map_segment *socktype_map;
+ struct map_segment *sockopt_map;
+ struct map_segment *af_map;
+ struct module *module;
+ struct exec_domain *next;
+};
 # 22 "linux-2.6.18/include/asm/processor.h" 2
 # 1 "linux-2.6.18/include/linux/cpumask.h" 1
 # 86 "linux-2.6.18/include/linux/cpumask.h"
@@ -1450,195 +1609,22 @@ extern char *strndup_user(const char *, long);
 
 
 # 1 "linux-2.6.18/include/asm/string.h" 1
-# 29 "linux-2.6.18/include/asm/string.h"
-static inline  __attribute__((always_inline)) char * strcpy(char * dest,const char *src)
+# 9 "linux-2.6.18/include/asm/string.h"
+static inline   __attribute__((always_inline)) __attribute__((always_inline)) void *
+__inline_memcpy(void * to, const void * from, size_t n)
 {
-int d0, d1, d2;
-__asm__ __volatile__(
- "1:\tlodsb\n\t"
- "stosb\n\t"
- "testb %%al,%%al\n\t"
- "jne 1b"
- : "=&S" (d0), "=&D" (d1), "=&a" (d2)
- :"0" (src),"1" (dest) : "memory");
-return dest;
-}
-
-
-static inline  __attribute__((always_inline)) char * strncpy(char * dest,const char *src,size_t count)
-{
-int d0, d1, d2, d3;
-__asm__ __volatile__(
- "1:\tdecl %2\n\t"
- "js 2f\n\t"
- "lodsb\n\t"
- "stosb\n\t"
- "testb %%al,%%al\n\t"
- "jne 1b\n\t"
- "rep\n\t"
- "stosb\n"
- "2:"
- : "=&S" (d0), "=&D" (d1), "=&c" (d2), "=&a" (d3)
- :"0" (src),"1" (dest),"2" (count) : "memory");
-return dest;
-}
-
-
-static inline  __attribute__((always_inline)) char * strcat(char * dest,const char * src)
-{
-int d0, d1, d2, d3;
-__asm__ __volatile__(
- "repne\n\t"
- "scasb\n\t"
- "decl %1\n"
- "1:\tlodsb\n\t"
- "stosb\n\t"
- "testb %%al,%%al\n\t"
- "jne 1b"
- : "=&S" (d0), "=&D" (d1), "=&a" (d2), "=&c" (d3)
- : "0" (src), "1" (dest), "2" (0), "3" (0xffffffffu):"memory");
-return dest;
-}
-
-
-static inline  __attribute__((always_inline)) char * strncat(char * dest,const char * src,size_t count)
-{
-int d0, d1, d2, d3;
-__asm__ __volatile__(
- "repne\n\t"
- "scasb\n\t"
- "decl %1\n\t"
- "movl %8,%3\n"
- "1:\tdecl %3\n\t"
- "js 2f\n\t"
- "lodsb\n\t"
- "stosb\n\t"
- "testb %%al,%%al\n\t"
- "jne 1b\n"
- "2:\txorl %2,%2\n\t"
- "stosb"
- : "=&S" (d0), "=&D" (d1), "=&a" (d2), "=&c" (d3)
- : "0" (src),"1" (dest),"2" (0),"3" (0xffffffffu), "g" (count)
- : "memory");
-return dest;
-}
-
-
-static inline  __attribute__((always_inline)) int strcmp(const char * cs,const char * ct)
-{
-int d0, d1;
-register int __res;
-__asm__ __volatile__(
- "1:\tlodsb\n\t"
- "scasb\n\t"
- "jne 2f\n\t"
- "testb %%al,%%al\n\t"
- "jne 1b\n\t"
- "xorl %%eax,%%eax\n\t"
- "jmp 3f\n"
- "2:\tsbbl %%eax,%%eax\n\t"
- "orb $1,%%al\n"
- "3:"
- :"=a" (__res), "=&S" (d0), "=&D" (d1)
- :"1" (cs),"2" (ct)
- :"memory");
-return __res;
-}
-
-
-static inline  __attribute__((always_inline)) int strncmp(const char * cs,const char * ct,size_t count)
-{
-register int __res;
-int d0, d1, d2;
-__asm__ __volatile__(
- "1:\tdecl %3\n\t"
- "js 2f\n\t"
- "lodsb\n\t"
- "scasb\n\t"
- "jne 3f\n\t"
- "testb %%al,%%al\n\t"
- "jne 1b\n"
- "2:\txorl %%eax,%%eax\n\t"
- "jmp 4f\n"
- "3:\tsbbl %%eax,%%eax\n\t"
- "orb $1,%%al\n"
- "4:"
- :"=a" (__res), "=&S" (d0), "=&D" (d1), "=&c" (d2)
- :"1" (cs),"2" (ct),"3" (count)
- :"memory");
-return __res;
-}
-
-
-static inline  __attribute__((always_inline)) char * strchr(const char * s, int c)
-{
-int d0;
-register char * __res;
-__asm__ __volatile__(
- "movb %%al,%%ah\n"
- "1:\tlodsb\n\t"
- "cmpb %%ah,%%al\n\t"
- "je 2f\n\t"
- "testb %%al,%%al\n\t"
- "jne 1b\n\t"
- "movl $1,%1\n"
- "2:\tmovl %1,%0\n\t"
- "decl %0"
- :"=a" (__res), "=&S" (d0)
- :"1" (s),"0" (c)
- :"memory");
-return __res;
-}
-
-
-static inline  __attribute__((always_inline)) char * strrchr(const char * s, int c)
-{
-int d0, d1;
-register char * __res;
-__asm__ __volatile__(
- "movb %%al,%%ah\n"
- "1:\tlodsb\n\t"
- "cmpb %%ah,%%al\n\t"
- "jne 2f\n\t"
- "leal -1(%%esi),%0\n"
- "2:\ttestb %%al,%%al\n\t"
- "jne 1b"
- :"=g" (__res), "=&S" (d0), "=&a" (d1)
- :"0" (0),"1" (s),"2" (c)
- :"memory");
-return __res;
-}
-
-
-static inline  __attribute__((always_inline)) size_t strlen(const char * s)
-{
-int d0;
-register int __res;
-__asm__ __volatile__(
- "repne\n\t"
- "scasb\n\t"
- "notl %0\n\t"
- "decl %0"
- :"=c" (__res), "=&D" (d0)
- :"1" (s),"a" (0), "0" (0xffffffffu)
- :"memory");
-return __res;
-}
-
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) void * __memcpy(void * to, const void * from, size_t n)
-{
-int d0, d1, d2;
+unsigned long d0, d1, d2;
 __asm__ __volatile__(
  "rep ; movsl\n\t"
- "movl %4,%%ecx\n\t"
- "andl $3,%%ecx\n\t"
-
- "jz 1f\n\t"
-
- "rep ; movsb\n\t"
- "1:"
+ "testb $2,%b4\n\t"
+ "je 1f\n\t"
+ "movsw\n"
+ "1:\ttestb $1,%b4\n\t"
+ "je 2f\n\t"
+ "movsb\n"
+ "2:"
  : "=&c" (d0), "=&D" (d1), "=&S" (d2)
- : "0" (n/4), "g" (n), "1" ((long) to), "2" ((long) from)
+ :"0" (n/4), "q" (n),"1" ((long) to),"2" ((long) from)
  : "memory");
 return (to);
 }
@@ -1647,219 +1633,67 @@ return (to);
 
 
 
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) void * __constant_memcpy(void * to, const void * from, size_t n)
-{
- long esi, edi;
- if (!n) return to;
-
- switch (n) {
-  case 1: *(char*)to = *(char*)from; return to;
-  case 2: *(short*)to = *(short*)from; return to;
-  case 4: *(int*)to = *(int*)from; return to;
-
-  case 3: *(short*)to = *(short*)from;
-   *((char*)to+2) = *((char*)from+2); return to;
-  case 5: *(int*)to = *(int*)from;
-   *((char*)to+4) = *((char*)from+4); return to;
-  case 6: *(int*)to = *(int*)from;
-   *((short*)to+2) = *((short*)from+2); return to;
-  case 8: *(int*)to = *(int*)from;
-   *((int*)to+1) = *((int*)from+1); return to;
-
- }
-
- esi = (long) from;
- edi = (long) to;
- if (n >= 5*4) {
-
-  int ecx;
-  __asm__ __volatile__(
-   "rep ; movsl"
-   : "=&c" (ecx), "=&D" (edi), "=&S" (esi)
-   : "0" (n/4), "1" (edi),"2" (esi)
-   : "memory"
-  );
- } else {
-
-  if (n >= 4*4) __asm__ __volatile__("movsl"
-   :"=&D"(edi),"=&S"(esi):"0"(edi),"1"(esi):"memory");
-  if (n >= 3*4) __asm__ __volatile__("movsl"
-   :"=&D"(edi),"=&S"(esi):"0"(edi),"1"(esi):"memory");
-  if (n >= 2*4) __asm__ __volatile__("movsl"
-   :"=&D"(edi),"=&S"(esi):"0"(edi),"1"(esi):"memory");
-  if (n >= 1*4) __asm__ __volatile__("movsl"
-   :"=&D"(edi),"=&S"(esi):"0"(edi),"1"(esi):"memory");
- }
- switch (n % 4) {
-
-  case 0: return to;
-  case 1: __asm__ __volatile__("movsb"
-   :"=&D"(edi),"=&S"(esi):"0"(edi),"1"(esi):"memory");
-   return to;
-  case 2: __asm__ __volatile__("movsw"
-   :"=&D"(edi),"=&S"(esi):"0"(edi),"1"(esi):"memory");
-   return to;
-  default: __asm__ __volatile__("movsw\n\tmovsb"
-   :"=&D"(edi),"=&S"(esi):"0"(edi),"1"(esi):"memory");
-   return to;
- }
-}
-# 326 "linux-2.6.18/include/asm/string.h"
-void *memmove(void * dest,const void * src, size_t n);
+extern void *__memcpy(void *to, const void *from, size_t len);
+# 44 "linux-2.6.18/include/asm/string.h"
+void *memset(void *s, int c, size_t n);
 
 
+void * memmove(void * dest,const void *src,size_t count);
 
-
-static inline  __attribute__((always_inline)) void * memchr(const void * cs,int c,size_t count)
-{
-int d0;
-register void * __res;
-if (!count)
- return ((void *)0);
-__asm__ __volatile__(
- "repne\n\t"
- "scasb\n\t"
- "je 1f\n\t"
- "movl $1,%0\n"
- "1:\tdecl %0"
- :"=D" (__res), "=&c" (d0)
- :"a" (c),"0" (cs),"1" (count)
- :"memory");
-return __res;
-}
-
-static inline  __attribute__((always_inline)) void * __memset_generic(void * s, char c,size_t count)
-{
-int d0, d1;
-__asm__ __volatile__(
- "rep\n\t"
- "stosb"
- : "=&c" (d0), "=&D" (d1)
- :"a" (c),"1" (s),"0" (count)
- :"memory");
-return s;
-}
-# 369 "linux-2.6.18/include/asm/string.h"
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) void * __constant_c_memset(void * s, unsigned long c, size_t count)
-{
-int d0, d1;
-__asm__ __volatile__(
- "rep ; stosl\n\t"
- "testb $2,%b3\n\t"
- "je 1f\n\t"
- "stosw\n"
- "1:\ttestb $1,%b3\n\t"
- "je 2f\n\t"
- "stosb\n"
- "2:"
- :"=&c" (d0), "=&D" (d1)
- :"a" (c), "q" (count), "0" (count/4), "1" ((long) s)
- :"memory");
-return (s);
-}
-
-
-
-static inline  __attribute__((always_inline)) size_t strnlen(const char * s, size_t count)
-{
-int d0;
-register int __res;
-__asm__ __volatile__(
- "movl %2,%0\n\t"
- "jmp 2f\n"
- "1:\tcmpb $0,(%0)\n\t"
- "je 3f\n\t"
- "incl %0\n"
- "2:\tdecl %1\n\t"
- "cmpl $-1,%1\n\t"
- "jne 1b\n"
- "3:\tsubl %2,%0"
- :"=a" (__res), "=&d" (d0)
- :"c" (s),"1" (count)
- :"memory");
-return __res;
-}
-
-
-
-
-extern char *strstr(const char *cs, const char *ct);
-
-
-
-
-
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) void * __constant_c_and_count_memset(void * s, unsigned long pattern, size_t count)
-{
- switch (count) {
-  case 0:
-   return s;
-  case 1:
-   *(unsigned char *)s = pattern;
-   return s;
-  case 2:
-   *(unsigned short *)s = pattern;
-   return s;
-  case 3:
-   *(unsigned short *)s = pattern;
-   *(2+(unsigned char *)s) = pattern;
-   return s;
-  case 4:
-   *(unsigned long *)s = pattern;
-   return s;
- }
-
-
-
-
-
-
-
-{
- int d0, d1;
- switch (count % 4) {
-  case 0: __asm__ __volatile__( "rep ; stosl" "" : "=&c" (d0), "=&D" (d1) : "a" (pattern),"0" (count/4),"1" ((long) s) : "memory"); return s;
-  case 1: __asm__ __volatile__( "rep ; stosl" "\n\tstosb" : "=&c" (d0), "=&D" (d1) : "a" (pattern),"0" (count/4),"1" ((long) s) : "memory"); return s;
-  case 2: __asm__ __volatile__( "rep ; stosl" "\n\tstosw" : "=&c" (d0), "=&D" (d1) : "a" (pattern),"0" (count/4),"1" ((long) s) : "memory"); return s;
-  default: __asm__ __volatile__( "rep ; stosl" "\n\tstosw\n\tstosb" : "=&c" (d0), "=&D" (d1) : "a" (pattern),"0" (count/4),"1" ((long) s) : "memory"); return s;
- }
-}
-
-
-}
-# 477 "linux-2.6.18/include/asm/string.h"
-static inline  __attribute__((always_inline)) void * memscan(void * addr, int c, size_t size)
-{
- if (!size)
-  return addr;
- __asm__("repnz; scasb\n\t"
-  "jnz 1f\n\t"
-  "dec %%edi\n"
-  "1:"
-  : "=D" (addr), "=c" (size)
-  : "0" (addr), "1" (size), "a" (c)
-  : "memory");
- return addr;
-}
+int memcmp(const void * cs,const void * ct,size_t count);
+size_t strlen(const char * s);
+char *strcpy(char * dest,const char *src);
+char *strcat(char * dest, const char * src);
+int strcmp(const char * cs,const char * ct);
 # 22 "linux-2.6.18/include/linux/string.h" 2
-# 30 "linux-2.6.18/include/linux/string.h"
+
+
+extern char * strcpy(char *,const char *);
+
+
+extern char * strncpy(char *,const char *, __kernel_size_t);
+
+
 size_t strlcpy(char *, const char *, size_t);
-# 39 "linux-2.6.18/include/linux/string.h"
+
+
+extern char * strcat(char *, const char *);
+
+
+extern char * strncat(char *, const char *, __kernel_size_t);
+
+
 extern size_t strlcat(char *, const char *, __kernel_size_t);
-# 48 "linux-2.6.18/include/linux/string.h"
+
+
+extern int strcmp(const char *,const char *);
+
+
+extern int strncmp(const char *,const char *,__kernel_size_t);
+
+
 extern int strnicmp(const char *, const char *, __kernel_size_t);
 
 
-
+extern char * strchr(const char *,int);
 
 
 extern char * strnchr(const char *, size_t, int);
 
 
-
+extern char * strrchr(const char *,int);
 
 extern char * strstrip(char *);
-# 70 "linux-2.6.18/include/linux/string.h"
+
+extern char * strstr(const char *,const char *);
+
+
+extern __kernel_size_t strlen(const char *);
+
+
+extern __kernel_size_t strnlen(const char *,__kernel_size_t);
+
+
 extern char * strpbrk(const char *,const char *);
 
 
@@ -1870,11 +1704,14 @@ extern __kernel_size_t strspn(const char *,const char *);
 
 
 extern __kernel_size_t strcspn(const char *,const char *);
-# 95 "linux-2.6.18/include/linux/string.h"
-extern int __builtin_memcmp(const void *,const void *,__kernel_size_t);
+# 92 "linux-2.6.18/include/linux/string.h"
+extern void * memscan(void *,int,__kernel_size_t);
 
 
+extern int memcmp(const void *,const void *,__kernel_size_t);
 
+
+extern void * memchr(const void *,int,__kernel_size_t);
 
 
 extern char *kstrdup(const char *s, gfp_t gfp);
@@ -1928,39 +1765,39 @@ extern int bitmap_allocate_region(unsigned long *bitmap, int pos, int order);
 
 static inline  __attribute__((always_inline)) void bitmap_zero(unsigned long *dst, int nbits)
 {
- if (nbits <= 32)
+ if (nbits <= 64)
   *dst = 0UL;
  else {
-  int len = (((nbits)+32 -1)/32) * sizeof(unsigned long);
-  (__builtin_constant_p(0) ? (__builtin_constant_p((len)) ? __constant_c_and_count_memset(((dst)),((0x01010101UL*(unsigned char)(0))),((len))) : __constant_c_memset(((dst)),((0x01010101UL*(unsigned char)(0))),((len)))) : (__builtin_constant_p((len)) ? __memset_generic((((dst))),(((0))),(((len)))) : __memset_generic(((dst)),((0)),((len)))));
+  int len = (((nbits)+64 -1)/64) * sizeof(unsigned long);
+  memset(dst, 0, len);
  }
 }
 
 static inline  __attribute__((always_inline)) void bitmap_fill(unsigned long *dst, int nbits)
 {
- size_t nlongs = (((nbits)+32 -1)/32);
+ size_t nlongs = (((nbits)+64 -1)/64);
  if (nlongs > 1) {
   int len = (nlongs - 1) * sizeof(unsigned long);
-  (__builtin_constant_p(0xff) ? (__builtin_constant_p((len)) ? __constant_c_and_count_memset(((dst)),((0x01010101UL*(unsigned char)(0xff))),((len))) : __constant_c_memset(((dst)),((0x01010101UL*(unsigned char)(0xff))),((len)))) : (__builtin_constant_p((len)) ? __memset_generic((((dst))),(((0xff))),(((len)))) : __memset_generic(((dst)),((0xff)),((len)))));
+  memset(dst, 0xff, len);
  }
- dst[nlongs - 1] = ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL );
+ dst[nlongs - 1] = ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL );
 }
 
 static inline  __attribute__((always_inline)) void bitmap_copy(unsigned long *dst, const unsigned long *src,
    int nbits)
 {
- if (nbits <= 32)
+ if (nbits <= 64)
   *dst = *src;
  else {
-  int len = (((nbits)+32 -1)/32) * sizeof(unsigned long);
-  (__builtin_constant_p(len) ? __constant_memcpy((dst),(src),(len)) : __memcpy((dst),(src),(len)));
+  int len = (((nbits)+64 -1)/64) * sizeof(unsigned long);
+  ({ size_t __len = (len); void *__ret; if (__builtin_constant_p(len) && __len >= 64) __ret = __memcpy((dst),(src),__len); else __ret = __builtin_memcpy((dst),(src),__len); __ret; });
  }
 }
 
 static inline  __attribute__((always_inline)) void bitmap_and(unsigned long *dst, const unsigned long *src1,
    const unsigned long *src2, int nbits)
 {
- if (nbits <= 32)
+ if (nbits <= 64)
   *dst = *src1 & *src2;
  else
   __bitmap_and(dst, src1, src2, nbits);
@@ -1969,7 +1806,7 @@ static inline  __attribute__((always_inline)) void bitmap_and(unsigned long *dst
 static inline  __attribute__((always_inline)) void bitmap_or(unsigned long *dst, const unsigned long *src1,
    const unsigned long *src2, int nbits)
 {
- if (nbits <= 32)
+ if (nbits <= 64)
   *dst = *src1 | *src2;
  else
   __bitmap_or(dst, src1, src2, nbits);
@@ -1978,7 +1815,7 @@ static inline  __attribute__((always_inline)) void bitmap_or(unsigned long *dst,
 static inline  __attribute__((always_inline)) void bitmap_xor(unsigned long *dst, const unsigned long *src1,
    const unsigned long *src2, int nbits)
 {
- if (nbits <= 32)
+ if (nbits <= 64)
   *dst = *src1 ^ *src2;
  else
   __bitmap_xor(dst, src1, src2, nbits);
@@ -1987,7 +1824,7 @@ static inline  __attribute__((always_inline)) void bitmap_xor(unsigned long *dst
 static inline  __attribute__((always_inline)) void bitmap_andnot(unsigned long *dst, const unsigned long *src1,
    const unsigned long *src2, int nbits)
 {
- if (nbits <= 32)
+ if (nbits <= 64)
   *dst = *src1 & ~(*src2);
  else
   __bitmap_andnot(dst, src1, src2, nbits);
@@ -1996,8 +1833,8 @@ static inline  __attribute__((always_inline)) void bitmap_andnot(unsigned long *
 static inline  __attribute__((always_inline)) void bitmap_complement(unsigned long *dst, const unsigned long *src,
    int nbits)
 {
- if (nbits <= 32)
-  *dst = ~(*src) & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL );
+ if (nbits <= 64)
+  *dst = ~(*src) & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL );
  else
   __bitmap_complement(dst, src, nbits);
 }
@@ -2005,8 +1842,8 @@ static inline  __attribute__((always_inline)) void bitmap_complement(unsigned lo
 static inline  __attribute__((always_inline)) int bitmap_equal(const unsigned long *src1,
    const unsigned long *src2, int nbits)
 {
- if (nbits <= 32)
-  return ! ((*src1 ^ *src2) & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL ));
+ if (nbits <= 64)
+  return ! ((*src1 ^ *src2) & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL ));
  else
   return __bitmap_equal(src1, src2, nbits);
 }
@@ -2014,8 +1851,8 @@ static inline  __attribute__((always_inline)) int bitmap_equal(const unsigned lo
 static inline  __attribute__((always_inline)) int bitmap_intersects(const unsigned long *src1,
    const unsigned long *src2, int nbits)
 {
- if (nbits <= 32)
-  return ((*src1 & *src2) & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL )) != 0;
+ if (nbits <= 64)
+  return ((*src1 & *src2) & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL )) != 0;
  else
   return __bitmap_intersects(src1, src2, nbits);
 }
@@ -2023,39 +1860,39 @@ static inline  __attribute__((always_inline)) int bitmap_intersects(const unsign
 static inline  __attribute__((always_inline)) int bitmap_subset(const unsigned long *src1,
    const unsigned long *src2, int nbits)
 {
- if (nbits <= 32)
-  return ! ((*src1 & ~(*src2)) & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL ));
+ if (nbits <= 64)
+  return ! ((*src1 & ~(*src2)) & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL ));
  else
   return __bitmap_subset(src1, src2, nbits);
 }
 
 static inline  __attribute__((always_inline)) int bitmap_empty(const unsigned long *src, int nbits)
 {
- if (nbits <= 32)
-  return ! (*src & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL ));
+ if (nbits <= 64)
+  return ! (*src & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL ));
  else
   return __bitmap_empty(src, nbits);
 }
 
 static inline  __attribute__((always_inline)) int bitmap_full(const unsigned long *src, int nbits)
 {
- if (nbits <= 32)
-  return ! (~(*src) & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL ));
+ if (nbits <= 64)
+  return ! (~(*src) & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL ));
  else
   return __bitmap_full(src, nbits);
 }
 
 static inline  __attribute__((always_inline)) int bitmap_weight(const unsigned long *src, int nbits)
 {
- if (nbits <= 32)
-  return hweight_long(*src & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL ));
+ if (nbits <= 64)
+  return hweight_long(*src & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL ));
  return __bitmap_weight(src, nbits);
 }
 
 static inline  __attribute__((always_inline)) void bitmap_shift_right(unsigned long *dst,
    const unsigned long *src, int n, int nbits)
 {
- if (nbits <= 32)
+ if (nbits <= 64)
   *dst = *src >> n;
  else
   __bitmap_shift_right(dst, src, n, nbits);
@@ -2064,15 +1901,15 @@ static inline  __attribute__((always_inline)) void bitmap_shift_right(unsigned l
 static inline  __attribute__((always_inline)) void bitmap_shift_left(unsigned long *dst,
    const unsigned long *src, int n, int nbits)
 {
- if (nbits <= 32)
-  *dst = (*src << n) & ( ((nbits) % 32) ? (1UL<<((nbits) % 32))-1 : ~0UL );
+ if (nbits <= 64)
+  *dst = (*src << n) & ( ((nbits) % 64) ? (1UL<<((nbits) % 64))-1 : ~0UL );
  else
   __bitmap_shift_left(dst, src, n, nbits);
 }
 # 87 "linux-2.6.18/include/linux/cpumask.h" 2
 
-typedef struct { unsigned long bits[(((1)+32 -1)/32)]; } cpumask_t;
-typedef  cpumask_t  _GLOBAL_15_T; extern  _GLOBAL_15_T  global__unused_cpumask_arg_[NUM_STACKS];   
+typedef struct { unsigned long bits[(((1)+64 -1)/64)]; } cpumask_t;
+typedef  cpumask_t  _GLOBAL_14_T; extern  _GLOBAL_14_T  global__unused_cpumask_arg_[NUM_STACKS];   
 
 
 static inline  __attribute__((always_inline)) void __cpu_set(int cpu, volatile cpumask_t *dstp)
@@ -2242,45 +2079,33 @@ static inline  __attribute__((always_inline)) void __cpus_remap(cpumask_t *dstp,
  bitmap_remap(dstp->bits, srcp->bits, oldp->bits, newp->bits, nbits);
 }
 # 380 "linux-2.6.18/include/linux/cpumask.h"
-typedef  cpumask_t  _GLOBAL_16_T; extern  _GLOBAL_16_T  global_cpu_possible_map[NUM_STACKS];   
-typedef  cpumask_t  _GLOBAL_17_T; extern  _GLOBAL_17_T  global_cpu_online_map[NUM_STACKS];   
-typedef  cpumask_t  _GLOBAL_18_T; extern  _GLOBAL_18_T  global_cpu_present_map[NUM_STACKS];   
+typedef  cpumask_t  _GLOBAL_15_T; extern  _GLOBAL_15_T  global_cpu_possible_map[NUM_STACKS];   
+typedef  cpumask_t  _GLOBAL_16_T; extern  _GLOBAL_16_T  global_cpu_online_map[NUM_STACKS];   
+typedef  cpumask_t  _GLOBAL_17_T; extern  _GLOBAL_17_T  global_cpu_present_map[NUM_STACKS];   
 # 23 "linux-2.6.18/include/asm/processor.h" 2
-
-
-typedef  int  _GLOBAL_19_T; extern  _GLOBAL_19_T  global_tsc_disable[NUM_STACKS];   
-
-struct desc_struct {
- unsigned long a,b;
-};
-# 48 "linux-2.6.18/include/asm/processor.h"
+# 50 "linux-2.6.18/include/asm/processor.h"
 struct cpuinfo_x86 {
  __u8 x86;
  __u8 x86_vendor;
  __u8 x86_model;
  __u8 x86_mask;
- char wp_works_ok;
- char hlt_works_ok;
- char hard_math;
- char rfu;
-        int cpuid_level;
- unsigned long x86_capability[7];
+ int cpuid_level;
+ __u32 x86_capability[7];
  char x86_vendor_id[16];
  char x86_model_id[64];
  int x86_cache_size;
-
+ int x86_clflush_size;
  int x86_cache_alignment;
- char fdiv_bug;
- char f00f_bug;
- char coma_bug;
- char pad0;
- int x86_power;
+ int x86_tlbsize;
+        __u8 x86_virt_bits, x86_phys_bits;
+ __u8 x86_max_cores;
+        __u32 x86_power;
+ __u32 extended_cpuid_level;
  unsigned long loops_per_jiffy;
 
 
 
- unsigned char x86_max_cores;
- unsigned char apicid;
+ __u8 apicid;
 
 
 
@@ -2288,296 +2113,104 @@ struct cpuinfo_x86 {
 
 } __attribute__((__aligned__((1 << (7))))) ;
 # 98 "linux-2.6.18/include/asm/processor.h"
-typedef  struct cpuinfo_x86   _GLOBAL_20_T; extern  _GLOBAL_20_T  global_boot_cpu_data[NUM_STACKS];    
-typedef  struct cpuinfo_x86   _GLOBAL_21_T; extern  _GLOBAL_21_T  global_new_cpu_data[NUM_STACKS];    
-typedef  struct tss_struct   _GLOBAL_22_T; extern  _GLOBAL_22_T  _GLOBAL_0_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_1_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_2_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_3_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_4_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_5_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_6_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_7_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_8_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_9_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_10_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_11_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_12_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_13_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_14_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_15_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_16_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_17_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_18_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_19_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_20_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_21_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_22_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_23_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_24_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_25_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_26_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_27_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_28_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_29_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_30_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_31_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_32_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_33_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_34_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_35_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_36_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_37_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_38_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_39_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_40_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_41_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_42_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_43_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_44_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_45_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_46_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_47_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_48_doublefault_tss_I; extern  _GLOBAL_22_T  _GLOBAL_49_doublefault_tss_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_doublefault_tss_I) *_GLOBAL_doublefault_tss_3_A[NUM_STACKS];   
-typedef  __typeof__ ( struct tss_struct  )   _GLOBAL_23_T; extern  _GLOBAL_23_T  _GLOBAL_0_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_1_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_2_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_3_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_4_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_5_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_6_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_7_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_8_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_9_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_10_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_11_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_12_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_13_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_14_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_15_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_16_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_17_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_18_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_19_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_20_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_21_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_22_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_23_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_24_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_25_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_26_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_27_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_28_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_29_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_30_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_31_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_32_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_33_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_34_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_35_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_36_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_37_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_38_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_39_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_40_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_41_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_42_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_43_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_44_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_45_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_46_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_47_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_48_per_cpu__init_tss_I; extern  _GLOBAL_23_T  _GLOBAL_49_per_cpu__init_tss_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_per_cpu__init_tss_I) *_GLOBAL_per_cpu__init_tss_4_A[NUM_STACKS];   
-# 111 "linux-2.6.18/include/asm/processor.h"
-typedef  int  _GLOBAL_24_T; extern  _GLOBAL_24_T  _GLOBAL_0_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_1_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_2_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_3_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_4_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_5_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_6_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_7_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_8_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_9_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_10_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_11_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_12_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_13_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_14_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_15_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_16_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_17_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_18_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_19_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_20_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_21_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_22_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_23_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_24_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_25_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_26_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_27_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_28_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_29_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_30_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_31_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_32_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_33_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_34_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_35_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_36_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_37_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_38_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_39_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_40_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_41_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_42_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_43_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_44_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_45_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_46_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_47_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_48_cpu_llc_id_I [ 1 ] ; extern  _GLOBAL_24_T  _GLOBAL_49_cpu_llc_id_I [ 1 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_cpu_llc_id_I) *_GLOBAL_cpu_llc_id_5_A[NUM_STACKS];  
-typedef  char  _GLOBAL_25_T; extern  _GLOBAL_25_T  global_ignore_fpu_irq[NUM_STACKS];   
+typedef  char  _GLOBAL_18_T; extern  _GLOBAL_18_T  global_ignore_irq13[NUM_STACKS];   
 
 extern void identify_cpu(struct cpuinfo_x86 *);
 extern void print_cpu_info(struct cpuinfo_x86 *);
 extern unsigned int init_intel_cacheinfo(struct cpuinfo_x86 *c);
-typedef  unsigned short   _GLOBAL_26_T; extern  _GLOBAL_26_T  global_num_cache_leaves[NUM_STACKS];    
-
-
-
-
-static inline  __attribute__((always_inline)) void detect_ht(struct cpuinfo_x86 *c) {}
-# 151 "linux-2.6.18/include/asm/processor.h"
-static inline  __attribute__((always_inline)) void cpuid(unsigned int op, unsigned int *eax, unsigned int *ebx, unsigned int *ecx, unsigned int *edx)
-{
- __asm__("cpuid"
-  : "=a" (*eax),
-    "=b" (*ebx),
-    "=c" (*ecx),
-    "=d" (*edx)
-  : "0" (op), "c"(0));
-}
-
-
-static inline  __attribute__((always_inline)) void cpuid_count(int op, int count, int *eax, int *ebx, int *ecx,
-         int *edx)
-{
- __asm__("cpuid"
-  : "=a" (*eax),
-    "=b" (*ebx),
-    "=c" (*ecx),
-    "=d" (*edx)
-  : "0" (op), "c" (count));
-}
-
-
-
-
-static inline  __attribute__((always_inline)) unsigned int cpuid_eax(unsigned int op)
-{
- unsigned int eax;
-
- __asm__("cpuid"
-  : "=a" (eax)
-  : "0" (op)
-  : "bx", "cx", "dx");
- return eax;
-}
-static inline  __attribute__((always_inline)) unsigned int cpuid_ebx(unsigned int op)
-{
- unsigned int eax, ebx;
-
- __asm__("cpuid"
-  : "=a" (eax), "=b" (ebx)
-  : "0" (op)
-  : "cx", "dx" );
- return ebx;
-}
-static inline  __attribute__((always_inline)) unsigned int cpuid_ecx(unsigned int op)
-{
- unsigned int eax, ecx;
-
- __asm__("cpuid"
-  : "=a" (eax), "=c" (ecx)
-  : "0" (op)
-  : "bx", "dx" );
- return ecx;
-}
-static inline  __attribute__((always_inline)) unsigned int cpuid_edx(unsigned int op)
-{
- unsigned int eax, edx;
-
- __asm__("cpuid"
-  : "=a" (eax), "=d" (edx)
-  : "0" (op)
-  : "bx", "cx");
- return edx;
-}
-# 240 "linux-2.6.18/include/asm/processor.h"
-typedef  unsigned long   _GLOBAL_27_T; extern  _GLOBAL_27_T  global_mmu_cr4_features[NUM_STACKS];    
+typedef  unsigned short   _GLOBAL_19_T; extern  _GLOBAL_19_T  global_num_cache_leaves[NUM_STACKS];    
+# 147 "linux-2.6.18/include/asm/processor.h"
+typedef  unsigned long   _GLOBAL_20_T; extern  _GLOBAL_20_T  global_mmu_cr4_features[NUM_STACKS];    
 
 static inline  __attribute__((always_inline)) void set_in_cr4 (unsigned long mask)
 {
- unsigned cr4;
  global_mmu_cr4_features[get_stack_id()] |= mask;
- cr4 = ({ unsigned int __dummy; __asm__( "movl %%cr4,%0\n\t" :"=r" (__dummy)); __dummy; });
- cr4 |= mask;
- __asm__ __volatile__("movl %0,%%cr4": :"r" (cr4));
+ __asm__("movq %%cr4,%%rax\n\t"
+  "orq %0,%%rax\n\t"
+  "movq %%rax,%%cr4\n"
+  : : "irg" (mask)
+  :"ax");
 }
 
 static inline  __attribute__((always_inline)) void clear_in_cr4 (unsigned long mask)
 {
- unsigned cr4;
  global_mmu_cr4_features[get_stack_id()] &= ~mask;
- cr4 = ({ unsigned int __dummy; __asm__( "movl %%cr4,%0\n\t" :"=r" (__dummy)); __dummy; });
- cr4 &= ~mask;
- __asm__ __volatile__("movl %0,%%cr4": :"r" (cr4));
+ __asm__("movq %%cr4,%%rax\n\t"
+  "andq %0,%%rax\n\t"
+  "movq %%rax,%%cr4\n"
+  : : "irg" (~mask)
+  :"ax");
 }
-# 292 "linux-2.6.18/include/asm/processor.h"
-static inline  __attribute__((always_inline)) void sync_core(void)
-{
- int tmp;
- asm volatile("cpuid" : "=a" (tmp) : "0" (1) : "ebx","ecx","edx","memory");
-}
-
-static inline  __attribute__((always_inline)) void __monitor(const void *eax, unsigned long ecx,
-  unsigned long edx)
-{
-
- asm volatile(
-  ".byte 0x0f,0x01,0xc8;"
-  : :"a" (eax), "c" (ecx), "d"(edx));
-}
-
-static inline  __attribute__((always_inline)) void __mwait(unsigned long eax, unsigned long ecx)
-{
-
- asm volatile(
-  ".byte 0x0f,0x01,0xc9;"
-  : :"a" (eax), "c" (ecx));
-}
-
-
-
-typedef  unsigned int   _GLOBAL_28_T; extern  _GLOBAL_28_T  global_machine_id[NUM_STACKS];    
-typedef  unsigned int   _GLOBAL_29_T; extern  _GLOBAL_29_T  global_machine_submodel_id[NUM_STACKS];    
-typedef  unsigned int   _GLOBAL_30_T; extern  _GLOBAL_30_T  global_BIOS_revision[NUM_STACKS];    
-typedef  unsigned int   _GLOBAL_31_T; extern  _GLOBAL_31_T  global_mca_pentium_flag[NUM_STACKS];    
-
-
-typedef  int  _GLOBAL_32_T; extern  _GLOBAL_32_T  global_bootloader_type[NUM_STACKS];   
-# 347 "linux-2.6.18/include/asm/processor.h"
-struct i387_fsave_struct {
- long cwd;
- long swd;
- long twd;
- long fip;
- long fcs;
- long foo;
- long fos;
- long st_space[20];
- long status;
-};
-
+# 194 "linux-2.6.18/include/asm/processor.h"
 struct i387_fxsave_struct {
- unsigned short cwd;
- unsigned short swd;
- unsigned short twd;
- unsigned short fop;
- long fip;
- long fcs;
- long foo;
- long fos;
- long mxcsr;
- long mxcsr_mask;
- long st_space[32];
- long xmm_space[32];
- long padding[56];
+ u16 cwd;
+ u16 swd;
+ u16 twd;
+ u16 fop;
+ u64 rip;
+ u64 rdp;
+ u32 mxcsr;
+ u32 mxcsr_mask;
+ u32 st_space[32];
+ u32 xmm_space[64];
+ u32 padding[24];
 } __attribute__ ((aligned (16))) ;
 
-struct i387_soft_struct {
- long cwd;
- long swd;
- long twd;
- long fip;
- long fcs;
- long foo;
- long fos;
- long st_space[20];
- unsigned char ftop, changed, lookahead, no_update, rm, alimit;
- struct info *info;
- unsigned long entry_eip;
-};
-
 union i387_union {
- struct i387_fsave_struct fsave;
  struct i387_fxsave_struct fxsave;
- struct i387_soft_struct soft;
 };
-
-typedef struct {
- unsigned long seg;
-} mm_segment_t;
-
-struct thread_struct;
 
 struct tss_struct {
- unsigned short back_link,__blh;
- unsigned long esp0;
- unsigned short ss0,__ss0h;
- unsigned long esp1;
- unsigned short ss1,__ss1h;
- unsigned long esp2;
- unsigned short ss2,__ss2h;
- unsigned long __cr3;
- unsigned long eip;
- unsigned long eflags;
- unsigned long eax,ecx,edx,ebx;
- unsigned long esp;
- unsigned long ebp;
- unsigned long esi;
- unsigned long edi;
- unsigned short es, __esh;
- unsigned short cs, __csh;
- unsigned short ss, __ssh;
- unsigned short ds, __dsh;
- unsigned short fs, __fsh;
- unsigned short gs, __gsh;
- unsigned short ldt, __ldth;
- unsigned short trace, io_bitmap_base;
-
-
-
-
-
-
+ u32 reserved1;
+ u64 rsp0;
+ u64 rsp1;
+ u64 rsp2;
+ u64 reserved2;
+ u64 ist[7];
+ u32 reserved3;
+ u32 reserved4;
+ u16 reserved5;
+ u16 io_bitmap_base;
+# 232 "linux-2.6.18/include/asm/processor.h"
  unsigned long io_bitmap[((65536/8)/sizeof(long)) + 1];
+}  __attribute__((packed)) __attribute__((__aligned__((1 << (7))))) ;
 
 
+typedef  struct cpuinfo_x86   _GLOBAL_21_T; extern  _GLOBAL_21_T  global_boot_cpu_data[NUM_STACKS];    
+typedef  __typeof__ ( struct tss_struct  )   _GLOBAL_22_T; extern  _GLOBAL_22_T  global_per_cpu__init_tss[NUM_STACKS];    
 
- unsigned long io_bitmap_max;
- struct thread_struct *io_bitmap_owner;
-
-
-
- unsigned long __cacheline_filler[35];
-
-
-
- unsigned long stack[64];
-} __attribute__((packed)) ;
-
-
-
+struct orig_ist {
+ unsigned long ist[7];
+};
+typedef  __typeof__ ( struct orig_ist  )   _GLOBAL_23_T; extern  _GLOBAL_23_T  global_per_cpu__orig_ist[NUM_STACKS];    
+# 252 "linux-2.6.18/include/asm/processor.h"
 struct thread_struct {
-
- struct desc_struct tls_array[3];
- unsigned long esp0;
- unsigned long sysenter_cs;
- unsigned long eip;
- unsigned long esp;
+ unsigned long rsp0;
+ unsigned long rsp;
+ unsigned long userrsp;
  unsigned long fs;
  unsigned long gs;
+ unsigned short es, ds, fsindex, gsindex;
 
- unsigned long debugreg[8];
+ unsigned long debugreg0;
+ unsigned long debugreg1;
+ unsigned long debugreg2;
+ unsigned long debugreg3;
+ unsigned long debugreg6;
+ unsigned long debugreg7;
 
  unsigned long cr2, trap_no, error_code;
 
- union i387_union i387;
+ union i387_union i387 __attribute__((aligned(16))) ;
 
- struct vm86_struct * vm86_info;
- unsigned long screen_bitmap;
- unsigned long v86flags, v86mask, saved_esp0;
- unsigned int saved_fs, saved_gs;
 
+ int ioperm;
  unsigned long *io_bitmap_ptr;
-  unsigned long iopl;
+ unsigned io_bitmap_max;
 
- unsigned long io_bitmap_max;
-};
-# 496 "linux-2.6.18/include/asm/processor.h"
-static inline  __attribute__((always_inline)) void load_esp0(struct tss_struct *tss, struct thread_struct *thread)
-{
- tss->esp0 = thread->esp0;
-
- if (__builtin_expect(!!(tss->ss1 != thread->sysenter_cs), 0)) {
-  tss->ss1 = thread->sysenter_cs;
-  __asm__ __volatile__("wrmsr" : : "c" (0x174), "a" (thread->sysenter_cs), "d" (0));
- }
-}
-# 531 "linux-2.6.18/include/asm/processor.h"
-static inline  __attribute__((always_inline)) void set_iopl_mask(unsigned mask)
-{
- unsigned int reg;
- __asm__ __volatile__ ("pushfl;"
-         "popl %0;"
-         "andl %1, %0;"
-         "orl %2, %0;"
-         "pushl %0;"
-         "popfl"
-    : "=&r" (reg)
-    : "i" (~0x00003000), "r" (mask));
-}
-
-
+ u64 tls_array[3];
+} __attribute__((aligned(16))) ;
+# 310 "linux-2.6.18/include/asm/processor.h"
 struct task_struct;
 struct mm_struct;
 
@@ -2590,13 +2223,20 @@ extern void prepare_to_copy(struct task_struct *tsk);
 
 
 
-extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
+extern long kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
-extern unsigned long thread_saved_pc(struct task_struct *tsk);
-void show_trace(struct task_struct *task, struct pt_regs *regs, unsigned long *stack);
 
-unsigned long get_wchan(struct task_struct *p);
-# 592 "linux-2.6.18/include/asm/processor.h"
+
+
+
+
+
+extern unsigned long get_wchan(struct task_struct *p);
+
+
+
+
+
 struct microcode_header {
  unsigned int hdrver;
  unsigned int rev;
@@ -2631,129 +2271,62 @@ struct extended_sigtable {
  unsigned int reserved[3];
  struct extended_signature sigs[0];
 };
-
-
+# 394 "linux-2.6.18/include/asm/processor.h"
 static inline  __attribute__((always_inline)) void rep_nop(void)
 {
  __asm__ __volatile__("rep;nop": : :"memory");
 }
-# 703 "linux-2.6.18/include/asm/processor.h"
-static inline  __attribute__((always_inline)) void prefetch(const void *x)
+
+
+static inline  __attribute__((always_inline)) void sync_core(void)
 {
- asm volatile ("661:\n\t" ".byte 0x8d,0x74,0x26,0x00\n" "\n662:\n" ".section .altinstructions,\"a\"\n" "  .align 4\n" "  .long 661b\n" "  .long 663f\n" "  .byte %c0\n" "  .byte 662b-661b\n" "  .byte 664f-663f\n" ".previous\n" ".section .altinstr_replacement,\"ax\"\n" "663:\n\t" "prefetchnta (%1)" "\n664:\n" ".previous" :: "i" ((0*32+25)), "r" (x));
-
-
-
+ int tmp;
+ asm volatile("cpuid" : "=a" (tmp) : "0" (1) : "ebx","ecx","edx","memory");
 }
 
 
 
 
-
-
-
-static inline  __attribute__((always_inline)) void prefetchw(const void *x)
+static inline  __attribute__((always_inline)) void prefetch(void *x)
 {
- asm volatile ("661:\n\t" ".byte 0x8d,0x74,0x26,0x00\n" "\n662:\n" ".section .altinstructions,\"a\"\n" "  .align 4\n" "  .long 661b\n" "  .long 663f\n" "  .byte %c0\n" "  .byte 662b-661b\n" "  .byte 664f-663f\n" ".previous\n" ".section .altinstr_replacement,\"ax\"\n" "663:\n\t" "prefetchw (%1)" "\n664:\n" ".previous" :: "i" ((1*32+31)), "r" (x));
+ asm volatile("prefetcht0 %0" :: "m" (*(unsigned long *)x));
+}
+
+
+static inline  __attribute__((always_inline)) void prefetchw(void *x)
+{
+ asm volatile ("661:\n\t" "prefetcht0 (%1)" "\n662:\n" ".section .altinstructions,\"a\"\n" "  .align 8\n" "  .quad 661b\n" "  .quad 663f\n" "  .byte %c0\n" "  .byte 662b-661b\n" "  .byte 664f-663f\n" ".previous\n" ".section .altinstr_replacement,\"ax\"\n" "663:\n\t" "prefetchw (%1)" "\n664:\n" ".previous" :: "i" ((1*32+31)), "r" (x));
 
 
 
 }
-
-
-extern void select_idle_routine(const struct cpuinfo_x86 *c);
-
-
-
-typedef  unsigned long   _GLOBAL_33_T; extern  _GLOBAL_33_T  global_boot_option_idle_override[NUM_STACKS];    
-extern void enable_sep_cpu(void);
-extern int sysenter_setup(void);
-# 17 "linux-2.6.18/include/asm/thread_info.h" 2
-# 27 "linux-2.6.18/include/asm/thread_info.h"
-struct thread_info {
- struct task_struct *task;
- struct exec_domain *exec_domain;
- unsigned long flags;
- unsigned long status;
- __u32 cpu;
- int preempt_count;
-
-
- mm_segment_t addr_limit;
-
-
-
- void *sysenter_return;
- struct restart_block restart_block;
-
- unsigned long previous_esp;
-
-
- __u8 supervisor_stack[0];
-};
-# 88 "linux-2.6.18/include/asm/thread_info.h"
-register unsigned long current_stack_pointer asm("esp") __attribute__((__used__)) ;
-
-
-static inline  __attribute__((always_inline)) struct thread_info *current_thread_info(void)
+# 456 "linux-2.6.18/include/asm/processor.h"
+static inline  __attribute__((always_inline)) void serialize_cpu(void)
 {
-
-
- extern struct thread_info *nsc_get_current_thread_info(void);
- return nsc_get_current_thread_info();
-
-
-
-}
-# 22 "linux-2.6.18/include/linux/thread_info.h" 2
-# 30 "linux-2.6.18/include/linux/thread_info.h"
-static inline  __attribute__((always_inline)) void set_ti_thread_flag(struct thread_info *ti, int flag)
-{
- set_bit(flag,&ti->flags);
+ __asm__ __volatile__ ("cpuid" : : : "ax", "bx", "cx", "dx");
 }
 
-static inline  __attribute__((always_inline)) void clear_ti_thread_flag(struct thread_info *ti, int flag)
+static inline  __attribute__((always_inline)) void __monitor(const void *eax, unsigned long ecx,
+  unsigned long edx)
 {
- clear_bit(flag,&ti->flags);
+
+ asm volatile(
+  ".byte 0x0f,0x01,0xc8;"
+  : :"a" (eax), "c" (ecx), "d"(edx));
 }
 
-static inline  __attribute__((always_inline)) int test_and_set_ti_thread_flag(struct thread_info *ti, int flag)
+static inline  __attribute__((always_inline)) void __mwait(unsigned long eax, unsigned long ecx)
 {
- return test_and_set_bit(flag,&ti->flags);
+
+ asm volatile(
+  ".byte 0x0f,0x01,0xc9;"
+  : :"a" (eax), "c" (ecx));
 }
+# 487 "linux-2.6.18/include/asm/processor.h"
+typedef  unsigned long   _GLOBAL_24_T; extern  _GLOBAL_24_T  global_boot_option_idle_override[NUM_STACKS];    
 
-static inline  __attribute__((always_inline)) int test_and_clear_ti_thread_flag(struct thread_info *ti, int flag)
-{
- return test_and_clear_bit(flag,&ti->flags);
-}
-
-static inline  __attribute__((always_inline)) int test_ti_thread_flag(struct thread_info *ti, int flag)
-{
- return (__builtin_constant_p(flag) ? constant_test_bit((flag),(&ti->flags)) : variable_test_bit((flag),(&ti->flags)));
-}
-# 10 "linux-2.6.18/include/linux/preempt.h" 2
-# 50 "linux-2.6.18/include/linux/spinlock.h" 2
-
-
-
-
-# 1 "linux-2.6.18/include/linux/stringify.h" 1
-# 55 "linux-2.6.18/include/linux/spinlock.h" 2
-# 78 "linux-2.6.18/include/linux/spinlock.h"
-# 1 "linux-2.6.18/include/linux/spinlock_types.h" 1
-# 12 "linux-2.6.18/include/linux/spinlock_types.h"
-# 1 "linux-2.6.18/include/linux/lockdep.h" 1
-# 12 "linux-2.6.18/include/linux/lockdep.h"
-# 1 "linux-2.6.18/include/linux/list.h" 1
-
-
-
-
-
-
-# 1 "linux-2.6.18/include/linux/poison.h" 1
-# 8 "linux-2.6.18/include/linux/list.h" 2
-# 1 "linux-2.6.18/include/linux/prefetch.h" 1
+typedef  int  _GLOBAL_25_T; extern  _GLOBAL_25_T  global_bootloader_type[NUM_STACKS];   
+# 15 "linux-2.6.18/include/linux/prefetch.h" 2
 # 58 "linux-2.6.18/include/linux/prefetch.h"
 static inline  __attribute__((always_inline)) void prefetch_range(void *addr, size_t len)
 {
@@ -3127,8 +2700,8 @@ static inline  __attribute__((always_inline)) void hlist_add_after_rcu(struct hl
 
 struct task_struct;
 
-typedef  int  _GLOBAL_34_T; extern  _GLOBAL_34_T  global_debug_locks[NUM_STACKS];   
-typedef  int  _GLOBAL_35_T; extern  _GLOBAL_35_T  global_debug_locks_silent[NUM_STACKS];   
+typedef  int  _GLOBAL_26_T; extern  _GLOBAL_26_T  global_debug_locks[NUM_STACKS];   
+typedef  int  _GLOBAL_27_T; extern  _GLOBAL_27_T  global_debug_locks_silent[NUM_STACKS];   
 
 
 
@@ -3205,7 +2778,7 @@ typedef struct {
 } rwlock_t;
 # 79 "linux-2.6.18/include/linux/spinlock.h" 2
 
-extern int   __attribute__((regparm(3))) __attribute__((section(".spinlock.text"))) generic__raw_read_trylock(raw_rwlock_t *lock);
+extern int  __attribute__((section(".spinlock.text"))) generic__raw_read_trylock(raw_rwlock_t *lock);
 
 
 
@@ -3220,33 +2793,33 @@ extern int   __attribute__((regparm(3))) __attribute__((section(".spinlock.text"
 # 135 "linux-2.6.18/include/linux/spinlock.h" 2
 # 259 "linux-2.6.18/include/linux/spinlock.h"
 # 1 "linux-2.6.18/include/asm/atomic.h" 1
-# 17 "linux-2.6.18/include/asm/atomic.h"
+# 24 "linux-2.6.18/include/asm/atomic.h"
 typedef struct { volatile int counter; } atomic_t;
-# 45 "linux-2.6.18/include/asm/atomic.h"
+# 52 "linux-2.6.18/include/asm/atomic.h"
 static __inline__  __attribute__((always_inline)) void atomic_add(int i, atomic_t *v)
 {
  __asm__ __volatile__(
   "" "addl %1,%0"
-  :"+m" (v->counter)
-  :"ir" (i));
+  :"=m" (v->counter)
+  :"ir" (i), "m" (v->counter));
 }
-# 60 "linux-2.6.18/include/asm/atomic.h"
+# 67 "linux-2.6.18/include/asm/atomic.h"
 static __inline__  __attribute__((always_inline)) void atomic_sub(int i, atomic_t *v)
 {
  __asm__ __volatile__(
   "" "subl %1,%0"
-  :"+m" (v->counter)
-  :"ir" (i));
+  :"=m" (v->counter)
+  :"ir" (i), "m" (v->counter));
 }
-# 77 "linux-2.6.18/include/asm/atomic.h"
+# 84 "linux-2.6.18/include/asm/atomic.h"
 static __inline__  __attribute__((always_inline)) int atomic_sub_and_test(int i, atomic_t *v)
 {
  unsigned char c;
 
  __asm__ __volatile__(
   "" "subl %2,%0; sete %1"
-  :"+m" (v->counter), "=qm" (c)
-  :"ir" (i) : "memory");
+  :"=m" (v->counter), "=qm" (c)
+  :"ir" (i), "m" (v->counter) : "memory");
  return c;
 }
 
@@ -3260,7 +2833,8 @@ static __inline__  __attribute__((always_inline)) void atomic_inc(atomic_t *v)
 {
  __asm__ __volatile__(
   "" "incl %0"
-  :"+m" (v->counter));
+  :"=m" (v->counter)
+  :"m" (v->counter));
 }
 
 
@@ -3273,112 +2847,216 @@ static __inline__  __attribute__((always_inline)) void atomic_dec(atomic_t *v)
 {
  __asm__ __volatile__(
   "" "decl %0"
-  :"+m" (v->counter));
+  :"=m" (v->counter)
+  :"m" (v->counter));
 }
-# 122 "linux-2.6.18/include/asm/atomic.h"
+# 131 "linux-2.6.18/include/asm/atomic.h"
 static __inline__  __attribute__((always_inline)) int atomic_dec_and_test(atomic_t *v)
 {
  unsigned char c;
 
  __asm__ __volatile__(
   "" "decl %0; sete %1"
-  :"+m" (v->counter), "=qm" (c)
-  : : "memory");
+  :"=m" (v->counter), "=qm" (c)
+  :"m" (v->counter) : "memory");
  return c != 0;
 }
-# 141 "linux-2.6.18/include/asm/atomic.h"
+# 150 "linux-2.6.18/include/asm/atomic.h"
 static __inline__  __attribute__((always_inline)) int atomic_inc_and_test(atomic_t *v)
 {
  unsigned char c;
 
  __asm__ __volatile__(
   "" "incl %0; sete %1"
-  :"+m" (v->counter), "=qm" (c)
-  : : "memory");
+  :"=m" (v->counter), "=qm" (c)
+  :"m" (v->counter) : "memory");
  return c != 0;
 }
-# 161 "linux-2.6.18/include/asm/atomic.h"
+# 170 "linux-2.6.18/include/asm/atomic.h"
 static __inline__  __attribute__((always_inline)) int atomic_add_negative(int i, atomic_t *v)
 {
  unsigned char c;
 
  __asm__ __volatile__(
   "" "addl %2,%0; sets %1"
-  :"+m" (v->counter), "=qm" (c)
-  :"ir" (i) : "memory");
+  :"=m" (v->counter), "=qm" (c)
+  :"ir" (i), "m" (v->counter) : "memory");
  return c;
 }
-# 179 "linux-2.6.18/include/asm/atomic.h"
+# 188 "linux-2.6.18/include/asm/atomic.h"
 static __inline__  __attribute__((always_inline)) int atomic_add_return(int i, atomic_t *v)
 {
- int __i;
-
-
-
-
-
-
- __i = i;
+ int __i = i;
  __asm__ __volatile__(
   "" "xaddl %0, %1;"
   :"=r"(i)
   :"m"(v->counter), "0"(i));
  return i + __i;
-# 203 "linux-2.6.18/include/asm/atomic.h"
 }
 
 static __inline__  __attribute__((always_inline)) int atomic_sub_return(int i, atomic_t *v)
 {
  return atomic_add_return(-i,v);
 }
-# 256 "linux-2.6.18/include/asm/atomic.h"
+
+
+
+
+
+
+typedef struct { volatile long counter; } atomic64_t;
+# 237 "linux-2.6.18/include/asm/atomic.h"
+static __inline__  __attribute__((always_inline)) void atomic64_add(long i, atomic64_t *v)
+{
+ __asm__ __volatile__(
+  "" "addq %1,%0"
+  :"=m" (v->counter)
+  :"ir" (i), "m" (v->counter));
+}
+# 252 "linux-2.6.18/include/asm/atomic.h"
+static __inline__  __attribute__((always_inline)) void atomic64_sub(long i, atomic64_t *v)
+{
+ __asm__ __volatile__(
+  "" "subq %1,%0"
+  :"=m" (v->counter)
+  :"ir" (i), "m" (v->counter));
+}
+# 269 "linux-2.6.18/include/asm/atomic.h"
+static __inline__  __attribute__((always_inline)) int atomic64_sub_and_test(long i, atomic64_t *v)
+{
+ unsigned char c;
+
+ __asm__ __volatile__(
+  "" "subq %2,%0; sete %1"
+  :"=m" (v->counter), "=qm" (c)
+  :"ir" (i), "m" (v->counter) : "memory");
+ return c;
+}
+
+
+
+
+
+
+
+static __inline__  __attribute__((always_inline)) void atomic64_inc(atomic64_t *v)
+{
+ __asm__ __volatile__(
+  "" "incq %0"
+  :"=m" (v->counter)
+  :"m" (v->counter));
+}
+
+
+
+
+
+
+
+static __inline__  __attribute__((always_inline)) void atomic64_dec(atomic64_t *v)
+{
+ __asm__ __volatile__(
+  "" "decq %0"
+  :"=m" (v->counter)
+  :"m" (v->counter));
+}
+# 316 "linux-2.6.18/include/asm/atomic.h"
+static __inline__  __attribute__((always_inline)) int atomic64_dec_and_test(atomic64_t *v)
+{
+ unsigned char c;
+
+ __asm__ __volatile__(
+  "" "decq %0; sete %1"
+  :"=m" (v->counter), "=qm" (c)
+  :"m" (v->counter) : "memory");
+ return c != 0;
+}
+# 335 "linux-2.6.18/include/asm/atomic.h"
+static __inline__  __attribute__((always_inline)) int atomic64_inc_and_test(atomic64_t *v)
+{
+ unsigned char c;
+
+ __asm__ __volatile__(
+  "" "incq %0; sete %1"
+  :"=m" (v->counter), "=qm" (c)
+  :"m" (v->counter) : "memory");
+ return c != 0;
+}
+# 355 "linux-2.6.18/include/asm/atomic.h"
+static __inline__  __attribute__((always_inline)) int atomic64_add_negative(long i, atomic64_t *v)
+{
+ unsigned char c;
+
+ __asm__ __volatile__(
+  "" "addq %2,%0; sets %1"
+  :"=m" (v->counter), "=qm" (c)
+  :"ir" (i), "m" (v->counter) : "memory");
+ return c;
+}
+# 373 "linux-2.6.18/include/asm/atomic.h"
+static __inline__  __attribute__((always_inline)) long atomic64_add_return(long i, atomic64_t *v)
+{
+ long __i = i;
+ __asm__ __volatile__(
+  "" "xaddq %0, %1;"
+  :"=r"(i)
+  :"m"(v->counter), "0"(i));
+ return i + __i;
+}
+
+static __inline__  __attribute__((always_inline)) long atomic64_sub_return(long i, atomic64_t *v)
+{
+ return atomic64_add_return(-i,v);
+}
+# 434 "linux-2.6.18/include/asm/atomic.h"
 # 1 "linux-2.6.18/include/asm-generic/atomic.h" 1
-# 71 "linux-2.6.18/include/asm-generic/atomic.h"
-typedef atomic_t atomic_long_t;
+# 23 "linux-2.6.18/include/asm-generic/atomic.h"
+typedef atomic64_t atomic_long_t;
+
 
 
 static inline  __attribute__((always_inline)) long atomic_long_read(atomic_long_t *l)
 {
- atomic_t *v = (atomic_t *)l;
+ atomic64_t *v = (atomic64_t *)l;
 
  return (long)((v)->counter);
 }
 
 static inline  __attribute__((always_inline)) void atomic_long_set(atomic_long_t *l, long i)
 {
- atomic_t *v = (atomic_t *)l;
+ atomic64_t *v = (atomic64_t *)l;
 
  (((v)->counter) = (i));
 }
 
 static inline  __attribute__((always_inline)) void atomic_long_inc(atomic_long_t *l)
 {
- atomic_t *v = (atomic_t *)l;
+ atomic64_t *v = (atomic64_t *)l;
 
- atomic_inc(v);
+ atomic64_inc(v);
 }
 
 static inline  __attribute__((always_inline)) void atomic_long_dec(atomic_long_t *l)
 {
- atomic_t *v = (atomic_t *)l;
+ atomic64_t *v = (atomic64_t *)l;
 
- atomic_dec(v);
+ atomic64_dec(v);
 }
 
 static inline  __attribute__((always_inline)) void atomic_long_add(long i, atomic_long_t *l)
 {
- atomic_t *v = (atomic_t *)l;
+ atomic64_t *v = (atomic64_t *)l;
 
- atomic_add(i, v);
+ atomic64_add(i, v);
 }
 
 static inline  __attribute__((always_inline)) void atomic_long_sub(long i, atomic_long_t *l)
 {
- atomic_t *v = (atomic_t *)l;
+ atomic64_t *v = (atomic64_t *)l;
 
- atomic_sub(i, v);
+ atomic64_sub(i, v);
 }
-# 257 "linux-2.6.18/include/asm/atomic.h" 2
+# 435 "linux-2.6.18/include/asm/atomic.h" 2
 # 260 "linux-2.6.18/include/linux/spinlock.h" 2
 
 
@@ -3387,12 +3065,10 @@ static inline  __attribute__((always_inline)) void atomic_long_sub(long i, atomi
 
 extern int _atomic_dec_and_lock(atomic_t *atomic, spinlock_t *lock);
 # 46 "linux-2.6.18/include/linux/capability.h" 2
-# 1 "linux-2.6.18/include/asm/current.h" 1
-# 47 "linux-2.6.18/include/linux/capability.h" 2
 # 58 "linux-2.6.18/include/linux/capability.h"
 typedef __u32 kernel_cap_t;
 # 295 "linux-2.6.18/include/linux/capability.h"
-typedef  kernel_cap_t  _GLOBAL_36_T; extern  _GLOBAL_36_T  global_cap_bset[NUM_STACKS];   
+typedef  kernel_cap_t  _GLOBAL_28_T; extern  _GLOBAL_28_T  global_cap_bset[NUM_STACKS];   
 # 323 "linux-2.6.18/include/linux/capability.h"
 static inline  __attribute__((always_inline)) kernel_cap_t cap_combine(kernel_cap_t a, kernel_cap_t b)
 {
@@ -3598,9 +3274,9 @@ static inline  __attribute__((always_inline)) struct timespec timespec_sub(struc
 
 
 
-typedef  struct timespec   _GLOBAL_37_T; extern  _GLOBAL_37_T  global_xtime[NUM_STACKS];    
-typedef  struct timespec   _GLOBAL_38_T; extern  _GLOBAL_38_T  global_wall_to_monotonic[NUM_STACKS];    
-typedef  seqlock_t  _GLOBAL_39_T; extern  _GLOBAL_39_T  global_xtime_lock[NUM_STACKS];   
+typedef  struct timespec   _GLOBAL_29_T; extern  _GLOBAL_29_T  global_xtime[NUM_STACKS];    
+typedef  struct timespec   _GLOBAL_30_T; extern  _GLOBAL_30_T  global_wall_to_monotonic[NUM_STACKS];    
+typedef  seqlock_t  _GLOBAL_31_T; extern  _GLOBAL_31_T  global_xtime_lock[NUM_STACKS];   
 
 void timekeeping_init(void);
 
@@ -3712,34 +3388,91 @@ struct timex {
 };
 # 193 "linux-2.6.18/include/linux/timex.h"
 # 1 "linux-2.6.18/include/asm/timex.h" 1
-# 10 "linux-2.6.18/include/asm/timex.h"
-# 1 "linux-2.6.18/include/asm/tsc.h" 1
-# 26 "linux-2.6.18/include/asm/tsc.h"
+# 9 "linux-2.6.18/include/asm/timex.h"
+# 1 "linux-2.6.18/include/asm/8253pit.h" 1
+# 10 "linux-2.6.18/include/asm/timex.h" 2
+
+# 1 "linux-2.6.18/include/asm/vsyscall.h" 1
+
+
+
+enum vsyscall_num {
+ __NR_vgettimeofday,
+ __NR_vtime,
+};
+# 29 "linux-2.6.18/include/asm/vsyscall.h"
+struct vxtime_data {
+ long hpet_address;
+ int last;
+ unsigned long last_tsc;
+ long quot;
+ long tsc_quot;
+ int mode;
+};
+
+
+
+
+
+typedef  struct vxtime_data   _GLOBAL_32_T; extern  _GLOBAL_32_T  global___vxtime[NUM_STACKS];    
+typedef  struct timespec   _GLOBAL_33_T; extern  _GLOBAL_33_T  global___xtime[NUM_STACKS];    
+typedef  unsigned long    _GLOBAL_34_T; extern volatile  _GLOBAL_34_T  global___jiffies[NUM_STACKS];     
+typedef  unsigned long   _GLOBAL_35_T; extern  _GLOBAL_35_T  global___wall_jiffies[NUM_STACKS];    
+typedef  struct timezone   _GLOBAL_36_T; extern  _GLOBAL_36_T  global___sys_tz[NUM_STACKS];    
+typedef  seqlock_t  _GLOBAL_37_T; extern  _GLOBAL_37_T  global___xtime_lock[NUM_STACKS];   
+
+
+typedef  struct vxtime_data   _GLOBAL_38_T; extern  _GLOBAL_38_T  global_vxtime[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_39_T; extern  _GLOBAL_39_T  global_wall_jiffies[NUM_STACKS];    
+typedef  struct timezone   _GLOBAL_40_T; extern  _GLOBAL_40_T  global_sys_tz[NUM_STACKS];    
+typedef  int  _GLOBAL_41_T; extern  _GLOBAL_41_T  global_sysctl_vsyscall[NUM_STACKS];   
+typedef  seqlock_t  _GLOBAL_42_T; extern  _GLOBAL_42_T  global_xtime_lock[NUM_STACKS];   
+
+typedef  int  _GLOBAL_43_T; extern  _GLOBAL_43_T  global_sysctl_vsyscall[NUM_STACKS];   
+# 12 "linux-2.6.18/include/asm/timex.h" 2
+# 1 "linux-2.6.18/include/asm/hpet.h" 1
+# 56 "linux-2.6.18/include/asm/hpet.h"
+extern int is_hpet_enabled(void);
+extern int hpet_rtc_timer_init(void);
+extern int apic_is_clustered_box(void);
+
+typedef  int  _GLOBAL_44_T; extern  _GLOBAL_44_T  global_hpet_use_timer[NUM_STACKS];   
+# 13 "linux-2.6.18/include/asm/timex.h" 2
+
+
+
+
+
+
 typedef unsigned long long cycles_t;
 
-typedef  unsigned int   _GLOBAL_40_T; extern  _GLOBAL_40_T  global_cpu_khz[NUM_STACKS];    
-typedef  unsigned int   _GLOBAL_41_T; extern  _GLOBAL_41_T  global_tsc_khz[NUM_STACKS];    
-
-static inline  __attribute__((always_inline)) cycles_t get_cycles(void)
+static inline  __attribute__((always_inline)) cycles_t get_cycles (void)
 {
- unsigned long long ret = 0;
+ unsigned long long ret;
 
-
-
-
-
-
-
- __asm__ __volatile__("rdtsc" : "=A" (ret));
-
+ do { unsigned int __a,__d; asm volatile("rdtsc" : "=a" (__a), "=d" (__d)); (ret) = ((unsigned long)__a) | (((unsigned long)__d)<<32); } while(0);
  return ret;
 }
 
-extern void tsc_init(void);
-extern void mark_tsc_unstable(void);
-# 11 "linux-2.6.18/include/asm/timex.h" 2
-# 19 "linux-2.6.18/include/asm/timex.h"
+
+static inline   __attribute__((always_inline)) __attribute__((always_inline)) cycles_t get_cycles_sync(void)
+{
+ unsigned long long ret;
+ unsigned eax;
+
+
+ asm volatile ("661:\n\t" "cpuid" "\n662:\n" ".section .altinstructions,\"a\"\n" "  .align 8\n" "  .quad 661b\n" "  .quad 663f\n" "  .byte %c[feat]\n" "  .byte 662b-661b\n" "  .byte 664f-663f\n" ".previous\n" ".section .altinstr_replacement,\"ax\"\n" "663:\n\t" ".byte 0x66,0x90\n" "\n664:\n" ".previous" : "=a" (eax) : [feat] "i" ((3*32+6)), "0" (1) : "ebx","ecx","edx","memory");
+
+ do { unsigned int __a,__d; asm volatile("rdtsc" : "=a" (__a), "=d" (__d)); (ret) = ((unsigned long)__a) | (((unsigned long)__d)<<32); } while(0);
+ return ret;
+}
+
+typedef  unsigned int   _GLOBAL_45_T; extern  _GLOBAL_45_T  global_cpu_khz[NUM_STACKS];    
+
 extern int read_current_timer(unsigned long *timer_value);
+
+
+typedef  struct vxtime_data   _GLOBAL_46_T; extern  _GLOBAL_46_T  global_vxtime[NUM_STACKS];    
 # 194 "linux-2.6.18/include/linux/timex.h" 2
 
 
@@ -3747,27 +3480,27 @@ extern int read_current_timer(unsigned long *timer_value);
 
 
 
-typedef  unsigned long   _GLOBAL_42_T; extern  _GLOBAL_42_T  global_tick_usec[NUM_STACKS];    
-typedef  unsigned long   _GLOBAL_43_T; extern  _GLOBAL_43_T  global_tick_nsec[NUM_STACKS];    
-typedef  int  _GLOBAL_44_T; extern  _GLOBAL_44_T  global_tickadj[NUM_STACKS];   
+typedef  unsigned long   _GLOBAL_47_T; extern  _GLOBAL_47_T  global_tick_usec[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_48_T; extern  _GLOBAL_48_T  global_tick_nsec[NUM_STACKS];    
+typedef  int  _GLOBAL_49_T; extern  _GLOBAL_49_T  global_tickadj[NUM_STACKS];   
 
 
 
 
-typedef  int  _GLOBAL_45_T; extern  _GLOBAL_45_T  global_time_state[NUM_STACKS];   
-typedef  int  _GLOBAL_46_T; extern  _GLOBAL_46_T  global_time_status[NUM_STACKS];   
-typedef  long  _GLOBAL_47_T; extern  _GLOBAL_47_T  global_time_offset[NUM_STACKS];   
-typedef  long  _GLOBAL_48_T; extern  _GLOBAL_48_T  global_time_constant[NUM_STACKS];   
-typedef  long  _GLOBAL_49_T; extern  _GLOBAL_49_T  global_time_tolerance[NUM_STACKS];   
-typedef  long  _GLOBAL_50_T; extern  _GLOBAL_50_T  global_time_precision[NUM_STACKS];   
-typedef  long  _GLOBAL_51_T; extern  _GLOBAL_51_T  global_time_maxerror[NUM_STACKS];   
-typedef  long  _GLOBAL_52_T; extern  _GLOBAL_52_T  global_time_esterror[NUM_STACKS];   
+typedef  int  _GLOBAL_50_T; extern  _GLOBAL_50_T  global_time_state[NUM_STACKS];   
+typedef  int  _GLOBAL_51_T; extern  _GLOBAL_51_T  global_time_status[NUM_STACKS];   
+typedef  long  _GLOBAL_52_T; extern  _GLOBAL_52_T  global_time_offset[NUM_STACKS];   
+typedef  long  _GLOBAL_53_T; extern  _GLOBAL_53_T  global_time_constant[NUM_STACKS];   
+typedef  long  _GLOBAL_54_T; extern  _GLOBAL_54_T  global_time_tolerance[NUM_STACKS];   
+typedef  long  _GLOBAL_55_T; extern  _GLOBAL_55_T  global_time_precision[NUM_STACKS];   
+typedef  long  _GLOBAL_56_T; extern  _GLOBAL_56_T  global_time_maxerror[NUM_STACKS];   
+typedef  long  _GLOBAL_57_T; extern  _GLOBAL_57_T  global_time_esterror[NUM_STACKS];   
 
-typedef  long  _GLOBAL_53_T; extern  _GLOBAL_53_T  global_time_freq[NUM_STACKS];   
-typedef  long  _GLOBAL_54_T; extern  _GLOBAL_54_T  global_time_reftime[NUM_STACKS];   
+typedef  long  _GLOBAL_58_T; extern  _GLOBAL_58_T  global_time_freq[NUM_STACKS];   
+typedef  long  _GLOBAL_59_T; extern  _GLOBAL_59_T  global_time_reftime[NUM_STACKS];   
 
-typedef  long  _GLOBAL_55_T; extern  _GLOBAL_55_T  global_time_adjust[NUM_STACKS];   
-typedef  long  _GLOBAL_56_T; extern  _GLOBAL_56_T  global_time_next_adjust[NUM_STACKS];   
+typedef  long  _GLOBAL_60_T; extern  _GLOBAL_60_T  global_time_adjust[NUM_STACKS];   
+typedef  long  _GLOBAL_61_T; extern  _GLOBAL_61_T  global_time_next_adjust[NUM_STACKS];   
 
 
 
@@ -3815,39 +3548,50 @@ extern int do_adjtimex(struct timex *);
 
 
 # 1 "linux-2.6.18/include/asm/div64.h" 1
-# 38 "linux-2.6.18/include/asm/div64.h"
-static inline  __attribute__((always_inline)) long
-div_ll_X_l_rem(long long divs, long div, long *rem)
-{
- long dum2;
-      __asm__("divl %2":"=a"(dum2), "=d"(*rem)
-      : "rm"(div), "A"(divs));
-
- return dum2;
-
-}
+# 1 "linux-2.6.18/include/asm-generic/div64.h" 1
+# 1 "linux-2.6.18/include/asm/div64.h" 2
 # 6 "linux-2.6.18/include/linux/calc64.h" 2
-# 35 "linux-2.6.18/include/linux/calc64.h"
+# 20 "linux-2.6.18/include/linux/calc64.h"
+static inline  __attribute__((always_inline)) unsigned long do_div_llr(const long long dividend,
+           const long divisor, long *remainder)
+{
+ u64 result = dividend;
+
+ *(remainder) = ({ uint32_t __base = (divisor); uint32_t __rem; __rem = ((uint64_t)(result)) % __base; (result) = ((uint64_t)(result)) / __base; __rem; });
+ return (unsigned long) result;
+}
+
+
+
+
+
+
+
 static inline  __attribute__((always_inline)) long div_long_long_rem_signed(const long long dividend,
          const long divisor, long *remainder)
 {
  long res;
 
  if (__builtin_expect(!!(dividend < 0), 0)) {
-  res = -div_ll_X_l_rem(-dividend,divisor,remainder);
+  res = -do_div_llr((-dividend), divisor, remainder);
   *remainder = -(*remainder);
  } else
-  res = div_ll_X_l_rem(dividend,divisor,remainder);
+  res = do_div_llr((dividend), divisor, remainder);
 
  return res;
 }
 # 5 "linux-2.6.18/include/linux/jiffies.h" 2
 # 81 "linux-2.6.18/include/linux/jiffies.h"
-typedef  u64   _GLOBAL_57_T; extern  __attribute__((section(".data")))   _GLOBAL_57_T  global_jiffies_64[NUM_STACKS];    
-typedef  unsigned long    _GLOBAL_58_T; extern volatile  __attribute__((section(".data")))   _GLOBAL_58_T  global_jiffies[NUM_STACKS];      
+typedef  u64   _GLOBAL_62_T; extern  __attribute__((section(".data")))   _GLOBAL_62_T  global_jiffies_64[NUM_STACKS];    
+typedef  unsigned long    _GLOBAL_63_T; extern volatile  __attribute__((section(".data")))   _GLOBAL_63_T  global_jiffies[NUM_STACKS];      
 
 
-u64 get_jiffies_64(void);
+
+
+static inline  __attribute__((always_inline)) u64 get_jiffies_64(void)
+{
+ return (u64)global_jiffies[get_stack_id()];
+}
 # 252 "linux-2.6.18/include/linux/jiffies.h"
 static inline  __attribute__((always_inline)) unsigned int jiffies_to_msecs(const unsigned long j)
 {
@@ -3901,14 +3645,14 @@ static __inline__  __attribute__((always_inline)) unsigned long
 timespec_to_jiffies(const struct timespec *value)
 {
  unsigned long sec = value->tv_sec;
- long nsec = value->tv_nsec + (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))))) - 1;
+ long nsec = value->tv_nsec + (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))))) - 1;
 
- if (sec >= (long)((u64)((u64)((~0UL >> 1)-1) * (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))))) / 1000000000L)){
-  sec = (long)((u64)((u64)((~0UL >> 1)-1) * (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))))) / 1000000000L);
+ if (sec >= (( ((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) / (1000000000L)) << (1)) + (((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) % (1000000000L)) << (1)) + (1000000000L) / 2) / (1000000000L)) - 1)){
+  sec = (( ((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) / (1000000000L)) << (1)) + (((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) % (1000000000L)) << (1)) + (1000000000L) / 2) / (1000000000L)) - 1);
   nsec = 0;
  }
- return (((u64)sec * ((unsigned long)((((u64)1000000000L << (32 - 10)) + (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))))))) +
-  (((u64)nsec * ((unsigned long)((((u64)1 << ((32 - 10) + 29)) + (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))))))) >>
+ return (((u64)sec * ((unsigned long)((((u64)1000000000L << (32 - 10)) + (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))))) +
+  (((u64)nsec * ((unsigned long)((((u64)1 << ((32 - 10) + 29)) + (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))))) >>
    (((32 - 10) + 29) - (32 - 10)))) >> (32 - 10);
 
 }
@@ -3920,8 +3664,8 @@ jiffies_to_timespec(const unsigned long jiffies, struct timespec *value)
 
 
 
- u64 nsec = (u64)jiffies * (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))));
- value->tv_sec = div_ll_X_l_rem(nsec,1000000000L,&value->tv_nsec);
+ u64 nsec = (u64)jiffies * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))));
+ value->tv_sec = do_div_llr((nsec), 1000000000L, &value->tv_nsec);
 }
 # 350 "linux-2.6.18/include/linux/jiffies.h"
 static __inline__  __attribute__((always_inline)) unsigned long
@@ -3930,12 +3674,12 @@ timeval_to_jiffies(const struct timeval *value)
  unsigned long sec = value->tv_sec;
  long usec = value->tv_usec;
 
- if (sec >= (long)((u64)((u64)((~0UL >> 1)-1) * (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))))) / 1000000000L)){
-  sec = (long)((u64)((u64)((~0UL >> 1)-1) * (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))))) / 1000000000L);
+ if (sec >= (( ((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) / (1000000000L)) << (1)) + (((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) % (1000000000L)) << (1)) + (1000000000L) / 2) / (1000000000L)) - 1)){
+  sec = (( ((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) / (1000000000L)) << (1)) + (((((((~0UL >> 1)-1) >> (32 - 10)) * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))) % (1000000000L)) << (1)) + (1000000000L) / 2) / (1000000000L)) - 1);
   usec = 0;
  }
- return (((u64)sec * ((unsigned long)((((u64)1000000000L << (32 - 10)) + (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))))))) +
-  (((u64)usec * ((unsigned long)((((u64)1000L << ((32 - 10) + 19)) + (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))))))) + (u64)(((u64)1 << ((32 - 10) + 19)) - 1)) >>
+ return (((u64)sec * ((unsigned long)((((u64)1000000000L << (32 - 10)) + (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))))))) +
+  (((u64)usec * ((unsigned long)((((u64)1000L << ((32 - 10) + 19)) + (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))))) -1) / (u64)(( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))))))) + (u64)(((u64)1 << ((32 - 10) + 19)) - 1)) >>
    (((32 - 10) + 19) - (32 - 10)))) >> (32 - 10);
 }
 
@@ -3946,10 +3690,10 @@ jiffies_to_timeval(const unsigned long jiffies, struct timeval *value)
 
 
 
- u64 nsec = (u64)jiffies * (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))));
+ u64 nsec = (u64)jiffies * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))));
  long tv_usec;
 
- value->tv_sec = div_ll_X_l_rem(nsec,1000000000L,&tv_usec);
+ value->tv_sec = do_div_llr((nsec), 1000000000L, &tv_usec);
  tv_usec /= 1000L;
  value->tv_usec = tv_usec;
 }
@@ -3962,8 +3706,8 @@ static inline  __attribute__((always_inline)) clock_t jiffies_to_clock_t(long x)
 
 
 
- u64 tmp = (u64)x * (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))));
- ({ unsigned long __upper, __low, __high, __mod, __base; __base = ((1000000000L / 100)); asm("":"=a" (__low), "=d" (__high):"A" (tmp)); __upper = __high; if (__high) { __upper = __high % (__base); __high = __high / (__base); } asm("divl %2":"=a" (__low), "=d" (__mod):"rm" (__base), "0" (__low), "1" (__upper)); asm("":"=A" (tmp):"a" (__low),"d" (__high)); __mod; });
+ u64 tmp = (u64)x * (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))));
+ ({ uint32_t __base = ((1000000000L / 100)); uint32_t __rem; __rem = ((uint64_t)(tmp)) % __base; (tmp) = ((uint64_t)(tmp)) / __base; __rem; });
  return (long)tmp;
 
 }
@@ -3980,8 +3724,8 @@ static inline  __attribute__((always_inline)) unsigned long clock_t_to_jiffies(u
 static inline  __attribute__((always_inline)) u64 jiffies_64_to_clock_t(u64 x)
 {
 # 424 "linux-2.6.18/include/linux/jiffies.h"
- x *= (( (((1000000UL * 1000) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))) << (8)) + ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000))))) / 2) / ((( (((1193182) / (((1193182 + 1000/2) / 1000))) << (8)) + ((((1193182) % (((1193182 + 1000/2) / 1000))) << (8)) + (((1193182 + 1000/2) / 1000)) / 2) / (((1193182 + 1000/2) / 1000)))))));
- ({ unsigned long __upper, __low, __high, __mod, __base; __base = ((1000000000L / 100)); asm("":"=a" (__low), "=d" (__high):"A" (x)); __upper = __high; if (__high) { __upper = __high % (__base); __high = __high / (__base); } asm("divl %2":"=a" (__low), "=d" (__mod):"rm" (__base), "0" (__low), "1" (__upper)); asm("":"=A" (x):"a" (__low),"d" (__high)); __mod; });
+ x *= (( (((1000000UL * 1000) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((((1000000UL * 1000) % ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))) << (8)) + ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000))))) / 2) / ((( (((1193182UL) / (((1193182UL + 1000/2) / 1000))) << (8)) + ((((1193182UL) % (((1193182UL + 1000/2) / 1000))) << (8)) + (((1193182UL + 1000/2) / 1000)) / 2) / (((1193182UL + 1000/2) / 1000)))))));
+ ({ uint32_t __base = ((1000000000L / 100)); uint32_t __rem; __rem = ((uint64_t)(x)) % __base; (x) = ((uint64_t)(x)) / __base; __rem; });
 
  return x;
 }
@@ -3989,7 +3733,7 @@ static inline  __attribute__((always_inline)) u64 jiffies_64_to_clock_t(u64 x)
 static inline  __attribute__((always_inline)) u64 nsec_to_clock_t(u64 x)
 {
 
- ({ unsigned long __upper, __low, __high, __mod, __base; __base = ((1000000000L / 100)); asm("":"=a" (__low), "=d" (__high):"A" (x)); __upper = __high; if (__high) { __upper = __high % (__base); __high = __high / (__base); } asm("divl %2":"=a" (__low), "=d" (__mod):"rm" (__base), "0" (__low), "1" (__upper)); asm("":"=A" (x):"a" (__low),"d" (__high)); __mod; });
+ ({ uint32_t __base = ((1000000000L / 100)); uint32_t __rem; __rem = ((uint64_t)(x)) % __base; (x) = ((uint64_t)(x)) / __base; __rem; });
 # 447 "linux-2.6.18/include/linux/jiffies.h"
  return x;
 }
@@ -4066,8 +3810,8 @@ static inline  __attribute__((always_inline)) void rb_link_node(struct rb_node *
 # 1 "linux-2.6.18/include/linux/numa.h" 1
 # 87 "linux-2.6.18/include/linux/nodemask.h" 2
 
-typedef struct { unsigned long bits[((((1 << 0))+32 -1)/32)]; } nodemask_t;
-typedef  nodemask_t  _GLOBAL_59_T; extern  _GLOBAL_59_T  global__unused_nodemask_arg_[NUM_STACKS];   
+typedef struct { unsigned long bits[((((1 << 0))+64 -1)/64)]; } nodemask_t;
+typedef  nodemask_t  _GLOBAL_64_T; extern  _GLOBAL_64_T  global__unused_nodemask_arg_[NUM_STACKS];   
 
 
 static inline  __attribute__((always_inline)) void __node_set(int node, volatile nodemask_t *dstp)
@@ -4207,18 +3951,18 @@ static inline  __attribute__((always_inline)) void __nodes_shift_left(nodemask_t
 
 static inline  __attribute__((always_inline)) int __first_node(const nodemask_t *srcp)
 {
- return ({ int __x = ((1 << 0)); int __y = (find_first_bit(srcp->bits, (1 << 0))); __x < __y ? __x: __y; });
+ return ({ int __x = ((1 << 0)); int __y = (((__builtin_constant_p((1 << 0)) && ((1 << 0)) <= 64 ? (__scanbit(*(unsigned long *)srcp->bits,((1 << 0)))) : find_first_bit(srcp->bits,(1 << 0))))); __x < __y ? __x: __y; });
 }
 
 
 static inline  __attribute__((always_inline)) int __next_node(int n, const nodemask_t *srcp)
 {
- return ({ int __x = ((1 << 0)); int __y = (find_next_bit(srcp->bits, (1 << 0), n+1)); __x < __y ? __x: __y; });
+ return ({ int __x = ((1 << 0)); int __y = (((__builtin_constant_p((1 << 0)) && ((1 << 0)) <= 64 ? ((n+1) + (__scanbit((*(unsigned long *)srcp->bits) >> (n+1),((1 << 0))-(n+1)))) : find_next_bit(srcp->bits,(1 << 0),n+1)))); __x < __y ? __x: __y; });
 }
 # 251 "linux-2.6.18/include/linux/nodemask.h"
 static inline  __attribute__((always_inline)) int __first_unset_node(const nodemask_t *maskp)
 {
- return ({ int __x = ((1 << 0)); int __y = (find_first_zero_bit(maskp->bits, (1 << 0))); __x < __y ? __x: __y; });
+ return ({ int __x = ((1 << 0)); int __y = (((__builtin_constant_p((1 << 0)) && ((1 << 0)) <= 64 ? (__scanbit(~*(unsigned long *)maskp->bits,((1 << 0)))) : find_first_zero_bit(maskp->bits,(1 << 0))))); __x < __y ? __x: __y; });
 
 }
 # 285 "linux-2.6.18/include/linux/nodemask.h"
@@ -4266,13 +4010,15 @@ static inline  __attribute__((always_inline)) void __nodes_remap(nodemask_t *dst
  bitmap_remap(dstp->bits, srcp->bits, oldp->bits, newp->bits, nbits);
 }
 # 345 "linux-2.6.18/include/linux/nodemask.h"
-typedef  nodemask_t  _GLOBAL_60_T; extern  _GLOBAL_60_T  global_node_online_map[NUM_STACKS];   
-typedef  nodemask_t  _GLOBAL_61_T; extern  _GLOBAL_61_T  global_node_possible_map[NUM_STACKS];   
+typedef  nodemask_t  _GLOBAL_65_T; extern  _GLOBAL_65_T  global_node_online_map[NUM_STACKS];   
+typedef  nodemask_t  _GLOBAL_66_T; extern  _GLOBAL_66_T  global_node_possible_map[NUM_STACKS];   
 # 55 "linux-2.6.18/include/linux/sched.h" 2
 
 
 # 1 "linux-2.6.18/include/asm/semaphore.h" 1
 # 41 "linux-2.6.18/include/asm/semaphore.h"
+# 1 "linux-2.6.18/include/asm/rwlock.h" 1
+# 42 "linux-2.6.18/include/asm/semaphore.h" 2
 # 1 "linux-2.6.18/include/linux/wait.h" 1
 # 28 "linux-2.6.18/include/linux/wait.h"
 typedef struct __wait_queue wait_queue_t;
@@ -4327,9 +4073,9 @@ static inline  __attribute__((always_inline)) int waitqueue_active(wait_queue_he
  return !list_empty(&q->task_list);
 }
 # 111 "linux-2.6.18/include/linux/wait.h"
-extern void add_wait_queue(wait_queue_head_t *q, wait_queue_t * wait) __attribute__((regparm(3))) ;
-extern void add_wait_queue_exclusive(wait_queue_head_t *q, wait_queue_t * wait) __attribute__((regparm(3))) ;
-extern void remove_wait_queue(wait_queue_head_t *q, wait_queue_t * wait) __attribute__((regparm(3))) ;
+extern void add_wait_queue(wait_queue_head_t *q, wait_queue_t * wait);
+extern void add_wait_queue_exclusive(wait_queue_head_t *q, wait_queue_t * wait);
+extern void remove_wait_queue(wait_queue_head_t *q, wait_queue_t * wait);
 
 static inline  __attribute__((always_inline)) void __add_wait_queue(wait_queue_head_t *head, wait_queue_t *new)
 {
@@ -4351,16 +4097,16 @@ static inline  __attribute__((always_inline)) void __remove_wait_queue(wait_queu
  list_del(&old->task_list);
 }
 
-void __wake_up(wait_queue_head_t *q, unsigned int mode, int nr, void *key) __attribute__((regparm(3))) ;
-extern void __wake_up_locked(wait_queue_head_t *q, unsigned int mode) __attribute__((regparm(3))) ;
-extern void __wake_up_sync(wait_queue_head_t *q, unsigned int mode, int nr) __attribute__((regparm(3))) ;
-void __wake_up_bit(wait_queue_head_t *, void *, int) __attribute__((regparm(3))) ;
-int __wait_on_bit(wait_queue_head_t *, struct wait_bit_queue *, int (*)(void *), unsigned) __attribute__((regparm(3))) ;
-int __wait_on_bit_lock(wait_queue_head_t *, struct wait_bit_queue *, int (*)(void *), unsigned) __attribute__((regparm(3))) ;
-void wake_up_bit(void *, int) __attribute__((regparm(3))) ;
-int out_of_line_wait_on_bit(void *, int, int (*)(void *), unsigned) __attribute__((regparm(3))) ;
-int out_of_line_wait_on_bit_lock(void *, int, int (*)(void *), unsigned) __attribute__((regparm(3))) ;
-wait_queue_head_t *bit_waitqueue(void *, int) __attribute__((regparm(3))) ;
+void __wake_up(wait_queue_head_t *q, unsigned int mode, int nr, void *key);
+extern void __wake_up_locked(wait_queue_head_t *q, unsigned int mode);
+extern void __wake_up_sync(wait_queue_head_t *q, unsigned int mode, int nr);
+void __wake_up_bit(wait_queue_head_t *, void *, int);
+int __wait_on_bit(wait_queue_head_t *, struct wait_bit_queue *, int (*)(void *), unsigned);
+int __wait_on_bit_lock(wait_queue_head_t *, struct wait_bit_queue *, int (*)(void *), unsigned);
+void wake_up_bit(void *, int);
+int out_of_line_wait_on_bit(void *, int, int (*)(void *), unsigned);
+int out_of_line_wait_on_bit_lock(void *, int, int (*)(void *), unsigned);
+wait_queue_head_t *bit_waitqueue(void *, int);
 # 342 "linux-2.6.18/include/linux/wait.h"
 static inline  __attribute__((always_inline)) void add_wait_queue_exclusive_locked(wait_queue_head_t *q,
          wait_queue_t * wait)
@@ -4383,21 +4129,21 @@ static inline  __attribute__((always_inline)) void remove_wait_queue_locked(wait
 
 
 
-extern void sleep_on(wait_queue_head_t *q) __attribute__((regparm(3))) ;
-extern long sleep_on_timeout(wait_queue_head_t *q, signed long timeout) __attribute__((regparm(3))) ;
+extern void sleep_on(wait_queue_head_t *q);
+extern long sleep_on_timeout(wait_queue_head_t *q, signed long timeout);
 
-extern void interruptible_sleep_on(wait_queue_head_t *q) __attribute__((regparm(3))) ;
-extern long interruptible_sleep_on_timeout(wait_queue_head_t *q, signed long timeout) __attribute__((regparm(3))) ;
-
-
+extern void interruptible_sleep_on(wait_queue_head_t *q);
+extern long interruptible_sleep_on_timeout(wait_queue_head_t *q, signed long timeout);
 
 
 
-void prepare_to_wait(wait_queue_head_t *q, wait_queue_t *wait, int state) __attribute__((regparm(3))) ;
 
-void prepare_to_wait_exclusive(wait_queue_head_t *q, wait_queue_t *wait, int state) __attribute__((regparm(3))) ;
 
-void finish_wait(wait_queue_head_t *q, wait_queue_t *wait) __attribute__((regparm(3))) ;
+void prepare_to_wait(wait_queue_head_t *q, wait_queue_t *wait, int state);
+
+void prepare_to_wait_exclusive(wait_queue_head_t *q, wait_queue_t *wait, int state);
+
+void finish_wait(wait_queue_head_t *q, wait_queue_t *wait);
 int autoremove_wake_function(wait_queue_t *wait, unsigned mode, int sync, void *key);
 int wake_bit_function(wait_queue_t *wait, unsigned mode, int sync, void *key);
 # 420 "linux-2.6.18/include/linux/wait.h"
@@ -4416,7 +4162,7 @@ static inline  __attribute__((always_inline)) int wait_on_bit_lock(void *word, i
   return 0;
  return out_of_line_wait_on_bit_lock(word, bit, action, mode);
 }
-# 42 "linux-2.6.18/include/asm/semaphore.h" 2
+# 43 "linux-2.6.18/include/asm/semaphore.h" 2
 # 1 "linux-2.6.18/include/linux/rwsem.h" 1
 # 19 "linux-2.6.18/include/linux/rwsem.h"
 struct rw_semaphore;
@@ -4438,14 +4184,14 @@ struct rw_semaphore {
 extern void __init_rwsem(struct rw_semaphore *sem, const char *name,
     struct lock_class_key *key);
 # 62 "linux-2.6.18/include/linux/rwsem-spinlock.h"
-extern void __down_read(struct rw_semaphore *sem) __attribute__((regparm(3))) ;
-extern int __down_read_trylock(struct rw_semaphore *sem) __attribute__((regparm(3))) ;
-extern void __down_write(struct rw_semaphore *sem) __attribute__((regparm(3))) ;
-extern void __down_write_nested(struct rw_semaphore *sem, int subclass) __attribute__((regparm(3))) ;
-extern int __down_write_trylock(struct rw_semaphore *sem) __attribute__((regparm(3))) ;
-extern void __up_read(struct rw_semaphore *sem) __attribute__((regparm(3))) ;
-extern void __up_write(struct rw_semaphore *sem) __attribute__((regparm(3))) ;
-extern void __downgrade_write(struct rw_semaphore *sem) __attribute__((regparm(3))) ;
+extern void __down_read(struct rw_semaphore *sem);
+extern int __down_read_trylock(struct rw_semaphore *sem);
+extern void __down_write(struct rw_semaphore *sem);
+extern void __down_write_nested(struct rw_semaphore *sem, int subclass);
+extern int __down_write_trylock(struct rw_semaphore *sem);
+extern void __up_read(struct rw_semaphore *sem);
+extern void __up_write(struct rw_semaphore *sem);
+extern void __downgrade_write(struct rw_semaphore *sem);
 
 static inline  __attribute__((always_inline)) int rwsem_is_locked(struct rw_semaphore *sem)
 {
@@ -4490,14 +4236,15 @@ extern void up_write(struct rw_semaphore *sem);
 
 
 extern void downgrade_write(struct rw_semaphore *sem);
-# 43 "linux-2.6.18/include/asm/semaphore.h" 2
+# 44 "linux-2.6.18/include/asm/semaphore.h" 2
+
 
 struct semaphore {
  atomic_t count;
  int sleepers;
  wait_queue_head_t wait;
 };
-# 64 "linux-2.6.18/include/asm/semaphore.h"
+# 65 "linux-2.6.18/include/asm/semaphore.h"
 static inline  __attribute__((always_inline)) void sema_init (struct semaphore *sem, int val)
 {
 
@@ -4521,10 +4268,15 @@ static inline  __attribute__((always_inline)) void init_MUTEX_LOCKED (struct sem
  sema_init(sem, 0);
 }
 
- __attribute__((regparm(3))) void __down_failed(void );
- __attribute__((regparm(3))) int __down_failed_interruptible(void );
- __attribute__((regparm(3))) int __down_failed_trylock(void );
- __attribute__((regparm(3))) void __up_wakeup(void );
+ void __down_failed(void );
+ int __down_failed_interruptible(void );
+ int __down_failed_trylock(void );
+ void __up_wakeup(void );
+
+ void __down(struct semaphore * sem);
+ int __down_interruptible(struct semaphore * sem);
+ int __down_trylock(struct semaphore * sem);
+ void __up(struct semaphore * sem);
 
 
 
@@ -4534,19 +4286,19 @@ static inline  __attribute__((always_inline)) void init_MUTEX_LOCKED (struct sem
 static inline  __attribute__((always_inline)) void down(struct semaphore * sem)
 {
  do { do { } while (0); } while (0);
+
  __asm__ __volatile__(
   "# atomic down operation\n\t"
   "" "decl %0\n\t"
   "js 2f\n"
   "1:\n"
   ".subsection 1\n\t" "" ".ifndef " ".text.lock.""clnt" "\n\t" ".text.lock.""clnt" ":\n\t" ".endif\n"
-  "2:\tlea %0,%%eax\n\t"
-  "call __down_failed\n\t"
+  "2:\tcall __down_failed\n\t"
   "jmp 1b\n"
   ".previous\n\t"
-  :"+m" (sem->count)
-  :
-  :"memory","ax");
+  :"=m" (sem->count)
+  :"D" (sem)
+  :"memory");
 }
 
 
@@ -4558,6 +4310,7 @@ static inline  __attribute__((always_inline)) int down_interruptible(struct sema
  int result;
 
  do { do { } while (0); } while (0);
+
  __asm__ __volatile__(
   "# atomic interruptible down operation\n\t"
   "" "decl %1\n\t"
@@ -4565,12 +4318,11 @@ static inline  __attribute__((always_inline)) int down_interruptible(struct sema
   "xorl %0,%0\n"
   "1:\n"
   ".subsection 1\n\t" "" ".ifndef " ".text.lock.""clnt" "\n\t" ".text.lock.""clnt" ":\n\t" ".endif\n"
-  "2:\tlea %1,%%eax\n\t"
-  "call __down_failed_interruptible\n\t"
+  "2:\tcall __down_failed_interruptible\n\t"
   "jmp 1b\n"
   ".previous\n\t"
-  :"=a" (result), "+m" (sem->count)
-  :
+  :"=a" (result), "=m" (sem->count)
+  :"D" (sem)
   :"memory");
  return result;
 }
@@ -4590,13 +4342,12 @@ static inline  __attribute__((always_inline)) int down_trylock(struct semaphore 
   "xorl %0,%0\n"
   "1:\n"
   ".subsection 1\n\t" "" ".ifndef " ".text.lock.""clnt" "\n\t" ".text.lock.""clnt" ":\n\t" ".endif\n"
-  "2:\tlea %1,%%eax\n\t"
-  "call __down_failed_trylock\n\t"
+  "2:\tcall __down_failed_trylock\n\t"
   "jmp 1b\n"
   ".previous\n\t"
-  :"=a" (result), "+m" (sem->count)
-  :
-  :"memory");
+  :"=a" (result), "=m" (sem->count)
+  :"D" (sem)
+  :"memory","cc");
  return result;
 }
 
@@ -4614,56 +4365,83 @@ static inline  __attribute__((always_inline)) void up(struct semaphore * sem)
   "jle 2f\n"
   "1:\n"
   ".subsection 1\n\t" "" ".ifndef " ".text.lock.""clnt" "\n\t" ".text.lock.""clnt" ":\n\t" ".endif\n"
-  "2:\tlea %0,%%eax\n\t"
-  "call __up_wakeup\n\t"
+  "2:\tcall __up_wakeup\n\t"
   "jmp 1b\n"
   ".previous\n\t"
-  ".subsection 0\n"
-  :"+m" (sem->count)
-  :
-  :"memory","ax");
+  :"=m" (sem->count)
+  :"D" (sem)
+  :"memory");
 }
 # 58 "linux-2.6.18/include/linux/sched.h" 2
 
 # 1 "linux-2.6.18/include/asm/ptrace.h" 1
-# 26 "linux-2.6.18/include/asm/ptrace.h"
+# 39 "linux-2.6.18/include/asm/ptrace.h"
 struct pt_regs {
- long ebx;
- long ecx;
- long edx;
- long esi;
- long edi;
- long ebp;
- long eax;
- int xds;
- int xes;
- long orig_eax;
- long eip;
- int xcs;
- long eflags;
- long esp;
- int xss;
+ unsigned long r15;
+ unsigned long r14;
+ unsigned long r13;
+ unsigned long r12;
+ unsigned long rbp;
+ unsigned long rbx;
+
+  unsigned long r11;
+ unsigned long r10;
+ unsigned long r9;
+ unsigned long r8;
+ unsigned long rax;
+ unsigned long rcx;
+ unsigned long rdx;
+ unsigned long rsi;
+ unsigned long rdi;
+ unsigned long orig_rax;
+
+
+ unsigned long rip;
+ unsigned long cs;
+ unsigned long eflags;
+ unsigned long rsp;
+ unsigned long ss;
+
 };
-# 64 "linux-2.6.18/include/asm/ptrace.h"
+# 87 "linux-2.6.18/include/asm/ptrace.h"
+extern unsigned long profile_pc(struct pt_regs *regs);
+void signal_fault(struct pt_regs *regs, void *frame, char *where);
+
 struct task_struct;
-extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs, int error_code);
-# 74 "linux-2.6.18/include/asm/ptrace.h"
-static inline  __attribute__((always_inline)) int user_mode(struct pt_regs *regs)
-{
- return (regs->xcs & 3) != 0;
-}
-static inline  __attribute__((always_inline)) int user_mode_vm(struct pt_regs *regs)
-{
- return ((regs->xcs & 3) | (regs->eflags & 0)) != 0;
-}
+
+extern unsigned long
+convert_rip_to_linear(struct task_struct *child, struct pt_regs *regs);
+
+enum {
+        EF_CF = 0x00000001,
+        EF_PF = 0x00000004,
+        EF_AF = 0x00000010,
+        EF_ZF = 0x00000040,
+        EF_SF = 0x00000080,
+        EF_TF = 0x00000100,
+        EF_IE = 0x00000200,
+        EF_DF = 0x00000400,
+        EF_OF = 0x00000800,
+        EF_IOPL = 0x00003000,
+        EF_IOPL_RING0 = 0x00000000,
+        EF_IOPL_RING1 = 0x00001000,
+        EF_IOPL_RING2 = 0x00002000,
+        EF_NT = 0x00004000,
+        EF_RF = 0x00010000,
+        EF_VM = 0x00020000,
+        EF_AC = 0x00040000,
+        EF_VIF = 0x00080000,
+        EF_VIP = 0x00100000,
+        EF_ID = 0x00200000,
+};
 # 60 "linux-2.6.18/include/linux/sched.h" 2
 # 1 "linux-2.6.18/include/asm/mmu.h" 1
-# 11 "linux-2.6.18/include/asm/mmu.h"
+# 13 "linux-2.6.18/include/asm/mmu.h"
 typedef struct {
+ void *ldt;
+ rwlock_t ldtlock;
  int size;
  struct semaphore sem;
- void *ldt;
- void *vdso;
 } mm_context_t;
 # 61 "linux-2.6.18/include/linux/sched.h" 2
 # 1 "linux-2.6.18/include/asm/cputime.h" 1
@@ -4873,13 +4651,17 @@ extern void exit_sem(struct task_struct *tsk);
 # 1 "linux-2.6.18/include/asm/signal.h" 1
 # 9 "linux-2.6.18/include/asm/signal.h"
 struct siginfo;
-# 22 "linux-2.6.18/include/asm/signal.h"
+# 20 "linux-2.6.18/include/asm/signal.h"
 typedef unsigned long old_sigset_t;
 
 typedef struct {
- unsigned long sig[(64 / 32)];
+ unsigned long sig[(64 / 64)];
 } sigset_t;
-# 113 "linux-2.6.18/include/asm/signal.h"
+
+
+struct pt_regs;
+ int do_signal(struct pt_regs *regs, sigset_t *oldset);
+# 117 "linux-2.6.18/include/asm/signal.h"
 # 1 "linux-2.6.18/include/asm-generic/signal.h" 1
 # 17 "linux-2.6.18/include/asm-generic/signal.h"
 typedef void __signalfn_t(int);
@@ -4887,15 +4669,9 @@ typedef __signalfn_t *__sighandler_t;
 
 typedef void __restorefn_t(void);
 typedef __restorefn_t *__sigrestore_t;
-# 114 "linux-2.6.18/include/asm/signal.h" 2
+# 118 "linux-2.6.18/include/asm/signal.h" 2
 
 
-struct old_sigaction {
- __sighandler_t sa_handler;
- old_sigset_t sa_mask;
- unsigned long sa_flags;
- __sigrestore_t sa_restorer;
-};
 
 struct sigaction {
  __sighandler_t sa_handler;
@@ -4907,69 +4683,16 @@ struct sigaction {
 struct k_sigaction {
  struct sigaction sa;
 };
-# 151 "linux-2.6.18/include/asm/signal.h"
+
 typedef struct sigaltstack {
  void *ss_sp;
  int ss_flags;
  size_t ss_size;
 } stack_t;
-# 167 "linux-2.6.18/include/asm/signal.h"
-static __inline__  __attribute__((always_inline)) void __gen_sigaddset(sigset_t *set, int _sig)
-{
- __asm__("btsl %1,%0" : "+m"(*set) : "Ir"(_sig - 1) : "cc");
-}
-
-static __inline__  __attribute__((always_inline)) void __const_sigaddset(sigset_t *set, int _sig)
-{
- unsigned long sig = _sig - 1;
- set->sig[sig / 32] |= 1 << (sig % 32);
-}
-
-
-
-
-
-
-
-static __inline__  __attribute__((always_inline)) void __gen_sigdelset(sigset_t *set, int _sig)
-{
- __asm__("btrl %1,%0" : "+m"(*set) : "Ir"(_sig - 1) : "cc");
-}
-
-static __inline__  __attribute__((always_inline)) void __const_sigdelset(sigset_t *set, int _sig)
-{
- unsigned long sig = _sig - 1;
- set->sig[sig / 32] &= ~(1 << (sig % 32));
-}
-
-static __inline__  __attribute__((always_inline)) int __const_sigismember(sigset_t *set, int _sig)
-{
- unsigned long sig = _sig - 1;
- return 1 & (set->sig[sig / 32] >> (sig % 32));
-}
-
-static __inline__  __attribute__((always_inline)) int __gen_sigismember(sigset_t *set, int _sig)
-{
- int ret;
- __asm__("btl %2,%1\n\tsbbl %0,%0"
-  : "=r"(ret) : "m"(*set), "Ir"(_sig-1) : "cc");
- return ret;
-}
-
-
-
-
-
-
-static __inline__  __attribute__((always_inline)) int sigfindinword(unsigned long word)
-{
- __asm__("bsfl %1,%0" : "=r"(word) : "rm"(word) : "cc");
- return word;
-}
-
-struct pt_regs;
 # 5 "linux-2.6.18/include/linux/signal.h" 2
 # 1 "linux-2.6.18/include/asm/siginfo.h" 1
+
+
 
 
 
@@ -4991,7 +4714,7 @@ typedef struct siginfo {
  int si_code;
 
  union {
-  int _pad[((128 - (3 * sizeof(int))) / sizeof(int))];
+  int _pad[((128 - (4 * sizeof(int))) / sizeof(int))];
 
 
   struct {
@@ -5071,16 +4794,16 @@ void do_schedule_next_timer(struct siginfo *info);
 static inline  __attribute__((always_inline)) void copy_siginfo(struct siginfo *to, struct siginfo *from)
 {
  if (from->si_code < 0)
-  (__builtin_constant_p(sizeof(*to)) ? __constant_memcpy((to),(from),(sizeof(*to))) : __memcpy((to),(from),(sizeof(*to))));
+  ({ size_t __len = (sizeof(*to)); void *__ret; if (__builtin_constant_p(sizeof(*to)) && __len >= 64) __ret = __memcpy((to),(from),__len); else __ret = __builtin_memcpy((to),(from),__len); __ret; });
  else
 
-  (__builtin_constant_p((3 * sizeof(int)) + sizeof(from->_sifields._sigchld)) ? __constant_memcpy((to),(from),((3 * sizeof(int)) + sizeof(from->_sifields._sigchld))) : __memcpy((to),(from),((3 * sizeof(int)) + sizeof(from->_sifields._sigchld))));
+  ({ size_t __len = ((4 * sizeof(int)) + sizeof(from->_sifields._sigchld)); void *__ret; if (__builtin_constant_p((4 * sizeof(int)) + sizeof(from->_sifields._sigchld)) && __len >= 64) __ret = __memcpy((to),(from),__len); else __ret = __builtin_memcpy((to),(from),__len); __ret; });
 }
 
 
 
 extern int copy_siginfo_to_user(struct siginfo *to, struct siginfo *from);
-# 5 "linux-2.6.18/include/asm/siginfo.h" 2
+# 7 "linux-2.6.18/include/asm/siginfo.h" 2
 # 6 "linux-2.6.18/include/linux/signal.h" 2
 # 15 "linux-2.6.18/include/linux/signal.h"
 struct sigqueue {
@@ -5097,11 +4820,45 @@ struct sigpending {
  struct list_head list;
  sigset_t signal;
 };
-# 73 "linux-2.6.18/include/linux/signal.h"
+# 39 "linux-2.6.18/include/linux/signal.h"
+static inline  __attribute__((always_inline)) void sigaddset(sigset_t *set, int _sig)
+{
+ unsigned long sig = _sig - 1;
+ if ((64 / 64) == 1)
+  set->sig[0] |= 1UL << sig;
+ else
+  set->sig[sig / 64] |= 1UL << (sig % 64);
+}
+
+static inline  __attribute__((always_inline)) void sigdelset(sigset_t *set, int _sig)
+{
+ unsigned long sig = _sig - 1;
+ if ((64 / 64) == 1)
+  set->sig[0] &= ~(1UL << sig);
+ else
+  set->sig[sig / 64] &= ~(1UL << (sig % 64));
+}
+
+static inline  __attribute__((always_inline)) int sigismember(sigset_t *set, int _sig)
+{
+ unsigned long sig = _sig - 1;
+ if ((64 / 64) == 1)
+  return 1 & (set->sig[0] >> sig);
+ else
+  return 1 & (set->sig[sig / 64] >> (sig % 64));
+}
+
+static inline  __attribute__((always_inline)) int sigfindinword(unsigned long word)
+{
+ return ffz(~word);
+}
+
+
+
 static inline  __attribute__((always_inline)) int sigisemptyset(sigset_t *set)
 {
  extern void _NSIG_WORDS_is_unsupported_size(void);
- switch ((64 / 32)) {
+ switch ((64 / 64)) {
  case 4:
   return (set->sig[3] | set->sig[2] |
    set->sig[1] | set->sig[0]) == 0;
@@ -5115,24 +4872,24 @@ static inline  __attribute__((always_inline)) int sigisemptyset(sigset_t *set)
  }
 }
 # 120 "linux-2.6.18/include/linux/signal.h"
-static inline  __attribute__((always_inline)) void sigorsets(sigset_t *r, const sigset_t *a, const sigset_t *b) { extern void _NSIG_WORDS_is_unsupported_size(void); unsigned long a0, a1, a2, a3, b0, b1, b2, b3; switch ((64 / 32)) { case 4: a3 = a->sig[3]; a2 = a->sig[2]; b3 = b->sig[3]; b2 = b->sig[2]; r->sig[3] = ((a3) | (b3)); r->sig[2] = ((a2) | (b2)); case 2: a1 = a->sig[1]; b1 = b->sig[1]; r->sig[1] = ((a1) | (b1)); case 1: a0 = a->sig[0]; b0 = b->sig[0]; r->sig[0] = ((a0) | (b0)); break; default: _NSIG_WORDS_is_unsupported_size(); } }
+static inline  __attribute__((always_inline)) void sigorsets(sigset_t *r, const sigset_t *a, const sigset_t *b) { extern void _NSIG_WORDS_is_unsupported_size(void); unsigned long a0, a1, a2, a3, b0, b1, b2, b3; switch ((64 / 64)) { case 4: a3 = a->sig[3]; a2 = a->sig[2]; b3 = b->sig[3]; b2 = b->sig[2]; r->sig[3] = ((a3) | (b3)); r->sig[2] = ((a2) | (b2)); case 2: a1 = a->sig[1]; b1 = b->sig[1]; r->sig[1] = ((a1) | (b1)); case 1: a0 = a->sig[0]; b0 = b->sig[0]; r->sig[0] = ((a0) | (b0)); break; default: _NSIG_WORDS_is_unsupported_size(); } }
 
 
-static inline  __attribute__((always_inline)) void sigandsets(sigset_t *r, const sigset_t *a, const sigset_t *b) { extern void _NSIG_WORDS_is_unsupported_size(void); unsigned long a0, a1, a2, a3, b0, b1, b2, b3; switch ((64 / 32)) { case 4: a3 = a->sig[3]; a2 = a->sig[2]; b3 = b->sig[3]; b2 = b->sig[2]; r->sig[3] = ((a3) & (b3)); r->sig[2] = ((a2) & (b2)); case 2: a1 = a->sig[1]; b1 = b->sig[1]; r->sig[1] = ((a1) & (b1)); case 1: a0 = a->sig[0]; b0 = b->sig[0]; r->sig[0] = ((a0) & (b0)); break; default: _NSIG_WORDS_is_unsupported_size(); } }
+static inline  __attribute__((always_inline)) void sigandsets(sigset_t *r, const sigset_t *a, const sigset_t *b) { extern void _NSIG_WORDS_is_unsupported_size(void); unsigned long a0, a1, a2, a3, b0, b1, b2, b3; switch ((64 / 64)) { case 4: a3 = a->sig[3]; a2 = a->sig[2]; b3 = b->sig[3]; b2 = b->sig[2]; r->sig[3] = ((a3) & (b3)); r->sig[2] = ((a2) & (b2)); case 2: a1 = a->sig[1]; b1 = b->sig[1]; r->sig[1] = ((a1) & (b1)); case 1: a0 = a->sig[0]; b0 = b->sig[0]; r->sig[0] = ((a0) & (b0)); break; default: _NSIG_WORDS_is_unsupported_size(); } }
 
 
-static inline  __attribute__((always_inline)) void signandsets(sigset_t *r, const sigset_t *a, const sigset_t *b) { extern void _NSIG_WORDS_is_unsupported_size(void); unsigned long a0, a1, a2, a3, b0, b1, b2, b3; switch ((64 / 32)) { case 4: a3 = a->sig[3]; a2 = a->sig[2]; b3 = b->sig[3]; b2 = b->sig[2]; r->sig[3] = ((a3) & ~(b3)); r->sig[2] = ((a2) & ~(b2)); case 2: a1 = a->sig[1]; b1 = b->sig[1]; r->sig[1] = ((a1) & ~(b1)); case 1: a0 = a->sig[0]; b0 = b->sig[0]; r->sig[0] = ((a0) & ~(b0)); break; default: _NSIG_WORDS_is_unsupported_size(); } }
+static inline  __attribute__((always_inline)) void signandsets(sigset_t *r, const sigset_t *a, const sigset_t *b) { extern void _NSIG_WORDS_is_unsupported_size(void); unsigned long a0, a1, a2, a3, b0, b1, b2, b3; switch ((64 / 64)) { case 4: a3 = a->sig[3]; a2 = a->sig[2]; b3 = b->sig[3]; b2 = b->sig[2]; r->sig[3] = ((a3) & ~(b3)); r->sig[2] = ((a2) & ~(b2)); case 2: a1 = a->sig[1]; b1 = b->sig[1]; r->sig[1] = ((a1) & ~(b1)); case 1: a0 = a->sig[0]; b0 = b->sig[0]; r->sig[0] = ((a0) & ~(b0)); break; default: _NSIG_WORDS_is_unsupported_size(); } }
 # 150 "linux-2.6.18/include/linux/signal.h"
-static inline  __attribute__((always_inline)) void signotset(sigset_t *set) { extern void _NSIG_WORDS_is_unsupported_size(void); switch ((64 / 32)) { case 4: set->sig[3] = (~(set->sig[3])); set->sig[2] = (~(set->sig[2])); case 2: set->sig[1] = (~(set->sig[1])); case 1: set->sig[0] = (~(set->sig[0])); break; default: _NSIG_WORDS_is_unsupported_size(); } }
+static inline  __attribute__((always_inline)) void signotset(sigset_t *set) { extern void _NSIG_WORDS_is_unsupported_size(void); switch ((64 / 64)) { case 4: set->sig[3] = (~(set->sig[3])); set->sig[2] = (~(set->sig[2])); case 2: set->sig[1] = (~(set->sig[1])); case 1: set->sig[0] = (~(set->sig[0])); break; default: _NSIG_WORDS_is_unsupported_size(); } }
 
 
 
 
 static inline  __attribute__((always_inline)) void sigemptyset(sigset_t *set)
 {
- switch ((64 / 32)) {
+ switch ((64 / 64)) {
  default:
-  (__builtin_constant_p(0) ? (__builtin_constant_p((sizeof(sigset_t))) ? __constant_c_and_count_memset(((set)),((0x01010101UL*(unsigned char)(0))),((sizeof(sigset_t)))) : __constant_c_memset(((set)),((0x01010101UL*(unsigned char)(0))),((sizeof(sigset_t))))) : (__builtin_constant_p((sizeof(sigset_t))) ? __memset_generic((((set))),(((0))),(((sizeof(sigset_t))))) : __memset_generic(((set)),((0)),((sizeof(sigset_t))))));
+  memset(set, 0, sizeof(sigset_t));
   break;
  case 2: set->sig[1] = 0;
  case 1: set->sig[0] = 0;
@@ -5142,9 +4899,9 @@ static inline  __attribute__((always_inline)) void sigemptyset(sigset_t *set)
 
 static inline  __attribute__((always_inline)) void sigfillset(sigset_t *set)
 {
- switch ((64 / 32)) {
+ switch ((64 / 64)) {
  default:
-  (__builtin_constant_p(-1) ? (__builtin_constant_p((sizeof(sigset_t))) ? __constant_c_and_count_memset(((set)),((0x01010101UL*(unsigned char)(-1))),((sizeof(sigset_t)))) : __constant_c_memset(((set)),((0x01010101UL*(unsigned char)(-1))),((sizeof(sigset_t))))) : (__builtin_constant_p((sizeof(sigset_t))) ? __memset_generic((((set))),(((-1))),(((sizeof(sigset_t))))) : __memset_generic(((set)),((-1)),((sizeof(sigset_t))))));
+  memset(set, -1, sizeof(sigset_t));
   break;
  case 2: set->sig[1] = -1;
  case 1: set->sig[0] = -1;
@@ -5172,9 +4929,9 @@ static inline  __attribute__((always_inline)) int sigtestsetmask(sigset_t *set, 
 static inline  __attribute__((always_inline)) void siginitset(sigset_t *set, unsigned long mask)
 {
  set->sig[0] = mask;
- switch ((64 / 32)) {
+ switch ((64 / 64)) {
  default:
-  (__builtin_constant_p(0) ? (__builtin_constant_p((sizeof(long)*((64 / 32)-1))) ? __constant_c_and_count_memset(((&set->sig[1])),((0x01010101UL*(unsigned char)(0))),((sizeof(long)*((64 / 32)-1)))) : __constant_c_memset(((&set->sig[1])),((0x01010101UL*(unsigned char)(0))),((sizeof(long)*((64 / 32)-1))))) : (__builtin_constant_p((sizeof(long)*((64 / 32)-1))) ? __memset_generic((((&set->sig[1]))),(((0))),(((sizeof(long)*((64 / 32)-1))))) : __memset_generic(((&set->sig[1])),((0)),((sizeof(long)*((64 / 32)-1))))));
+  memset(&set->sig[1], 0, sizeof(long)*((64 / 64)-1));
   break;
  case 2: set->sig[1] = 0;
  case 1: ;
@@ -5184,9 +4941,9 @@ static inline  __attribute__((always_inline)) void siginitset(sigset_t *set, uns
 static inline  __attribute__((always_inline)) void siginitsetinv(sigset_t *set, unsigned long mask)
 {
  set->sig[0] = ~mask;
- switch ((64 / 32)) {
+ switch ((64 / 64)) {
  default:
-  (__builtin_constant_p(-1) ? (__builtin_constant_p((sizeof(long)*((64 / 32)-1))) ? __constant_c_and_count_memset(((&set->sig[1])),((0x01010101UL*(unsigned char)(-1))),((sizeof(long)*((64 / 32)-1)))) : __constant_c_memset(((&set->sig[1])),((0x01010101UL*(unsigned char)(-1))),((sizeof(long)*((64 / 32)-1))))) : (__builtin_constant_p((sizeof(long)*((64 / 32)-1))) ? __memset_generic((((&set->sig[1]))),(((-1))),(((sizeof(long)*((64 / 32)-1))))) : __memset_generic(((&set->sig[1])),((-1)),((sizeof(long)*((64 / 32)-1))))));
+  memset(&set->sig[1], -1, sizeof(long)*((64 / 64)-1));
   break;
  case 2: set->sig[1] = -1;
  case 1: ;
@@ -5223,7 +4980,7 @@ extern int get_signal_to_deliver(siginfo_t *info, struct k_sigaction *return_ka,
 
 
 
-typedef  unsigned  _GLOBAL_62_T; extern  _GLOBAL_62_T  global_securebits[NUM_STACKS];   
+typedef  unsigned  _GLOBAL_67_T; extern  _GLOBAL_67_T  global_securebits[NUM_STACKS];   
 # 67 "linux-2.6.18/include/linux/sched.h" 2
 # 1 "linux-2.6.18/include/linux/fs_struct.h" 1
 
@@ -5267,15 +5024,15 @@ static inline  __attribute__((always_inline)) void init_completion(struct comple
  init_waitqueue_head(&x->wait);
 }
 
-extern void wait_for_completion(struct completion *) __attribute__((regparm(3))) ;
-extern int wait_for_completion_interruptible(struct completion *x) __attribute__((regparm(3))) ;
-extern unsigned long wait_for_completion_timeout(struct completion *x, unsigned long timeout) __attribute__((regparm(3))) ;
+extern void wait_for_completion(struct completion *);
+extern int wait_for_completion_interruptible(struct completion *x);
+extern unsigned long wait_for_completion_timeout(struct completion *x, unsigned long timeout);
 
-extern unsigned long wait_for_completion_interruptible_timeout( struct completion *x, unsigned long timeout) __attribute__((regparm(3))) ;
+extern unsigned long wait_for_completion_interruptible_timeout( struct completion *x, unsigned long timeout);
 
 
-extern void complete(struct completion *) __attribute__((regparm(3))) ;
-extern void complete_all(struct completion *) __attribute__((regparm(3))) ;
+extern void complete(struct completion *);
+extern void complete_all(struct completion *);
 # 70 "linux-2.6.18/include/linux/sched.h" 2
 # 1 "linux-2.6.18/include/linux/pid.h" 1
 
@@ -5303,10 +5060,10 @@ typedef int (*initcall_t)(void);
 typedef void (*exitcall_t)(void);
 
 extern initcall_t __con_initcall_start[], __con_initcall_end[];
-typedef  initcall_t  _GLOBAL_63_T; extern  _GLOBAL_63_T  _GLOBAL_0___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_1___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_2___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_3___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_4___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_5___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_6___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_7___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_8___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_9___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_10___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_11___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_12___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_13___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_14___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_15___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_16___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_17___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_18___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_19___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_20___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_21___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_22___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_23___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_24___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_25___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_26___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_27___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_28___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_29___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_30___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_31___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_32___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_33___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_34___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_35___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_36___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_37___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_38___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_39___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_40___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_41___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_42___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_43___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_44___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_45___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_46___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_47___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_48___security_initcall_start_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_49___security_initcall_start_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___security_initcall_start_I) *_GLOBAL___security_initcall_start_6_A[NUM_STACKS];extern  _GLOBAL_63_T  _GLOBAL_0___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_1___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_2___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_3___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_4___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_5___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_6___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_7___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_8___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_9___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_10___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_11___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_12___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_13___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_14___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_15___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_16___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_17___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_18___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_19___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_20___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_21___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_22___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_23___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_24___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_25___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_26___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_27___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_28___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_29___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_30___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_31___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_32___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_33___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_34___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_35___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_36___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_37___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_38___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_39___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_40___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_41___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_42___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_43___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_44___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_45___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_46___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_47___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_48___security_initcall_end_I [ ] ; extern  _GLOBAL_63_T  _GLOBAL_49___security_initcall_end_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___security_initcall_end_I) *_GLOBAL___security_initcall_end_7_A[NUM_STACKS];   
+typedef  initcall_t  _GLOBAL_68_T; extern  _GLOBAL_68_T  _GLOBAL_0___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_1___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_2___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_3___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_4___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_5___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_6___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_7___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_8___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_9___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_10___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_11___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_12___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_13___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_14___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_15___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_16___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_17___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_18___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_19___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_20___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_21___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_22___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_23___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_24___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_25___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_26___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_27___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_28___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_29___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_30___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_31___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_32___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_33___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_34___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_35___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_36___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_37___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_38___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_39___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_40___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_41___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_42___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_43___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_44___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_45___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_46___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_47___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_48___security_initcall_start_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_49___security_initcall_start_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___security_initcall_start_I) *_GLOBAL___security_initcall_start_5_A[NUM_STACKS];extern  _GLOBAL_68_T  _GLOBAL_0___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_1___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_2___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_3___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_4___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_5___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_6___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_7___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_8___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_9___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_10___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_11___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_12___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_13___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_14___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_15___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_16___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_17___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_18___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_19___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_20___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_21___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_22___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_23___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_24___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_25___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_26___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_27___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_28___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_29___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_30___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_31___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_32___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_33___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_34___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_35___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_36___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_37___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_38___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_39___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_40___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_41___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_42___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_43___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_44___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_45___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_46___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_47___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_48___security_initcall_end_I [ ] ; extern  _GLOBAL_68_T  _GLOBAL_49___security_initcall_end_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___security_initcall_end_I) *_GLOBAL___security_initcall_end_6_A[NUM_STACKS];   
 
 
-typedef  char  _GLOBAL_64_T; extern  _GLOBAL_64_T  _GLOBAL_0_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_1_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_2_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_3_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_4_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_5_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_6_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_7_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_8_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_9_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_10_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_11_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_12_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_13_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_14_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_15_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_16_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_17_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_18_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_19_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_20_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_21_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_22_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_23_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_24_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_25_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_26_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_27_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_28_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_29_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_30_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_31_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_32_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_33_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_34_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_35_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_36_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_37_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_38_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_39_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_40_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_41_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_42_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_43_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_44_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_45_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_46_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_47_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_48_saved_command_line_I [ ] ; extern  _GLOBAL_64_T  _GLOBAL_49_saved_command_line_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_saved_command_line_I) *_GLOBAL_saved_command_line_8_A[NUM_STACKS];  
+typedef  char  _GLOBAL_69_T; extern  _GLOBAL_69_T  _GLOBAL_0_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_1_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_2_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_3_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_4_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_5_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_6_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_7_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_8_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_9_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_10_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_11_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_12_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_13_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_14_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_15_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_16_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_17_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_18_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_19_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_20_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_21_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_22_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_23_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_24_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_25_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_26_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_27_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_28_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_29_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_30_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_31_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_32_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_33_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_34_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_35_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_36_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_37_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_38_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_39_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_40_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_41_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_42_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_43_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_44_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_45_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_46_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_47_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_48_saved_command_line_I [ ] ; extern  _GLOBAL_69_T  _GLOBAL_49_saved_command_line_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_saved_command_line_I) *_GLOBAL_saved_command_line_7_A[NUM_STACKS];  
 
 
 extern void setup_arch(char **);
@@ -5487,7 +5244,7 @@ extern void __mutex_init(struct mutex *lock, const char *name,
 
 
 
-static inline  __attribute__((always_inline)) int  __attribute__((regparm(3))) mutex_is_locked(struct mutex *lock)
+static inline  __attribute__((always_inline)) int mutex_is_locked(struct mutex *lock)
 {
  return ((&lock->count)->counter) != 1;
 }
@@ -5496,11 +5253,11 @@ static inline  __attribute__((always_inline)) int  __attribute__((regparm(3))) m
 
 
 
-extern void  __attribute__((regparm(3))) mutex_lock(struct mutex *lock);
-extern int  __attribute__((regparm(3))) mutex_lock_interruptible(struct mutex *lock);
+extern void mutex_lock(struct mutex *lock);
+extern int mutex_lock_interruptible(struct mutex *lock);
 # 136 "linux-2.6.18/include/linux/mutex.h"
-extern int  __attribute__((regparm(3))) mutex_trylock(struct mutex *lock);
-extern void  __attribute__((regparm(3))) mutex_unlock(struct mutex *lock);
+extern int mutex_trylock(struct mutex *lock);
+extern void mutex_unlock(struct mutex *lock);
 # 14 "linux-2.6.18/include/linux/notifier.h" 2
 # 35 "linux-2.6.18/include/linux/notifier.h"
 struct notifier_block {
@@ -5649,7 +5406,7 @@ struct ctl_table;
 struct file;
 int min_free_kbytes_sysctl_handler(struct ctl_table *, int, struct file *,
      void *, size_t *, loff_t *);
-typedef  int  _GLOBAL_65_T; extern  _GLOBAL_65_T  _GLOBAL_0_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_1_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_2_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_3_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_4_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_5_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_6_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_7_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_8_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_9_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_10_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_11_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_12_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_13_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_14_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_15_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_16_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_17_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_18_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_19_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_20_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_21_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_22_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_23_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_24_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_25_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_26_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_27_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_28_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_29_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_30_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_31_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_32_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_33_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_34_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_35_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_36_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_37_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_38_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_39_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_40_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_41_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_42_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_43_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_44_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_45_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_46_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_47_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_48_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_65_T  _GLOBAL_49_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_sysctl_lowmem_reserve_ratio_I) *_GLOBAL_sysctl_lowmem_reserve_ratio_9_A[NUM_STACKS];   
+typedef  int  _GLOBAL_70_T; extern  _GLOBAL_70_T  _GLOBAL_0_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_1_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_2_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_3_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_4_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_5_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_6_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_7_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_8_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_9_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_10_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_11_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_12_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_13_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_14_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_15_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_16_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_17_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_18_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_19_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_20_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_21_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_22_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_23_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_24_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_25_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_26_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_27_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_28_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_29_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_30_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_31_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_32_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_33_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_34_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_35_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_36_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_37_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_38_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_39_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_40_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_41_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_42_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_43_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_44_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_45_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_46_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_47_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_48_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; extern  _GLOBAL_70_T  _GLOBAL_49_sysctl_lowmem_reserve_ratio_I [ 4 - 1  ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_sysctl_lowmem_reserve_ratio_I) *_GLOBAL_sysctl_lowmem_reserve_ratio_8_A[NUM_STACKS];   
 int lowmem_reserve_ratio_sysctl_handler(struct ctl_table *, int, struct file *,
      void *, size_t *, loff_t *);
 int percpu_pagelist_fraction_sysctl_handler(struct ctl_table *, int, struct file *,
@@ -5660,11 +5417,9 @@ int sysctl_min_unmapped_ratio_sysctl_handler(struct ctl_table *, int,
 # 1 "linux-2.6.18/include/linux/topology.h" 1
 # 34 "linux-2.6.18/include/linux/topology.h"
 # 1 "linux-2.6.18/include/asm/topology.h" 1
-# 109 "linux-2.6.18/include/asm/topology.h"
+# 66 "linux-2.6.18/include/asm/topology.h"
 # 1 "linux-2.6.18/include/asm-generic/topology.h" 1
-# 110 "linux-2.6.18/include/asm/topology.h" 2
-
-
+# 67 "linux-2.6.18/include/asm/topology.h" 2
 
 extern cpumask_t cpu_coregroup_map(int cpu);
 # 35 "linux-2.6.18/include/linux/topology.h" 2
@@ -5676,7 +5431,7 @@ extern cpumask_t cpu_coregroup_map(int cpu);
 
 
 
-typedef  struct pglist_data   _GLOBAL_66_T; extern  _GLOBAL_66_T  global_contig_page_data[NUM_STACKS];    
+typedef  struct pglist_data   _GLOBAL_71_T; extern  _GLOBAL_71_T  global_contig_page_data[NUM_STACKS];    
 # 444 "linux-2.6.18/include/linux/mmzone.h"
 extern struct pglist_data *first_online_pgdat(void);
 extern struct pglist_data *next_online_pgdat(struct pglist_data *pgdat);
@@ -5701,7 +5456,7 @@ static inline  __attribute__((always_inline)) void arch_free_page(struct page *p
 
 
 extern struct page *
-__alloc_pages(gfp_t, unsigned int, struct zonelist *) __attribute__((regparm(3))) ;
+__alloc_pages(gfp_t, unsigned int, struct zonelist *);
 
 static inline  __attribute__((always_inline)) struct page *alloc_pages_node(int nid, gfp_t gfp_mask,
       unsigned int order)
@@ -5717,8 +5472,8 @@ static inline  __attribute__((always_inline)) struct page *alloc_pages_node(int 
   (&global_contig_page_data[get_stack_id()])->node_zonelists + gfp_zone(gfp_mask));
 }
 # 142 "linux-2.6.18/include/linux/gfp.h"
-extern unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order) __attribute__((regparm(3))) ;
-extern unsigned long get_zeroed_page(gfp_t gfp_mask) __attribute__((regparm(3))) ;
+extern unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);
+extern unsigned long get_zeroed_page(gfp_t gfp_mask);
 
 
 
@@ -5726,10 +5481,10 @@ extern unsigned long get_zeroed_page(gfp_t gfp_mask) __attribute__((regparm(3)))
 
 
 
-extern void __free_pages(struct page *page, unsigned int order) __attribute__((regparm(3))) ;
-extern void free_pages(unsigned long addr, unsigned int order) __attribute__((regparm(3))) ;
-extern void free_hot_page(struct page *page) __attribute__((regparm(3))) ;
-extern void free_cold_page(struct page *page) __attribute__((regparm(3))) ;
+extern void __free_pages(struct page *page, unsigned int order);
+extern void free_pages(unsigned long addr, unsigned int order);
+extern void free_hot_page(struct page *page);
+extern void free_cold_page(struct page *page);
 
 
 
@@ -5761,7 +5516,7 @@ struct cache_sizes {
  kmem_cache_t *cs_cachep;
  kmem_cache_t *cs_dmacachep;
 };
-typedef  struct cache_sizes   _GLOBAL_67_T; extern  _GLOBAL_67_T  _GLOBAL_0_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_1_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_2_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_3_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_4_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_5_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_6_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_7_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_8_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_9_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_10_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_11_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_12_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_13_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_14_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_15_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_16_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_17_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_18_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_19_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_20_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_21_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_22_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_23_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_24_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_25_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_26_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_27_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_28_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_29_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_30_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_31_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_32_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_33_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_34_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_35_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_36_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_37_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_38_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_39_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_40_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_41_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_42_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_43_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_44_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_45_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_46_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_47_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_48_malloc_sizes_I [ ] ; extern  _GLOBAL_67_T  _GLOBAL_49_malloc_sizes_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_malloc_sizes_I) *_GLOBAL_malloc_sizes_10_A[NUM_STACKS] = { &_GLOBAL_0_malloc_sizes_I, &_GLOBAL_1_malloc_sizes_I, &_GLOBAL_2_malloc_sizes_I, &_GLOBAL_3_malloc_sizes_I, &_GLOBAL_4_malloc_sizes_I, &_GLOBAL_5_malloc_sizes_I, &_GLOBAL_6_malloc_sizes_I, &_GLOBAL_7_malloc_sizes_I, &_GLOBAL_8_malloc_sizes_I, &_GLOBAL_9_malloc_sizes_I, &_GLOBAL_10_malloc_sizes_I, &_GLOBAL_11_malloc_sizes_I, &_GLOBAL_12_malloc_sizes_I, &_GLOBAL_13_malloc_sizes_I, &_GLOBAL_14_malloc_sizes_I, &_GLOBAL_15_malloc_sizes_I, &_GLOBAL_16_malloc_sizes_I, &_GLOBAL_17_malloc_sizes_I, &_GLOBAL_18_malloc_sizes_I, &_GLOBAL_19_malloc_sizes_I, &_GLOBAL_20_malloc_sizes_I, &_GLOBAL_21_malloc_sizes_I, &_GLOBAL_22_malloc_sizes_I, &_GLOBAL_23_malloc_sizes_I, &_GLOBAL_24_malloc_sizes_I, &_GLOBAL_25_malloc_sizes_I, &_GLOBAL_26_malloc_sizes_I, &_GLOBAL_27_malloc_sizes_I, &_GLOBAL_28_malloc_sizes_I, &_GLOBAL_29_malloc_sizes_I, &_GLOBAL_30_malloc_sizes_I, &_GLOBAL_31_malloc_sizes_I, &_GLOBAL_32_malloc_sizes_I, &_GLOBAL_33_malloc_sizes_I, &_GLOBAL_34_malloc_sizes_I, &_GLOBAL_35_malloc_sizes_I, &_GLOBAL_36_malloc_sizes_I, &_GLOBAL_37_malloc_sizes_I, &_GLOBAL_38_malloc_sizes_I, &_GLOBAL_39_malloc_sizes_I, &_GLOBAL_40_malloc_sizes_I, &_GLOBAL_41_malloc_sizes_I, &_GLOBAL_42_malloc_sizes_I, &_GLOBAL_43_malloc_sizes_I, &_GLOBAL_44_malloc_sizes_I, &_GLOBAL_45_malloc_sizes_I, &_GLOBAL_46_malloc_sizes_I, &_GLOBAL_47_malloc_sizes_I, &_GLOBAL_48_malloc_sizes_I, &_GLOBAL_49_malloc_sizes_I, };   
+typedef  struct cache_sizes   _GLOBAL_72_T; extern  _GLOBAL_72_T  _GLOBAL_0_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_1_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_2_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_3_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_4_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_5_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_6_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_7_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_8_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_9_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_10_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_11_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_12_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_13_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_14_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_15_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_16_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_17_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_18_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_19_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_20_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_21_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_22_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_23_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_24_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_25_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_26_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_27_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_28_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_29_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_30_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_31_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_32_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_33_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_34_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_35_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_36_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_37_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_38_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_39_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_40_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_41_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_42_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_43_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_44_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_45_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_46_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_47_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_48_malloc_sizes_I [ ] ; extern  _GLOBAL_72_T  _GLOBAL_49_malloc_sizes_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_malloc_sizes_I) *_GLOBAL_malloc_sizes_9_A[NUM_STACKS] = { &_GLOBAL_0_malloc_sizes_I, &_GLOBAL_1_malloc_sizes_I, &_GLOBAL_2_malloc_sizes_I, &_GLOBAL_3_malloc_sizes_I, &_GLOBAL_4_malloc_sizes_I, &_GLOBAL_5_malloc_sizes_I, &_GLOBAL_6_malloc_sizes_I, &_GLOBAL_7_malloc_sizes_I, &_GLOBAL_8_malloc_sizes_I, &_GLOBAL_9_malloc_sizes_I, &_GLOBAL_10_malloc_sizes_I, &_GLOBAL_11_malloc_sizes_I, &_GLOBAL_12_malloc_sizes_I, &_GLOBAL_13_malloc_sizes_I, &_GLOBAL_14_malloc_sizes_I, &_GLOBAL_15_malloc_sizes_I, &_GLOBAL_16_malloc_sizes_I, &_GLOBAL_17_malloc_sizes_I, &_GLOBAL_18_malloc_sizes_I, &_GLOBAL_19_malloc_sizes_I, &_GLOBAL_20_malloc_sizes_I, &_GLOBAL_21_malloc_sizes_I, &_GLOBAL_22_malloc_sizes_I, &_GLOBAL_23_malloc_sizes_I, &_GLOBAL_24_malloc_sizes_I, &_GLOBAL_25_malloc_sizes_I, &_GLOBAL_26_malloc_sizes_I, &_GLOBAL_27_malloc_sizes_I, &_GLOBAL_28_malloc_sizes_I, &_GLOBAL_29_malloc_sizes_I, &_GLOBAL_30_malloc_sizes_I, &_GLOBAL_31_malloc_sizes_I, &_GLOBAL_32_malloc_sizes_I, &_GLOBAL_33_malloc_sizes_I, &_GLOBAL_34_malloc_sizes_I, &_GLOBAL_35_malloc_sizes_I, &_GLOBAL_36_malloc_sizes_I, &_GLOBAL_37_malloc_sizes_I, &_GLOBAL_38_malloc_sizes_I, &_GLOBAL_39_malloc_sizes_I, &_GLOBAL_40_malloc_sizes_I, &_GLOBAL_41_malloc_sizes_I, &_GLOBAL_42_malloc_sizes_I, &_GLOBAL_43_malloc_sizes_I, &_GLOBAL_44_malloc_sizes_I, &_GLOBAL_45_malloc_sizes_I, &_GLOBAL_46_malloc_sizes_I, &_GLOBAL_47_malloc_sizes_I, &_GLOBAL_48_malloc_sizes_I, &_GLOBAL_49_malloc_sizes_I, };   
 
 extern void *__kmalloc(size_t, gfp_t);
 # 134 "linux-2.6.18/include/linux/slab.h"
@@ -5804,8 +5559,8 @@ static inline  __attribute__((always_inline)) void *kmalloc(size_t size, gfp_t f
   }
 found:
   return kmem_cache_alloc((flags & (( gfp_t)0x01u)) ?
-   (*_GLOBAL_malloc_sizes_10_A[get_stack_id()])[i].cs_dmacachep :
-   (*_GLOBAL_malloc_sizes_10_A[get_stack_id()])[i].cs_cachep, flags);
+   (*_GLOBAL_malloc_sizes_9_A[get_stack_id()])[i].cs_dmacachep :
+   (*_GLOBAL_malloc_sizes_9_A[get_stack_id()])[i].cs_cachep, flags);
  }
  return __kmalloc(size, flags);
 }
@@ -5856,8 +5611,8 @@ static inline  __attribute__((always_inline)) void *kzalloc(size_t size, gfp_t f
   }
 found:
   return kmem_cache_zalloc((flags & (( gfp_t)0x01u)) ?
-   (*_GLOBAL_malloc_sizes_10_A[get_stack_id()])[i].cs_dmacachep :
-   (*_GLOBAL_malloc_sizes_10_A[get_stack_id()])[i].cs_cachep, flags);
+   (*_GLOBAL_malloc_sizes_9_A[get_stack_id()])[i].cs_dmacachep :
+   (*_GLOBAL_malloc_sizes_9_A[get_stack_id()])[i].cs_cachep, flags);
  }
  return __kzalloc(size, flags);
 }
@@ -5893,25 +5648,25 @@ static inline  __attribute__((always_inline)) void *kmalloc_node(size_t size, gf
 }
 
 
-extern int kmem_cache_reap(int) __attribute__((regparm(3))) ;
-extern int kmem_ptr_validate(kmem_cache_t *cachep, void *ptr) __attribute__((regparm(3))) ;
+extern int kmem_cache_reap(int);
+extern int kmem_ptr_validate(kmem_cache_t *cachep, void *ptr);
 # 258 "linux-2.6.18/include/linux/slab.h"
-typedef  kmem_cache_t  _GLOBAL_68_T; extern  _GLOBAL_68_T  * global_vm_area_cachep[NUM_STACKS];   
-typedef  kmem_cache_t  _GLOBAL_69_T; extern  _GLOBAL_69_T  * global_names_cachep[NUM_STACKS];   
-typedef  kmem_cache_t  _GLOBAL_70_T; extern  _GLOBAL_70_T  * global_files_cachep[NUM_STACKS];   
-typedef  kmem_cache_t  _GLOBAL_71_T; extern  _GLOBAL_71_T  * global_filp_cachep[NUM_STACKS];   
-typedef  kmem_cache_t  _GLOBAL_72_T; extern  _GLOBAL_72_T  * global_fs_cachep[NUM_STACKS];   
-typedef  kmem_cache_t  _GLOBAL_73_T; extern  _GLOBAL_73_T  * global_sighand_cachep[NUM_STACKS];   
-typedef  kmem_cache_t  _GLOBAL_74_T; extern  _GLOBAL_74_T  * global_bio_cachep[NUM_STACKS];   
+typedef  kmem_cache_t  _GLOBAL_73_T; extern  _GLOBAL_73_T  * global_vm_area_cachep[NUM_STACKS];   
+typedef  kmem_cache_t  _GLOBAL_74_T; extern  _GLOBAL_74_T  * global_names_cachep[NUM_STACKS];   
+typedef  kmem_cache_t  _GLOBAL_75_T; extern  _GLOBAL_75_T  * global_files_cachep[NUM_STACKS];   
+typedef  kmem_cache_t  _GLOBAL_76_T; extern  _GLOBAL_76_T  * global_filp_cachep[NUM_STACKS];   
+typedef  kmem_cache_t  _GLOBAL_77_T; extern  _GLOBAL_77_T  * global_fs_cachep[NUM_STACKS];   
+typedef  kmem_cache_t  _GLOBAL_78_T; extern  _GLOBAL_78_T  * global_sighand_cachep[NUM_STACKS];   
+typedef  kmem_cache_t  _GLOBAL_79_T; extern  _GLOBAL_79_T  * global_bio_cachep[NUM_STACKS];   
 
-typedef  atomic_t  _GLOBAL_75_T; extern  _GLOBAL_75_T  global_slab_reclaim_pages[NUM_STACKS];   
+typedef  atomic_t  _GLOBAL_80_T; extern  _GLOBAL_80_T  global_slab_reclaim_pages[NUM_STACKS];   
 # 5 "linux-2.6.18/include/linux/percpu.h" 2
 # 42 "linux-2.6.18/include/linux/percpu.h"
 static inline  __attribute__((always_inline)) void *__alloc_percpu(size_t size)
 {
  void *ret = kmalloc(size, ((( gfp_t)0x10u) | (( gfp_t)0x40u) | (( gfp_t)0x80u)));
  if (ret)
-  (__builtin_constant_p(0) ? (__builtin_constant_p((size)) ? __constant_c_and_count_memset(((ret)),((0x01010101UL*(unsigned char)(0))),((size))) : __constant_c_memset(((ret)),((0x01010101UL*(unsigned char)(0))),((size)))) : (__builtin_constant_p((size)) ? __memset_generic((((ret))),(((0))),(((size)))) : __memset_generic(((ret)),((0)),((size)))));
+  memset(ret, 0, size);
  return ret;
 }
 static inline  __attribute__((always_inline)) void free_percpu(const void *ptr)
@@ -5975,8 +5730,8 @@ struct rcu_data {
 
 };
 
-typedef  __typeof__ ( struct rcu_data  )   _GLOBAL_76_T; extern  _GLOBAL_76_T  global_per_cpu__rcu_data[NUM_STACKS];    
-typedef  __typeof__ ( struct rcu_data  )   _GLOBAL_77_T; extern  _GLOBAL_77_T  global_per_cpu__rcu_bh_data[NUM_STACKS];    
+typedef  __typeof__ ( struct rcu_data  )   _GLOBAL_81_T; extern  _GLOBAL_81_T  global_per_cpu__rcu_data[NUM_STACKS];    
+typedef  __typeof__ ( struct rcu_data  )   _GLOBAL_82_T; extern  _GLOBAL_82_T  global_per_cpu__rcu_bh_data[NUM_STACKS];    
 
 
 
@@ -6005,9 +5760,9 @@ extern long rcu_batches_completed(void);
 extern long rcu_batches_completed_bh(void);
 
 
-extern void call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *head)) __attribute__((regparm(3))) ;
+extern void call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *head));
 
-extern void call_rcu_bh(struct rcu_head *head, void (*func)(struct rcu_head *head)) __attribute__((regparm(3))) ;
+extern void call_rcu_bh(struct rcu_head *head, void (*func)(struct rcu_head *head));
 
 extern void synchronize_rcu(void);
 void synchronize_idle(void);
@@ -6046,25 +5801,25 @@ static inline  __attribute__((always_inline)) struct pid *get_pid(struct pid *pi
  return pid;
 }
 
-extern void put_pid(struct pid *pid) __attribute__((regparm(3))) ;
-extern struct task_struct *pid_task(struct pid *pid, enum pid_type) __attribute__((regparm(3))) ;
-extern struct task_struct *get_pid_task(struct pid *pid, enum pid_type) __attribute__((regparm(3))) ;
+extern void put_pid(struct pid *pid);
+extern struct task_struct *pid_task(struct pid *pid, enum pid_type);
+extern struct task_struct *get_pid_task(struct pid *pid, enum pid_type);
 
 
 
 
 
 
-extern int attach_pid(struct task_struct *task, enum pid_type type, int nr) __attribute__((regparm(3))) ;
+extern int attach_pid(struct task_struct *task, enum pid_type type, int nr);
 
 
-extern void detach_pid(struct task_struct *task, enum pid_type) __attribute__((regparm(3))) ;
+extern void detach_pid(struct task_struct *task, enum pid_type);
 
 
 
 
 
-extern struct pid *find_pid(int nr) __attribute__((regparm(3))) ;
+extern struct pid *find_pid(int nr);
 
 
 
@@ -6072,7 +5827,7 @@ extern struct pid *find_pid(int nr) __attribute__((regparm(3))) ;
 extern struct pid *find_get_pid(int nr);
 
 extern struct pid *alloc_pid(void);
-extern void free_pid(struct pid *pid) __attribute__((regparm(3))) ;
+extern void free_pid(struct pid *pid);
 # 71 "linux-2.6.18/include/linux/sched.h" 2
 
 
@@ -6301,9 +6056,9 @@ struct timer_list {
  struct tvec_t_base_s *base;
 };
 
-typedef  struct tvec_t_base_s   _GLOBAL_78_T; extern  _GLOBAL_78_T  _GLOBAL_0_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_1_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_2_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_3_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_4_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_5_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_6_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_7_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_8_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_9_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_10_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_11_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_12_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_13_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_14_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_15_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_16_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_17_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_18_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_19_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_20_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_21_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_22_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_23_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_24_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_25_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_26_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_27_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_28_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_29_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_30_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_31_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_32_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_33_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_34_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_35_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_36_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_37_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_38_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_39_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_40_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_41_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_42_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_43_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_44_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_45_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_46_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_47_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_48_boot_tvec_bases_I; extern  _GLOBAL_78_T  _GLOBAL_49_boot_tvec_bases_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_boot_tvec_bases_I) *_GLOBAL_boot_tvec_bases_11_A[NUM_STACKS] = { &_GLOBAL_0_boot_tvec_bases_I, &_GLOBAL_1_boot_tvec_bases_I, &_GLOBAL_2_boot_tvec_bases_I, &_GLOBAL_3_boot_tvec_bases_I, &_GLOBAL_4_boot_tvec_bases_I, &_GLOBAL_5_boot_tvec_bases_I, &_GLOBAL_6_boot_tvec_bases_I, &_GLOBAL_7_boot_tvec_bases_I, &_GLOBAL_8_boot_tvec_bases_I, &_GLOBAL_9_boot_tvec_bases_I, &_GLOBAL_10_boot_tvec_bases_I, &_GLOBAL_11_boot_tvec_bases_I, &_GLOBAL_12_boot_tvec_bases_I, &_GLOBAL_13_boot_tvec_bases_I, &_GLOBAL_14_boot_tvec_bases_I, &_GLOBAL_15_boot_tvec_bases_I, &_GLOBAL_16_boot_tvec_bases_I, &_GLOBAL_17_boot_tvec_bases_I, &_GLOBAL_18_boot_tvec_bases_I, &_GLOBAL_19_boot_tvec_bases_I, &_GLOBAL_20_boot_tvec_bases_I, &_GLOBAL_21_boot_tvec_bases_I, &_GLOBAL_22_boot_tvec_bases_I, &_GLOBAL_23_boot_tvec_bases_I, &_GLOBAL_24_boot_tvec_bases_I, &_GLOBAL_25_boot_tvec_bases_I, &_GLOBAL_26_boot_tvec_bases_I, &_GLOBAL_27_boot_tvec_bases_I, &_GLOBAL_28_boot_tvec_bases_I, &_GLOBAL_29_boot_tvec_bases_I, &_GLOBAL_30_boot_tvec_bases_I, &_GLOBAL_31_boot_tvec_bases_I, &_GLOBAL_32_boot_tvec_bases_I, &_GLOBAL_33_boot_tvec_bases_I, &_GLOBAL_34_boot_tvec_bases_I, &_GLOBAL_35_boot_tvec_bases_I, &_GLOBAL_36_boot_tvec_bases_I, &_GLOBAL_37_boot_tvec_bases_I, &_GLOBAL_38_boot_tvec_bases_I, &_GLOBAL_39_boot_tvec_bases_I, &_GLOBAL_40_boot_tvec_bases_I, &_GLOBAL_41_boot_tvec_bases_I, &_GLOBAL_42_boot_tvec_bases_I, &_GLOBAL_43_boot_tvec_bases_I, &_GLOBAL_44_boot_tvec_bases_I, &_GLOBAL_45_boot_tvec_bases_I, &_GLOBAL_46_boot_tvec_bases_I, &_GLOBAL_47_boot_tvec_bases_I, &_GLOBAL_48_boot_tvec_bases_I, &_GLOBAL_49_boot_tvec_bases_I, };   
+typedef  struct tvec_t_base_s   _GLOBAL_83_T; extern  _GLOBAL_83_T  _GLOBAL_0_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_1_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_2_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_3_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_4_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_5_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_6_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_7_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_8_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_9_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_10_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_11_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_12_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_13_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_14_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_15_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_16_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_17_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_18_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_19_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_20_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_21_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_22_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_23_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_24_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_25_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_26_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_27_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_28_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_29_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_30_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_31_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_32_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_33_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_34_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_35_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_36_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_37_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_38_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_39_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_40_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_41_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_42_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_43_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_44_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_45_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_46_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_47_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_48_boot_tvec_bases_I; extern  _GLOBAL_83_T  _GLOBAL_49_boot_tvec_bases_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_boot_tvec_bases_I) *_GLOBAL_boot_tvec_bases_10_A[NUM_STACKS] = { &_GLOBAL_0_boot_tvec_bases_I, &_GLOBAL_1_boot_tvec_bases_I, &_GLOBAL_2_boot_tvec_bases_I, &_GLOBAL_3_boot_tvec_bases_I, &_GLOBAL_4_boot_tvec_bases_I, &_GLOBAL_5_boot_tvec_bases_I, &_GLOBAL_6_boot_tvec_bases_I, &_GLOBAL_7_boot_tvec_bases_I, &_GLOBAL_8_boot_tvec_bases_I, &_GLOBAL_9_boot_tvec_bases_I, &_GLOBAL_10_boot_tvec_bases_I, &_GLOBAL_11_boot_tvec_bases_I, &_GLOBAL_12_boot_tvec_bases_I, &_GLOBAL_13_boot_tvec_bases_I, &_GLOBAL_14_boot_tvec_bases_I, &_GLOBAL_15_boot_tvec_bases_I, &_GLOBAL_16_boot_tvec_bases_I, &_GLOBAL_17_boot_tvec_bases_I, &_GLOBAL_18_boot_tvec_bases_I, &_GLOBAL_19_boot_tvec_bases_I, &_GLOBAL_20_boot_tvec_bases_I, &_GLOBAL_21_boot_tvec_bases_I, &_GLOBAL_22_boot_tvec_bases_I, &_GLOBAL_23_boot_tvec_bases_I, &_GLOBAL_24_boot_tvec_bases_I, &_GLOBAL_25_boot_tvec_bases_I, &_GLOBAL_26_boot_tvec_bases_I, &_GLOBAL_27_boot_tvec_bases_I, &_GLOBAL_28_boot_tvec_bases_I, &_GLOBAL_29_boot_tvec_bases_I, &_GLOBAL_30_boot_tvec_bases_I, &_GLOBAL_31_boot_tvec_bases_I, &_GLOBAL_32_boot_tvec_bases_I, &_GLOBAL_33_boot_tvec_bases_I, &_GLOBAL_34_boot_tvec_bases_I, &_GLOBAL_35_boot_tvec_bases_I, &_GLOBAL_36_boot_tvec_bases_I, &_GLOBAL_37_boot_tvec_bases_I, &_GLOBAL_38_boot_tvec_bases_I, &_GLOBAL_39_boot_tvec_bases_I, &_GLOBAL_40_boot_tvec_bases_I, &_GLOBAL_41_boot_tvec_bases_I, &_GLOBAL_42_boot_tvec_bases_I, &_GLOBAL_43_boot_tvec_bases_I, &_GLOBAL_44_boot_tvec_bases_I, &_GLOBAL_45_boot_tvec_bases_I, &_GLOBAL_46_boot_tvec_bases_I, &_GLOBAL_47_boot_tvec_bases_I, &_GLOBAL_48_boot_tvec_bases_I, &_GLOBAL_49_boot_tvec_bases_I, };   
 # 33 "linux-2.6.18/include/linux/timer.h"
-void  __attribute__((regparm(3))) init_timer(struct timer_list * timer);
+void init_timer(struct timer_list * timer);
 
 static inline  __attribute__((always_inline)) void setup_timer(struct timer_list * timer,
     void (*function)(unsigned long),
@@ -6343,105 +6098,27 @@ extern int it_real_fn(struct hrtimer *);
 # 46 "linux-2.6.18/include/linux/ktime.h"
 typedef union {
  s64 tv64;
-
- struct {
-
-
-
- s32 nsec, sec;
-
- } tv;
-
+# 57 "linux-2.6.18/include/linux/ktime.h"
 } ktime_t;
-# 138 "linux-2.6.18/include/linux/ktime.h"
+# 75 "linux-2.6.18/include/linux/ktime.h"
 static inline  __attribute__((always_inline)) ktime_t ktime_set(const long secs, const unsigned long nsecs)
 {
- return (ktime_t) { .tv = { .sec = secs, .nsec = nsecs } };
+
+ if (__builtin_expect(!!(secs >= (((s64)~((u64)1 << 63)) / 1000000000L)), 0))
+  return (ktime_t){ .tv64 = ((s64)~((u64)1 << 63)) };
+
+ return (ktime_t) { .tv64 = (s64)secs * 1000000000L + (s64)nsecs };
 }
-# 150 "linux-2.6.18/include/linux/ktime.h"
-static inline  __attribute__((always_inline)) ktime_t ktime_sub(const ktime_t lhs, const ktime_t rhs)
+# 100 "linux-2.6.18/include/linux/ktime.h"
+static inline  __attribute__((always_inline)) ktime_t timespec_to_ktime(struct timespec ts)
 {
- ktime_t res;
-
- res.tv64 = lhs.tv64 - rhs.tv64;
- if (res.tv.nsec < 0)
-  res.tv.nsec += 1000000000L;
-
- return res;
-}
-# 168 "linux-2.6.18/include/linux/ktime.h"
-static inline  __attribute__((always_inline)) ktime_t ktime_add(const ktime_t add1, const ktime_t add2)
-{
- ktime_t res;
-
- res.tv64 = add1.tv64 + add2.tv64;
-# 181 "linux-2.6.18/include/linux/ktime.h"
- if (res.tv.nsec >= 1000000000L)
-  res.tv64 += (u32)-1000000000L;
-
- return res;
-}
-# 194 "linux-2.6.18/include/linux/ktime.h"
-extern ktime_t ktime_add_ns(const ktime_t kt, u64 nsec);
-
-
-
-
-
-
-
-static inline  __attribute__((always_inline)) ktime_t timespec_to_ktime(const struct timespec ts)
-{
- return (ktime_t) { .tv = { .sec = (s32)ts.tv_sec,
-          .nsec = (s32)ts.tv_nsec } };
+ return ktime_set(ts.tv_sec, ts.tv_nsec);
 }
 
 
-
-
-
-
-
-static inline  __attribute__((always_inline)) ktime_t timeval_to_ktime(const struct timeval tv)
+static inline  __attribute__((always_inline)) ktime_t timeval_to_ktime(struct timeval tv)
 {
- return (ktime_t) { .tv = { .sec = (s32)tv.tv_sec,
-       .nsec = (s32)tv.tv_usec * 1000 } };
-}
-
-
-
-
-
-
-
-static inline  __attribute__((always_inline)) struct timespec ktime_to_timespec(const ktime_t kt)
-{
- return (struct timespec) { .tv_sec = (time_t) kt.tv.sec,
-       .tv_nsec = (long) kt.tv.nsec };
-}
-
-
-
-
-
-
-
-static inline  __attribute__((always_inline)) struct timeval ktime_to_timeval(const ktime_t kt)
-{
- return (struct timeval) {
-  .tv_sec = (time_t) kt.tv.sec,
-  .tv_usec = (suseconds_t) (kt.tv.nsec / 1000L) };
-}
-
-
-
-
-
-
-
-static inline  __attribute__((always_inline)) u64 ktime_to_ns(const ktime_t kt)
-{
- return (u64) kt.tv.sec * 1000000000L + kt.tv.nsec;
+ return ktime_set(tv.tv_sec, tv.tv_usec * 1000L);
 }
 # 268 "linux-2.6.18/include/linux/ktime.h"
 extern void ktime_get_ts(struct timespec *ts);
@@ -6541,12 +6218,12 @@ extern void  __attribute__ ((__section__ (".init.text"))) hrtimers_init(void);
 struct exec_domain;
 struct futex_pi_state;
 # 105 "linux-2.6.18/include/linux/sched.h"
-typedef  unsigned long   _GLOBAL_79_T; extern  _GLOBAL_79_T  _GLOBAL_0_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_1_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_2_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_3_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_4_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_5_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_6_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_7_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_8_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_9_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_10_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_11_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_12_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_13_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_14_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_15_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_16_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_17_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_18_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_19_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_20_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_21_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_22_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_23_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_24_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_25_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_26_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_27_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_28_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_29_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_30_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_31_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_32_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_33_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_34_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_35_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_36_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_37_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_38_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_39_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_40_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_41_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_42_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_43_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_44_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_45_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_46_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_47_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_48_avenrun_I [ ] ; extern  _GLOBAL_79_T  _GLOBAL_49_avenrun_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_avenrun_I) *_GLOBAL_avenrun_12_A[NUM_STACKS];   
+typedef  unsigned long   _GLOBAL_84_T; extern  _GLOBAL_84_T  _GLOBAL_0_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_1_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_2_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_3_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_4_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_5_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_6_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_7_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_8_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_9_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_10_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_11_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_12_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_13_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_14_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_15_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_16_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_17_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_18_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_19_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_20_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_21_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_22_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_23_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_24_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_25_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_26_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_27_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_28_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_29_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_30_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_31_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_32_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_33_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_34_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_35_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_36_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_37_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_38_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_39_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_40_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_41_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_42_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_43_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_44_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_45_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_46_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_47_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_48_avenrun_I [ ] ; extern  _GLOBAL_84_T  _GLOBAL_49_avenrun_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_avenrun_I) *_GLOBAL_avenrun_11_A[NUM_STACKS];   
 # 119 "linux-2.6.18/include/linux/sched.h"
-typedef  unsigned long   _GLOBAL_80_T; extern  _GLOBAL_80_T  global_total_forks[NUM_STACKS];    
-typedef  int  _GLOBAL_81_T; extern  _GLOBAL_81_T  global_nr_threads[NUM_STACKS];   
-typedef  int  _GLOBAL_82_T; extern  _GLOBAL_82_T  global_last_pid[NUM_STACKS];   
-typedef  __typeof__ ( unsigned long  )   _GLOBAL_83_T; extern  _GLOBAL_83_T  global_per_cpu__process_counts[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_85_T; extern  _GLOBAL_85_T  global_total_forks[NUM_STACKS];    
+typedef  int  _GLOBAL_86_T; extern  _GLOBAL_86_T  global_nr_threads[NUM_STACKS];   
+typedef  int  _GLOBAL_87_T; extern  _GLOBAL_87_T  global_last_pid[NUM_STACKS];   
+typedef  __typeof__ ( unsigned long  )   _GLOBAL_88_T; extern  _GLOBAL_88_T  global_per_cpu__process_counts[NUM_STACKS];    
 extern int nr_processes(void);
 extern unsigned long nr_running(void);
 extern unsigned long nr_uninterruptible(void);
@@ -6554,8 +6231,8 @@ extern unsigned long nr_active(void);
 extern unsigned long nr_iowait(void);
 extern unsigned long weighted_cpuload(const int cpu);
 # 184 "linux-2.6.18/include/linux/sched.h"
-typedef  rwlock_t  _GLOBAL_84_T; extern  _GLOBAL_84_T  global_tasklist_lock[NUM_STACKS];   
-typedef  spinlock_t  _GLOBAL_85_T; extern  _GLOBAL_85_T  global_mmlist_lock[NUM_STACKS];   
+typedef  rwlock_t  _GLOBAL_89_T; extern  _GLOBAL_89_T  global_tasklist_lock[NUM_STACKS];   
+typedef  spinlock_t  _GLOBAL_90_T; extern  _GLOBAL_90_T  global_mmlist_lock[NUM_STACKS];   
 
 struct task_struct;
 
@@ -6563,7 +6240,7 @@ extern void sched_init(void);
 extern void sched_init_smp(void);
 extern void init_idle(struct task_struct *idle, int cpu);
 
-typedef  cpumask_t  _GLOBAL_86_T; extern  _GLOBAL_86_T  global_nohz_cpu_mask[NUM_STACKS];   
+typedef  cpumask_t  _GLOBAL_91_T; extern  _GLOBAL_91_T  global_nohz_cpu_mask[NUM_STACKS];   
 
 extern void show_state(void);
 extern void show_regs(struct pt_regs *);
@@ -6591,17 +6268,17 @@ extern void touch_softlockup_watchdog(void);
 extern int in_sched_functions(unsigned long addr);
 
 
-extern signed long schedule_timeout(signed long timeout) __attribute__((regparm(3))) ;
+extern signed long schedule_timeout(signed long timeout);
 extern signed long schedule_timeout_interruptible(signed long timeout);
 extern signed long schedule_timeout_uninterruptible(signed long timeout);
-  __attribute__((regparm(0))) void schedule(void);
+ void schedule(void);
 
 struct namespace;
 
 
 
 
-typedef  int  _GLOBAL_87_T; extern  _GLOBAL_87_T  global_sysctl_max_map_count[NUM_STACKS];   
+typedef  int  _GLOBAL_92_T; extern  _GLOBAL_92_T  global_sysctl_max_map_count[NUM_STACKS];   
 
 # 1 "linux-2.6.18/include/linux/aio.h" 1
 
@@ -6632,14 +6309,14 @@ extern struct workqueue_struct *__create_workqueue(const char *name,
 
 extern void destroy_workqueue(struct workqueue_struct *wq);
 
-extern int queue_work(struct workqueue_struct *wq, struct work_struct *work) __attribute__((regparm(3))) ;
-extern int queue_delayed_work(struct workqueue_struct *wq, struct work_struct *work, unsigned long delay) __attribute__((regparm(3))) ;
+extern int queue_work(struct workqueue_struct *wq, struct work_struct *work);
+extern int queue_delayed_work(struct workqueue_struct *wq, struct work_struct *work, unsigned long delay);
 extern int queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
  struct work_struct *work, unsigned long delay);
-extern void flush_workqueue(struct workqueue_struct *wq) __attribute__((regparm(3))) ;
+extern void flush_workqueue(struct workqueue_struct *wq);
 
-extern int schedule_work(struct work_struct *work) __attribute__((regparm(3))) ;
-extern int schedule_delayed_work(struct work_struct *work, unsigned long delay) __attribute__((regparm(3))) ;
+extern int schedule_work(struct work_struct *work);
+extern int schedule_delayed_work(struct work_struct *work, unsigned long delay);
 
 extern int schedule_delayed_work_on(int cpu, struct work_struct *work, unsigned long delay);
 extern int schedule_on_each_cpu(void (*func)(void *info), void *info);
@@ -6813,22 +6490,22 @@ struct kioctx {
 };
 
 
-typedef  unsigned  _GLOBAL_88_T; extern  _GLOBAL_88_T  global_aio_max_size[NUM_STACKS];   
+typedef  unsigned  _GLOBAL_93_T; extern  _GLOBAL_93_T  global_aio_max_size[NUM_STACKS];   
 
-extern ssize_t wait_on_sync_kiocb(struct kiocb *iocb) __attribute__((regparm(3))) ;
-extern int aio_put_req(struct kiocb *iocb) __attribute__((regparm(3))) ;
-extern void kick_iocb(struct kiocb *iocb) __attribute__((regparm(3))) ;
-extern int aio_complete(struct kiocb *iocb, long res, long res2) __attribute__((regparm(3))) ;
-extern void __put_ioctx(struct kioctx *ctx) __attribute__((regparm(3))) ;
+extern ssize_t wait_on_sync_kiocb(struct kiocb *iocb);
+extern int aio_put_req(struct kiocb *iocb);
+extern void kick_iocb(struct kiocb *iocb);
+extern int aio_complete(struct kiocb *iocb, long res, long res2);
+extern void __put_ioctx(struct kioctx *ctx);
 struct mm_struct;
-extern void exit_aio(struct mm_struct *mm) __attribute__((regparm(3))) ;
+extern void exit_aio(struct mm_struct *mm);
 extern struct kioctx *lookup_ioctx(unsigned long ctx_id);
-extern int io_submit_one(struct kioctx *ctx, struct iocb *user_iocb, struct iocb *iocb) __attribute__((regparm(3))) ;
+extern int io_submit_one(struct kioctx *ctx, struct iocb *user_iocb, struct iocb *iocb);
 
 
 
 struct kioctx *lookup_ioctx(unsigned long ctx_id);
-int io_submit_one(struct kioctx *ctx, struct iocb *user_iocb, struct iocb *iocb) __attribute__((regparm(3))) ;
+int io_submit_one(struct kioctx *ctx, struct iocb *user_iocb, struct iocb *iocb);
 # 241 "linux-2.6.18/include/linux/aio.h"
 static inline  __attribute__((always_inline)) struct kiocb *list_kiocb(struct list_head *h)
 {
@@ -6836,8 +6513,8 @@ static inline  __attribute__((always_inline)) struct kiocb *list_kiocb(struct li
 }
 
 
-typedef  unsigned long   _GLOBAL_89_T; extern  _GLOBAL_89_T  global_aio_nr[NUM_STACKS];    
-typedef  unsigned long   _GLOBAL_90_T; extern  _GLOBAL_90_T  global_aio_max_nr[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_94_T; extern  _GLOBAL_94_T  global_aio_nr[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_95_T; extern  _GLOBAL_95_T  global_aio_max_nr[NUM_STACKS];    
 # 249 "linux-2.6.18/include/linux/sched.h" 2
 
 extern unsigned long
@@ -7022,7 +6699,7 @@ struct user_struct {
 
 extern struct user_struct *find_user(uid_t);
 
-typedef  struct user_struct   _GLOBAL_91_T; extern  _GLOBAL_91_T  global_root_user[NUM_STACKS];    
+typedef  struct user_struct   _GLOBAL_96_T; extern  _GLOBAL_96_T  global_root_user[NUM_STACKS];    
 
 
 struct backing_dev_info;
@@ -7345,11 +7022,11 @@ void yield(void);
 
 
 
-typedef  struct exec_domain   _GLOBAL_92_T; extern  _GLOBAL_92_T  _GLOBAL_0_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_1_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_2_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_3_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_4_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_5_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_6_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_7_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_8_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_9_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_10_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_11_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_12_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_13_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_14_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_15_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_16_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_17_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_18_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_19_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_20_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_21_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_22_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_23_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_24_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_25_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_26_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_27_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_28_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_29_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_30_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_31_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_32_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_33_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_34_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_35_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_36_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_37_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_38_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_39_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_40_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_41_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_42_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_43_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_44_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_45_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_46_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_47_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_48_default_exec_domain_I; extern  _GLOBAL_92_T  _GLOBAL_49_default_exec_domain_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_default_exec_domain_I) *_GLOBAL_default_exec_domain_13_A[NUM_STACKS];   
+typedef  struct exec_domain   _GLOBAL_97_T; extern  _GLOBAL_97_T  global_default_exec_domain[NUM_STACKS];    
 
 union thread_union {
  struct thread_info thread_info;
- unsigned long stack[(4096)/sizeof(long)];
+ unsigned long stack[((1UL << 12) << 1)/sizeof(long)];
 };
 
 
@@ -7358,14 +7035,14 @@ static inline  __attribute__((always_inline)) int kstack_end(void *addr)
 
 
 
- return !(((unsigned long)addr+sizeof(void*)-1) & ((4096)-sizeof(void*)));
+ return !(((unsigned long)addr+sizeof(void*)-1) & (((1UL << 12) << 1)-sizeof(void*)));
 }
 
 
-typedef  union thread_union   _GLOBAL_93_T; extern  _GLOBAL_93_T  global_init_thread_union[NUM_STACKS];    
-typedef  struct task_struct   _GLOBAL_94_T; extern  _GLOBAL_94_T  global_init_task[NUM_STACKS];    
+typedef  union thread_union   _GLOBAL_98_T; extern  _GLOBAL_98_T  global_init_thread_union[NUM_STACKS];    
+typedef  struct task_struct   _GLOBAL_99_T; extern  _GLOBAL_99_T  global_init_task[NUM_STACKS];    
 
-typedef  struct mm_struct   _GLOBAL_95_T; extern  _GLOBAL_95_T  global_init_mm[NUM_STACKS];    
+typedef  struct mm_struct   _GLOBAL_100_T; extern  _GLOBAL_100_T  global_init_mm[NUM_STACKS];    
 
 
 extern struct task_struct *find_task_by_pid_type(int type, int pid);
@@ -7386,17 +7063,17 @@ extern void switch_uid(struct user_struct *);
 
 extern void do_timer(struct pt_regs *);
 
-extern int wake_up_state(struct task_struct * tsk, unsigned int state) __attribute__((regparm(3))) ;
-extern int wake_up_process(struct task_struct * tsk) __attribute__((regparm(3))) ;
-extern void wake_up_new_task(struct task_struct * tsk, unsigned long clone_flags) __attribute__((regparm(3))) ;
+extern int wake_up_state(struct task_struct * tsk, unsigned int state);
+extern int wake_up_process(struct task_struct * tsk);
+extern void wake_up_new_task(struct task_struct * tsk, unsigned long clone_flags);
 
 
 
 
  static inline  __attribute__((always_inline)) void kick_process(struct task_struct *tsk) { }
 
-extern void sched_fork(struct task_struct * p, int clone_flags) __attribute__((regparm(3))) ;
-extern void sched_exit(struct task_struct * p) __attribute__((regparm(3))) ;
+extern void sched_fork(struct task_struct * p, int clone_flags);
+extern void sched_exit(struct task_struct * p);
 
 extern int in_group_p(gid_t);
 extern int in_egroup_p(gid_t);
@@ -7473,7 +7150,7 @@ static inline  __attribute__((always_inline)) int sas_ss_flags(unsigned long sp)
 extern struct mm_struct * mm_alloc(void);
 
 
-extern void __mmdrop(struct mm_struct *) __attribute__((regparm(3))) ;
+extern void __mmdrop(struct mm_struct *);
 static inline  __attribute__((always_inline)) void mmdrop(struct mm_struct * mm)
 {
  if (atomic_dec_and_test(&mm->mm_count))
@@ -7501,7 +7178,7 @@ extern void do_group_exit(int);
 extern void daemonize(const char *, ...);
 extern int allow_signal(int);
 extern int disallow_signal(int);
-typedef  struct task_struct   _GLOBAL_96_T; extern  _GLOBAL_96_T  * global_child_reaper[NUM_STACKS];    
+typedef  struct task_struct   _GLOBAL_101_T; extern  _GLOBAL_101_T  * global_child_reaper[NUM_STACKS];    
 
 extern int do_execve(char *, char * *, char * *, struct pt_regs *);
 extern long do_fork(unsigned long, unsigned long, struct pt_regs *, unsigned long, int *, int *);
@@ -7512,7 +7189,7 @@ extern void get_task_comm(char *to, struct task_struct *tsk);
 # 1335 "linux-2.6.18/include/linux/sched.h"
 static inline  __attribute__((always_inline)) struct task_struct *next_thread(const struct task_struct *p)
 {
- return ({ const typeof( ((struct task_struct *)0)->thread_group ) *__mptr = (({ typeof(p->thread_group.next) _________p1 = p->thread_group.next; do { } while(0); (_________p1); })); (struct task_struct *)( (char *)__mptr - __builtin_offsetof(struct task_struct,thread_group) );});
+ return ({ const typeof( ((struct task_struct *)0)->thread_group ) *__mptr = (({ typeof(p->thread_group.next) _________p1 = p->thread_group.next; do {} while(0); (_________p1); })); (struct task_struct *)( (char *)__mptr - __builtin_offsetof(struct task_struct,thread_group) );});
 
 }
 
@@ -7621,7 +7298,7 @@ static inline  __attribute__((always_inline)) int lock_need_resched(spinlock_t *
 
 
 
-extern void recalc_sigpending_tsk(struct task_struct *t) __attribute__((regparm(3))) ;
+extern void recalc_sigpending_tsk(struct task_struct *t);
 extern void recalc_sigpending(void);
 
 extern void signal_wake_up(struct task_struct *t, int resume_stopped);
@@ -7774,10 +7451,10 @@ void kref_get(struct kref *kref);
 int kref_put(struct kref *kref, void (*release) (struct kref *kref));
 # 26 "linux-2.6.18/include/linux/kobject.h" 2
 # 34 "linux-2.6.18/include/linux/kobject.h"
-typedef  char  _GLOBAL_97_T; extern  _GLOBAL_97_T  _GLOBAL_0_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_1_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_2_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_3_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_4_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_5_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_6_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_7_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_8_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_9_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_10_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_11_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_12_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_13_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_14_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_15_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_16_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_17_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_18_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_19_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_20_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_21_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_22_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_23_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_24_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_25_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_26_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_27_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_28_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_29_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_30_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_31_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_32_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_33_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_34_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_35_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_36_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_37_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_38_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_39_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_40_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_41_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_42_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_43_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_44_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_45_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_46_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_47_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_48_uevent_helper_I [ ] ; extern  _GLOBAL_97_T  _GLOBAL_49_uevent_helper_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_uevent_helper_I) *_GLOBAL_uevent_helper_14_A[NUM_STACKS];  
+typedef  char  _GLOBAL_102_T; extern  _GLOBAL_102_T  _GLOBAL_0_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_1_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_2_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_3_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_4_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_5_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_6_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_7_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_8_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_9_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_10_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_11_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_12_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_13_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_14_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_15_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_16_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_17_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_18_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_19_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_20_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_21_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_22_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_23_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_24_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_25_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_26_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_27_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_28_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_29_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_30_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_31_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_32_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_33_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_34_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_35_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_36_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_37_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_38_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_39_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_40_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_41_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_42_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_43_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_44_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_45_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_46_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_47_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_48_uevent_helper_I [ ] ; extern  _GLOBAL_102_T  _GLOBAL_49_uevent_helper_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_uevent_helper_I) *_GLOBAL_uevent_helper_12_A[NUM_STACKS];  
 
 
-typedef  u64  _GLOBAL_98_T; extern  _GLOBAL_98_T  global_uevent_seqnum[NUM_STACKS];   
+typedef  u64  _GLOBAL_103_T; extern  _GLOBAL_103_T  global_uevent_seqnum[NUM_STACKS];   
 
 
 typedef int kobject_action_t;
@@ -7887,9 +7564,9 @@ struct subsystem {
  struct rw_semaphore rwsem;
 };
 # 192 "linux-2.6.18/include/linux/kobject.h"
-typedef  struct subsystem   _GLOBAL_99_T; extern  _GLOBAL_99_T  global_kernel_subsys[NUM_STACKS];    
+typedef  struct subsystem   _GLOBAL_104_T; extern  _GLOBAL_104_T  global_kernel_subsys[NUM_STACKS];    
 
-typedef  struct subsystem   _GLOBAL_100_T; extern  _GLOBAL_100_T  global_hypervisor_subsys[NUM_STACKS];    
+typedef  struct subsystem   _GLOBAL_105_T; extern  _GLOBAL_105_T  global_hypervisor_subsys[NUM_STACKS];    
 # 241 "linux-2.6.18/include/linux/kobject.h"
 extern void subsystem_init(struct subsystem *);
 extern int subsystem_register(struct subsystem *);
@@ -7965,8 +7642,8 @@ struct pm_dev
 
 
 
-typedef  void   ( *_GLOBAL_102_T  )  ( void  ) ; extern  _GLOBAL_102_T global_pm_idle[NUM_STACKS];   
-typedef  void   ( *_GLOBAL_104_T  )  ( void  ) ; extern  _GLOBAL_104_T global_pm_power_off[NUM_STACKS];   
+typedef  void   ( *_GLOBAL_107_T  )  ( void  ) ; extern  _GLOBAL_107_T global_pm_idle[NUM_STACKS];   
+typedef  void   ( *_GLOBAL_109_T  )  ( void  ) ; extern  _GLOBAL_109_T global_pm_power_off[NUM_STACKS];   
 
 typedef int suspend_state_t;
 
@@ -7993,7 +7670,7 @@ struct pm_ops {
 };
 
 extern void pm_set_ops(struct pm_ops *);
-typedef  struct pm_ops   _GLOBAL_105_T; extern  _GLOBAL_105_T  * global_pm_ops[NUM_STACKS];    
+typedef  struct pm_ops   _GLOBAL_110_T; extern  _GLOBAL_110_T  * global_pm_ops[NUM_STACKS];    
 extern int pm_suspend(suspend_state_t state);
 
 
@@ -8026,7 +7703,7 @@ extern void device_power_up(void);
 extern void device_resume(void);
 
 
-typedef  suspend_disk_method_t  _GLOBAL_106_T; extern  _GLOBAL_106_T  global_pm_disk_mode[NUM_STACKS];   
+typedef  suspend_disk_method_t  _GLOBAL_111_T; extern  _GLOBAL_111_T  global_pm_disk_mode[NUM_STACKS];   
 
 extern int device_suspend(pm_message_t state);
 
@@ -8108,8 +7785,8 @@ struct sysdev_attribute {
 extern int sysdev_create_file(struct sys_device *, struct sysdev_attribute *);
 extern void sysdev_remove_file(struct sys_device *, struct sysdev_attribute *);
 # 1527 "linux-2.6.18/include/linux/sched.h" 2
-typedef  int  _GLOBAL_107_T; extern  _GLOBAL_107_T  global_sched_mc_power_savings[NUM_STACKS]; extern  _GLOBAL_107_T  global_sched_smt_power_savings[NUM_STACKS];    
-typedef  struct sysdev_attribute   _GLOBAL_108_T; extern  _GLOBAL_108_T  global_attr_sched_mc_power_savings[NUM_STACKS]; extern  _GLOBAL_108_T  global_attr_sched_smt_power_savings[NUM_STACKS];     
+typedef  int  _GLOBAL_112_T; extern  _GLOBAL_112_T  global_sched_mc_power_savings[NUM_STACKS]; extern  _GLOBAL_112_T  global_sched_smt_power_savings[NUM_STACKS];    
+typedef  struct sysdev_attribute   _GLOBAL_113_T; extern  _GLOBAL_113_T  global_attr_sched_mc_power_savings[NUM_STACKS]; extern  _GLOBAL_113_T  global_attr_sched_smt_power_savings[NUM_STACKS];     
 extern int sched_create_sysfs_power_savings_entries(struct sysdev_class *cls);
 
 extern void normalize_rt_tasks(void);
@@ -8194,6 +7871,32 @@ static inline  __attribute__((always_inline)) int try_to_freeze(void)
 
 
 
+
+
+struct stat {
+ unsigned long st_dev;
+ unsigned long st_ino;
+ unsigned long st_nlink;
+
+ unsigned int st_mode;
+ unsigned int st_uid;
+ unsigned int st_gid;
+ unsigned int __pad0;
+ unsigned long st_rdev;
+ long st_size;
+ long st_blksize;
+ long st_blocks;
+
+ unsigned long st_atime;
+ unsigned long st_atime_nsec;
+ unsigned long st_mtime;
+ unsigned long st_mtime_nsec;
+ unsigned long st_ctime;
+ unsigned long st_ctime_nsec;
+   long __unused[3];
+};
+
+
 struct __old_kernel_stat {
  unsigned short st_dev;
  unsigned short st_ino;
@@ -8202,67 +7905,10 @@ struct __old_kernel_stat {
  unsigned short st_uid;
  unsigned short st_gid;
  unsigned short st_rdev;
- unsigned long st_size;
- unsigned long st_atime;
- unsigned long st_mtime;
- unsigned long st_ctime;
-};
-
-struct stat {
- unsigned long st_dev;
- unsigned long st_ino;
- unsigned short st_mode;
- unsigned short st_nlink;
- unsigned short st_uid;
- unsigned short st_gid;
- unsigned long st_rdev;
- unsigned long st_size;
- unsigned long st_blksize;
- unsigned long st_blocks;
- unsigned long st_atime;
- unsigned long st_atime_nsec;
- unsigned long st_mtime;
- unsigned long st_mtime_nsec;
- unsigned long st_ctime;
- unsigned long st_ctime_nsec;
- unsigned long __unused4;
- unsigned long __unused5;
-};
-
-
-
-
-struct stat64 {
- unsigned long long st_dev;
- unsigned char __pad0[4];
-
-
- unsigned long __st_ino;
-
- unsigned int st_mode;
- unsigned int st_nlink;
-
- unsigned long st_uid;
- unsigned long st_gid;
-
- unsigned long long st_rdev;
- unsigned char __pad3[4];
-
- long long st_size;
- unsigned long st_blksize;
-
- unsigned long long st_blocks;
-
- unsigned long st_atime;
- unsigned long st_atime_nsec;
-
- unsigned long st_mtime;
- unsigned int st_mtime_nsec;
-
- unsigned long st_ctime;
- unsigned long st_ctime_nsec;
-
- unsigned long long st_ino;
+ unsigned int st_size;
+ unsigned int st_atime;
+ unsigned int st_mtime;
+ unsigned int st_ctime;
 };
 # 7 "linux-2.6.18/include/linux/stat.h" 2
 # 59 "linux-2.6.18/include/linux/stat.h"
@@ -8314,48 +7960,31 @@ extern void usermodehelper_init(void);
 # 1 "linux-2.6.18/include/asm/elf.h" 1
 # 9 "linux-2.6.18/include/asm/elf.h"
 # 1 "linux-2.6.18/include/asm/user.h" 1
-# 44 "linux-2.6.18/include/asm/user.h"
+# 50 "linux-2.6.18/include/asm/user.h"
 struct user_i387_struct {
- long cwd;
- long swd;
- long twd;
- long fip;
- long fcs;
- long foo;
- long fos;
- long st_space[20];
-};
-
-struct user_fxsr_struct {
  unsigned short cwd;
  unsigned short swd;
  unsigned short twd;
  unsigned short fop;
- long fip;
- long fcs;
- long foo;
- long fos;
- long mxcsr;
- long reserved;
- long st_space[32];
- long xmm_space[32];
- long padding[56];
+ __u64 rip;
+ __u64 rdp;
+ __u32 mxcsr;
+ __u32 mxcsr_mask;
+ __u32 st_space[32];
+ __u32 xmm_space[64];
+ __u32 padding[24];
 };
-
-
-
 
 
 
 
 struct user_regs_struct {
- long ebx, ecx, edx, esi, edi, ebp, eax;
- unsigned short ds, __ds, es, __es;
- unsigned short fs, __fs, gs, __gs;
- long orig_eax, eip;
- unsigned short cs, __cs;
- long eflags, esp;
- unsigned short ss, __ss;
+ unsigned long r15,r14,r13,r12,rbp,rbx,r11,r10;
+ unsigned long r9,r8,rax,rcx,rdx,rsi,rdi,orig_rax;
+ unsigned long rip,cs,eflags;
+ unsigned long rsp,ss;
+   unsigned long fs_base, gs_base;
+ unsigned long ds,es,fs,gs;
 };
 
 
@@ -8368,6 +7997,7 @@ struct user{
 
   int u_fpvalid;
 
+  int pad0;
   struct user_i387_struct i387;
 
   unsigned long int u_tsize;
@@ -8380,193 +8010,230 @@ struct user{
 
   long int signal;
   int reserved;
+  int pad1;
   struct user_pt_regs * u_ar0;
 
   struct user_i387_struct* u_fpstate;
   unsigned long magic;
   char u_comm[32];
-  int u_debugreg[8];
+  unsigned long u_debugreg[8];
+  unsigned long error_code;
+  unsigned long fault_address;
 };
 # 10 "linux-2.6.18/include/asm/elf.h" 2
-
-
-# 1 "linux-2.6.18/include/linux/utsname.h" 1
-
-
-
-
-
-struct oldold_utsname {
- char sysname[9];
- char nodename[9];
- char release[9];
- char version[9];
- char machine[9];
-};
-
-
-
-struct old_utsname {
- char sysname[65];
- char nodename[65];
- char release[65];
- char version[65];
- char machine[65];
-};
-
-struct new_utsname {
- char sysname[65];
- char nodename[65];
- char release[65];
- char version[65];
- char machine[65];
- char domainname[65];
-};
-
-typedef  struct new_utsname   _GLOBAL_109_T; extern  _GLOBAL_109_T  global_system_utsname[NUM_STACKS];    
-
-typedef  struct rw_semaphore   _GLOBAL_110_T; extern  _GLOBAL_110_T  global_uts_sem[NUM_STACKS];    
-# 13 "linux-2.6.18/include/asm/elf.h" 2
-# 27 "linux-2.6.18/include/asm/elf.h"
+# 32 "linux-2.6.18/include/asm/elf.h"
 typedef unsigned long elf_greg_t;
 
 
 typedef elf_greg_t elf_gregset_t[(sizeof (struct user_regs_struct) / sizeof(elf_greg_t))];
 
 typedef struct user_i387_struct elf_fpregset_t;
-typedef struct user_fxsr_struct elf_fpxregset_t;
-# 52 "linux-2.6.18/include/asm/elf.h"
-# 1 "linux-2.6.18/include/asm/desc.h" 1
+# 48 "linux-2.6.18/include/asm/elf.h"
+# 1 "linux-2.6.18/include/asm/compat.h" 1
+# 12 "linux-2.6.18/include/asm/compat.h"
+typedef u32 compat_size_t;
+typedef s32 compat_ssize_t;
+typedef s32 compat_time_t;
+typedef s32 compat_clock_t;
+typedef s32 compat_pid_t;
+typedef u16 __compat_uid_t;
+typedef u16 __compat_gid_t;
+typedef u32 __compat_uid32_t;
+typedef u32 __compat_gid32_t;
+typedef u16 compat_mode_t;
+typedef u32 compat_ino_t;
+typedef u16 compat_dev_t;
+typedef s32 compat_off_t;
+typedef s64 compat_loff_t;
+typedef u16 compat_nlink_t;
+typedef u16 compat_ipc_pid_t;
+typedef s32 compat_daddr_t;
+typedef u32 compat_caddr_t;
+typedef __kernel_fsid_t compat_fsid_t;
+typedef s32 compat_timer_t;
+typedef s32 compat_key_t;
 
+typedef s32 compat_int_t;
+typedef s32 compat_long_t;
+typedef u32 compat_uint_t;
+typedef u32 compat_ulong_t;
 
-
-# 1 "linux-2.6.18/include/asm/ldt.h" 1
-# 15 "linux-2.6.18/include/asm/ldt.h"
-struct user_desc {
- unsigned int entry_number;
- unsigned long base_addr;
- unsigned int limit;
- unsigned int seg_32bit:1;
- unsigned int contents:2;
- unsigned int read_exec_only:1;
- unsigned int limit_in_pages:1;
- unsigned int seg_not_present:1;
- unsigned int useable:1;
+struct compat_timespec {
+ compat_time_t tv_sec;
+ s32 tv_nsec;
 };
-# 5 "linux-2.6.18/include/asm/desc.h" 2
-# 17 "linux-2.6.18/include/asm/desc.h"
-typedef  struct desc_struct   _GLOBAL_111_T; extern  _GLOBAL_111_T  _GLOBAL_0_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_1_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_2_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_3_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_4_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_5_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_6_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_7_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_8_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_9_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_10_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_11_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_12_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_13_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_14_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_15_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_16_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_17_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_18_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_19_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_20_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_21_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_22_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_23_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_24_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_25_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_26_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_27_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_28_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_29_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_30_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_31_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_32_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_33_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_34_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_35_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_36_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_37_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_38_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_39_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_40_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_41_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_42_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_43_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_44_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_45_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_46_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_47_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_48_cpu_gdt_table_I [ 32 ] ; extern  _GLOBAL_111_T  _GLOBAL_49_cpu_gdt_table_I [ 32 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_cpu_gdt_table_I) *_GLOBAL_cpu_gdt_table_15_A[NUM_STACKS];   
 
-typedef  __typeof__ ( unsigned char  )   _GLOBAL_112_T; extern  _GLOBAL_112_T  _GLOBAL_0_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_1_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_2_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_3_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_4_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_5_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_6_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_7_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_8_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_9_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_10_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_11_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_12_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_13_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_14_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_15_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_16_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_17_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_18_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_19_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_20_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_21_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_22_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_23_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_24_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_25_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_26_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_27_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_28_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_29_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_30_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_31_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_32_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_33_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_34_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_35_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_36_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_37_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_38_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_39_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_40_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_41_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_42_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_43_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_44_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_45_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_46_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_47_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_48_per_cpu__cpu_16bit_stack_I [ 1024 ] ; extern  _GLOBAL_112_T  _GLOBAL_49_per_cpu__cpu_16bit_stack_I [ 1024 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_per_cpu__cpu_16bit_stack_I) *_GLOBAL_per_cpu__cpu_16bit_stack_16_A[NUM_STACKS];   
+struct compat_timeval {
+ compat_time_t tv_sec;
+ s32 tv_usec;
+};
 
-struct Xgt_desc_struct {
- unsigned short size;
- unsigned long address __attribute__((packed)) ;
- unsigned short pad;
-} __attribute__ ((packed)) ;
+struct compat_stat {
+ compat_dev_t st_dev;
+ u16 __pad1;
+ compat_ino_t st_ino;
+ compat_mode_t st_mode;
+ compat_nlink_t st_nlink;
+ __compat_uid_t st_uid;
+ __compat_gid_t st_gid;
+ compat_dev_t st_rdev;
+ u16 __pad2;
+ u32 st_size;
+ u32 st_blksize;
+ u32 st_blocks;
+ u32 st_atime;
+ u32 st_atime_nsec;
+ u32 st_mtime;
+ u32 st_mtime_nsec;
+ u32 st_ctime;
+ u32 st_ctime_nsec;
+ u32 __unused4;
+ u32 __unused5;
+};
 
-typedef  struct Xgt_desc_struct   _GLOBAL_113_T; extern  _GLOBAL_113_T  global_idt_descr[NUM_STACKS];    
-typedef  __typeof__ ( struct Xgt_desc_struct  )   _GLOBAL_114_T; extern  _GLOBAL_114_T  global_per_cpu__cpu_gdt_descr[NUM_STACKS];    
+struct compat_flock {
+ short l_type;
+ short l_whence;
+ compat_off_t l_start;
+ compat_off_t l_len;
+ compat_pid_t l_pid;
+};
+# 88 "linux-2.6.18/include/asm/compat.h"
+struct compat_flock64 {
+ short l_type;
+ short l_whence;
+ compat_loff_t l_start;
+ compat_loff_t l_len;
+ compat_pid_t l_pid;
+} __attribute__((packed)) ;
+
+struct compat_statfs {
+ int f_type;
+ int f_bsize;
+ int f_blocks;
+ int f_bfree;
+ int f_bavail;
+ int f_files;
+ int f_ffree;
+ compat_fsid_t f_fsid;
+ int f_namelen;
+ int f_frsize;
+ int f_spare[5];
+};
 
 
-static inline  __attribute__((always_inline)) struct desc_struct *get_cpu_gdt_table(unsigned int cpu)
+
+
+typedef u32 compat_old_sigset_t;
+
+
+
+
+typedef u32 compat_sigset_word;
+
+
+
+
+struct compat_ipc64_perm {
+ compat_key_t key;
+ __compat_uid32_t uid;
+ __compat_gid32_t gid;
+ __compat_uid32_t cuid;
+ __compat_gid32_t cgid;
+ unsigned short mode;
+ unsigned short __pad1;
+ unsigned short seq;
+ unsigned short __pad2;
+ compat_ulong_t unused1;
+ compat_ulong_t unused2;
+};
+
+struct compat_semid64_ds {
+ struct compat_ipc64_perm sem_perm;
+ compat_time_t sem_otime;
+ compat_ulong_t __unused1;
+ compat_time_t sem_ctime;
+ compat_ulong_t __unused2;
+ compat_ulong_t sem_nsems;
+ compat_ulong_t __unused3;
+ compat_ulong_t __unused4;
+};
+
+struct compat_msqid64_ds {
+ struct compat_ipc64_perm msg_perm;
+ compat_time_t msg_stime;
+ compat_ulong_t __unused1;
+ compat_time_t msg_rtime;
+ compat_ulong_t __unused2;
+ compat_time_t msg_ctime;
+ compat_ulong_t __unused3;
+ compat_ulong_t msg_cbytes;
+ compat_ulong_t msg_qnum;
+ compat_ulong_t msg_qbytes;
+ compat_pid_t msg_lspid;
+ compat_pid_t msg_lrpid;
+ compat_ulong_t __unused4;
+ compat_ulong_t __unused5;
+};
+
+struct compat_shmid64_ds {
+ struct compat_ipc64_perm shm_perm;
+ compat_size_t shm_segsz;
+ compat_time_t shm_atime;
+ compat_ulong_t __unused1;
+ compat_time_t shm_dtime;
+ compat_ulong_t __unused2;
+ compat_time_t shm_ctime;
+ compat_ulong_t __unused3;
+ compat_pid_t shm_cpid;
+ compat_pid_t shm_lpid;
+ compat_ulong_t shm_nattch;
+ compat_ulong_t __unused4;
+ compat_ulong_t __unused5;
+};
+
+
+
+
+
+
+
+typedef u32 compat_uptr_t;
+
+static inline  __attribute__((always_inline)) void *compat_ptr(compat_uptr_t uptr)
 {
- return (struct desc_struct *)(*((void)(cpu), &global_per_cpu__cpu_gdt_descr[get_stack_id()])).address;
+ return (void *)(unsigned long)uptr;
 }
-# 53 "linux-2.6.18/include/asm/desc.h"
-extern struct desc_struct default_ldt[];
-extern void set_intr_gate(unsigned int irq, void * addr);
-# 67 "linux-2.6.18/include/asm/desc.h"
-static inline  __attribute__((always_inline)) void __set_tss_desc(unsigned int cpu, unsigned int entry, void *addr)
+
+static inline  __attribute__((always_inline)) compat_uptr_t ptr_to_compat(void *uptr)
 {
- __asm__ __volatile__ ("movw %w3,0(%2)\n\t" "movw %w1,2(%2)\n\t" "rorl $16,%1\n\t" "movb %b1,4(%2)\n\t" "movb %4,5(%2)\n\t" "movb $0,6(%2)\n\t" "movb %h1,7(%2)\n\t" "rorl $16,%1" : "=m"(*(&get_cpu_gdt_table(cpu)[entry])) : "q" ((int)addr), "r"(&get_cpu_gdt_table(cpu)[entry]), "ir"(__builtin_offsetof(struct tss_struct,__cacheline_filler) - 1), "i"(0x89));
-
+ return (u32)(unsigned long)uptr;
 }
 
-
-
-static inline  __attribute__((always_inline)) void set_ldt_desc(unsigned int cpu, void *addr, unsigned int size)
+static __inline__  __attribute__((always_inline)) void *compat_alloc_user_space(long len)
 {
- __asm__ __volatile__ ("movw %w3,0(%2)\n\t" "movw %w1,2(%2)\n\t" "rorl $16,%1\n\t" "movb %b1,4(%2)\n\t" "movb %4,5(%2)\n\t" "movb $0,6(%2)\n\t" "movb %h1,7(%2)\n\t" "rorl $16,%1" : "=m"(*(&get_cpu_gdt_table(cpu)[(12 + 5)])) : "q" ((int)addr), "r"(&get_cpu_gdt_table(cpu)[(12 + 5)]), "ir"(((size << 3)-1)), "i"(0x82));
+ struct pt_regs *regs = ((struct pt_regs *)(get_nsc_task())->thread.rsp0 - 1);
+ return (void *)regs->rsp - len;
 }
-# 105 "linux-2.6.18/include/asm/desc.h"
-static inline  __attribute__((always_inline)) void write_ldt_entry(void *ldt, int entry, __u32 entry_a, __u32 entry_b)
+
+static inline  __attribute__((always_inline)) int is_compat_task(void)
 {
- __u32 *lp = (__u32 *)((char *)ldt + entry*8);
- *lp = entry_a;
- *(lp+1) = entry_b;
+ return current_thread_info()->status & 0x0002;
 }
+# 49 "linux-2.6.18/include/asm/elf.h" 2
+# 147 "linux-2.6.18/include/asm/elf.h"
+extern void set_personality_64bit(void);
 
 
 
 
 
-static inline  __attribute__((always_inline)) void load_TLS(struct thread_struct *t, unsigned int cpu)
-{
-
- get_cpu_gdt_table(cpu)[6 + 0] = t->tls_array[0]; get_cpu_gdt_table(cpu)[6 + 1] = t->tls_array[1]; get_cpu_gdt_table(cpu)[6 + 2] = t->tls_array[2];
-
-}
-
-static inline  __attribute__((always_inline)) void clear_LDT(void)
-{
- int cpu = ({ do { } while (0); 0; });
-
- set_ldt_desc(cpu, &default_ldt[0], 5);
- __asm__ __volatile__("lldt %w0"::"q" ((12 + 5)*8));
- do { } while (0);
-}
 
 
-
-
-static inline  __attribute__((always_inline)) void load_LDT_nolock(mm_context_t *pc, int cpu)
-{
- void *segments = pc->ldt;
- int count = pc->size;
-
- if (__builtin_expect(!!(!count), 1)) {
-  segments = &default_ldt[0];
-  count = 5;
- }
-
- set_ldt_desc(cpu, segments, count);
- __asm__ __volatile__("lldt %w0"::"q" ((12 + 5)*8));
-}
-
-static inline  __attribute__((always_inline)) void load_LDT(mm_context_t *pc)
-{
- int cpu = ({ do { } while (0); 0; });
- load_LDT_nolock(pc, cpu);
- do { } while (0);
-}
-
-static inline  __attribute__((always_inline)) unsigned long get_desc_base(unsigned long *desc)
-{
- unsigned long base;
- base = ((desc[0] >> 16) & 0x0000ffff) |
-  ((desc[1] << 16) & 0x00ff0000) |
-  (desc[1] & 0xff000000);
- return base;
-}
-# 53 "linux-2.6.18/include/asm/elf.h" 2
-# 125 "linux-2.6.18/include/asm/elf.h"
 struct task_struct;
 
 extern int dump_task_regs (struct task_struct *, elf_gregset_t *);
 extern int dump_task_fpu (struct task_struct *, elf_fpregset_t *);
-extern int dump_task_extended_fpu (struct task_struct *, struct user_fxsr_struct *);
-# 155 "linux-2.6.18/include/asm/elf.h"
-extern void __kernel_vsyscall;
-
-
-
-
-struct linux_binprm;
-extern int arch_setup_additional_pages(struct linux_binprm *bprm,
-                                       int executable_stack);
-
-typedef  unsigned int   _GLOBAL_115_T; extern  _GLOBAL_115_T  global_vdso_enabled[NUM_STACKS];    
 # 8 "linux-2.6.18/include/linux/elf.h" 2
 # 17 "linux-2.6.18/include/linux/elf.h"
 typedef __u32 Elf32_Addr;
@@ -8744,10 +8411,8 @@ typedef struct elf64_note {
   Elf64_Word n_descsz;
   Elf64_Word n_type;
 } Elf64_Nhdr;
-
-
-
-typedef  Elf32_Dyn  _GLOBAL_116_T; extern  _GLOBAL_116_T  _GLOBAL_0__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_1__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_2__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_3__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_4__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_5__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_6__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_7__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_8__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_9__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_10__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_11__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_12__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_13__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_14__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_15__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_16__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_17__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_18__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_19__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_20__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_21__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_22__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_23__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_24__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_25__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_26__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_27__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_28__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_29__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_30__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_31__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_32__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_33__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_34__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_35__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_36__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_37__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_38__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_39__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_40__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_41__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_42__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_43__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_44__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_45__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_46__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_47__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_48__DYNAMIC_I [ ] ; extern  _GLOBAL_116_T  _GLOBAL_49__DYNAMIC_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__DYNAMIC_I) *_GLOBAL__DYNAMIC_17_A[NUM_STACKS];   
+# 364 "linux-2.6.18/include/linux/elf.h"
+typedef  Elf64_Dyn  _GLOBAL_114_T; extern  _GLOBAL_114_T  _GLOBAL_0__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_1__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_2__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_3__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_4__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_5__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_6__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_7__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_8__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_9__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_10__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_11__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_12__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_13__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_14__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_15__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_16__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_17__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_18__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_19__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_20__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_21__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_22__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_23__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_24__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_25__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_26__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_27__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_28__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_29__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_30__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_31__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_32__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_33__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_34__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_35__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_36__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_37__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_38__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_39__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_40__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_41__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_42__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_43__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_44__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_45__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_46__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_47__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_48__DYNAMIC_I [ ] ; extern  _GLOBAL_114_T  _GLOBAL_49__DYNAMIC_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__DYNAMIC_I) *_GLOBAL__DYNAMIC_13_A[NUM_STACKS];   
 # 17 "linux-2.6.18/include/linux/module.h" 2
 
 
@@ -8868,34 +8533,36 @@ typedef struct
 
 
 
-static __inline__  __attribute__((always_inline)) void local_inc(local_t *v)
+static inline  __attribute__((always_inline)) void local_inc(local_t *v)
 {
  __asm__ __volatile__(
-  "incl %0"
-  :"+m" (v->counter));
+  "incq %0"
+  :"=m" (v->counter)
+  :"m" (v->counter));
 }
 
-static __inline__  __attribute__((always_inline)) void local_dec(local_t *v)
+static inline  __attribute__((always_inline)) void local_dec(local_t *v)
 {
  __asm__ __volatile__(
-  "decl %0"
-  :"+m" (v->counter));
+  "decq %0"
+  :"=m" (v->counter)
+  :"m" (v->counter));
 }
 
-static __inline__  __attribute__((always_inline)) void local_add(long i, local_t *v)
+static inline  __attribute__((always_inline)) void local_add(long i, local_t *v)
 {
  __asm__ __volatile__(
-  "addl %1,%0"
-  :"+m" (v->counter)
-  :"ir" (i));
+  "addq %1,%0"
+  :"=m" (v->counter)
+  :"ir" (i), "m" (v->counter));
 }
 
-static __inline__  __attribute__((always_inline)) void local_sub(long i, local_t *v)
+static inline  __attribute__((always_inline)) void local_sub(long i, local_t *v)
 {
  __asm__ __volatile__(
-  "subl %1,%0"
-  :"+m" (v->counter)
-  :"ir" (i));
+  "subq %1,%0"
+  :"=m" (v->counter)
+  :"ir" (i), "m" (v->counter));
 }
 # 21 "linux-2.6.18/include/linux/module.h" 2
 
@@ -8903,10 +8570,7 @@ static __inline__  __attribute__((always_inline)) void local_sub(long i, local_t
 
 
 
-
-struct mod_arch_specific
-{
-};
+struct mod_arch_specific {};
 # 23 "linux-2.6.18/include/linux/module.h" 2
 # 34 "linux-2.6.18/include/linux/module.h"
 struct kernel_symbol
@@ -8954,7 +8618,7 @@ void sort_extable(struct exception_table_entry *start,
     struct exception_table_entry *finish);
 void sort_main_extable(void);
 
-typedef  struct subsystem   _GLOBAL_117_T; extern  _GLOBAL_117_T  global_module_subsys[NUM_STACKS];    
+typedef  struct subsystem   _GLOBAL_115_T; extern  _GLOBAL_115_T  global_module_subsys[NUM_STACKS];    
 # 160 "linux-2.6.18/include/linux/module.h"
 const struct exception_table_entry *search_exception_tables(unsigned long add);
 
@@ -9115,7 +8779,7 @@ unsigned long iov_shorten(struct iovec *iov, unsigned long nr_segs, size_t to);
 
 
 
-typedef  int  _GLOBAL_118_T; extern  _GLOBAL_118_T  global_sysctl_somaxconn[NUM_STACKS];   
+typedef  int  _GLOBAL_116_T; extern  _GLOBAL_116_T  global_sysctl_somaxconn[NUM_STACKS];   
 
 struct seq_file;
 extern void socket_seq_show(struct seq_file *seq);
@@ -9430,7 +9094,7 @@ struct prio_tree_node *prio_tree_next(struct prio_tree_iter *iter);
 # 1 "linux-2.6.18/include/asm/ioctl.h" 1
 # 1 "linux-2.6.18/include/asm-generic/ioctl.h" 1
 # 51 "linux-2.6.18/include/asm-generic/ioctl.h"
-typedef  unsigned int   _GLOBAL_119_T; extern  _GLOBAL_119_T  global___invalid_size_argument_for_IOC[NUM_STACKS];    
+typedef  unsigned int   _GLOBAL_117_T; extern  _GLOBAL_117_T  global___invalid_size_argument_for_IOC[NUM_STACKS];    
 # 1 "linux-2.6.18/include/asm/ioctl.h" 2
 # 5 "linux-2.6.18/include/linux/ioctl.h" 2
 # 11 "linux-2.6.18/include/linux/fs.h" 2
@@ -9440,7 +9104,7 @@ struct files_stat_struct {
  int nr_free_files;
  int max_files;
 };
-typedef  struct files_stat_struct   _GLOBAL_120_T; extern  _GLOBAL_120_T  global_files_stat[NUM_STACKS];    
+typedef  struct files_stat_struct   _GLOBAL_118_T; extern  _GLOBAL_118_T  global_files_stat[NUM_STACKS];    
 extern int get_max_files(void);
 
 struct inodes_stat_t {
@@ -9448,9 +9112,9 @@ struct inodes_stat_t {
  int nr_unused;
  int dummy[5];
 };
-typedef  struct inodes_stat_t   _GLOBAL_121_T; extern  _GLOBAL_121_T  global_inodes_stat[NUM_STACKS];    
+typedef  struct inodes_stat_t   _GLOBAL_119_T; extern  _GLOBAL_119_T  global_inodes_stat[NUM_STACKS];    
 
-typedef  int  _GLOBAL_122_T; extern  _GLOBAL_122_T  global_leases_enable[NUM_STACKS]; extern  _GLOBAL_122_T  global_lease_break_time[NUM_STACKS];    
+typedef  int  _GLOBAL_120_T; extern  _GLOBAL_120_T  global_leases_enable[NUM_STACKS]; extern  _GLOBAL_120_T  global_lease_break_time[NUM_STACKS];    
 # 228 "linux-2.6.18/include/linux/fs.h"
 # 1 "linux-2.6.18/include/linux/kdev_t.h" 1
 # 21 "linux-2.6.18/include/linux/kdev_t.h"
@@ -9541,7 +9205,7 @@ struct dentry_stat_t {
  int want_pages;
  int dummy[2];
 };
-typedef  struct dentry_stat_t   _GLOBAL_123_T; extern  _GLOBAL_123_T  global_dentry_stat[NUM_STACKS];    
+typedef  struct dentry_stat_t   _GLOBAL_121_T; extern  _GLOBAL_121_T  global_dentry_stat[NUM_STACKS];    
 
 
 
@@ -9633,7 +9297,7 @@ struct dentry_operations {
  void (*d_iput)(struct dentry *, struct inode *);
 };
 # 179 "linux-2.6.18/include/linux/dcache.h"
-typedef  spinlock_t  _GLOBAL_124_T; extern  _GLOBAL_124_T  global_dcache_lock[NUM_STACKS];   
+typedef  spinlock_t  _GLOBAL_122_T; extern  _GLOBAL_122_T  global_dcache_lock[NUM_STACKS];   
 # 197 "linux-2.6.18/include/linux/dcache.h"
 static inline  __attribute__((always_inline)) void __d_drop(struct dentry *dentry)
 {
@@ -9754,7 +9418,7 @@ extern struct vfsmount *lookup_mnt(struct vfsmount *, struct dentry *);
 extern struct vfsmount *__lookup_mnt(struct vfsmount *, struct dentry *, int);
 extern struct dentry *lookup_create(struct nameidata *nd, int is_dir);
 
-typedef  int  _GLOBAL_125_T; extern  _GLOBAL_125_T  global_sysctl_vfs_cache_pressure[NUM_STACKS];   
+typedef  int  _GLOBAL_123_T; extern  _GLOBAL_123_T  global_sysctl_vfs_cache_pressure[NUM_STACKS];   
 # 230 "linux-2.6.18/include/linux/fs.h" 2
 
 
@@ -9842,7 +9506,7 @@ struct iattr {
 typedef __kernel_uid32_t qid_t;
 typedef __u64 qsize_t;
 
-typedef  spinlock_t  _GLOBAL_126_T; extern  _GLOBAL_126_T  global_dq_data_lock[NUM_STACKS];   
+typedef  spinlock_t  _GLOBAL_124_T; extern  _GLOBAL_124_T  global_dq_data_lock[NUM_STACKS];   
 # 105 "linux-2.6.18/include/linux/quota.h"
 struct if_dqblk {
  __u64 dqb_bhardlimit;
@@ -9982,7 +9646,7 @@ struct dqstats {
  int syncs;
 };
 
-typedef  struct dqstats   _GLOBAL_127_T; extern  _GLOBAL_127_T  global_dqstats[NUM_STACKS];    
+typedef  struct dqstats   _GLOBAL_125_T; extern  _GLOBAL_125_T  global_dqstats[NUM_STACKS];    
 # 213 "linux-2.6.18/include/linux/quota.h"
 struct dquot {
  struct hlist_node dq_hash;
@@ -10360,7 +10024,7 @@ struct file {
 
  struct address_space *f_mapping;
 };
-typedef  spinlock_t  _GLOBAL_128_T; extern  _GLOBAL_128_T  global_files_lock[NUM_STACKS];   
+typedef  spinlock_t  _GLOBAL_126_T; extern  _GLOBAL_126_T  global_files_lock[NUM_STACKS];   
 # 736 "linux-2.6.18/include/linux/fs.h"
 typedef struct files_struct *fl_owner_t;
 
@@ -10560,13 +10224,13 @@ struct nfs_fh {
 
 static inline  __attribute__((always_inline)) int nfs_compare_fh(const struct nfs_fh *a, const struct nfs_fh *b)
 {
- return a->size != b->size || __builtin_memcmp(a->data, b->data, a->size) != 0;
+ return a->size != b->size || memcmp(a->data, b->data, a->size) != 0;
 }
 
 static inline  __attribute__((always_inline)) void nfs_copy_fh(struct nfs_fh *target, const struct nfs_fh *source)
 {
  target->size = source->size;
- (__builtin_constant_p(source->size) ? __constant_memcpy((target->data),(source->data),(source->size)) : __memcpy((target->data),(source->data),(source->size)));
+ ({ size_t __len = (source->size); void *__ret; if (__builtin_constant_p(source->size) && __len >= 64) __ret = __memcpy((target->data),(source->data),__len); else __ret = __builtin_memcpy((target->data),(source->data),__len); __ret; });
 }
 # 165 "linux-2.6.18/include/linux/nfs.h"
 enum nfs3_stable_how {
@@ -10650,9 +10314,9 @@ extern int fcntl_setlk(unsigned int, struct file *, unsigned int,
    struct flock *);
 
 
-extern int fcntl_getlk64(struct file *, struct flock64 *);
-extern int fcntl_setlk64(unsigned int, struct file *, unsigned int,
-   struct flock64 *);
+
+
+
 
 
 extern void send_sigio(struct fown_struct *fown, int fd, int band);
@@ -10701,8 +10365,8 @@ extern int f_setown(struct file *filp, unsigned long arg, int force);
 extern void f_delown(struct file *filp);
 extern int send_sigurg(struct fown_struct *fown);
 # 855 "linux-2.6.18/include/linux/fs.h"
-typedef  struct list_head   _GLOBAL_129_T; extern  _GLOBAL_129_T  global_super_blocks[NUM_STACKS];    
-typedef  spinlock_t  _GLOBAL_130_T; extern  _GLOBAL_130_T  global_sb_lock[NUM_STACKS];   
+typedef  struct list_head   _GLOBAL_127_T; extern  _GLOBAL_127_T  global_super_blocks[NUM_STACKS];    
+typedef  spinlock_t  _GLOBAL_128_T; extern  _GLOBAL_128_T  global_sb_lock[NUM_STACKS];   
 
 
 
@@ -11082,7 +10746,7 @@ extern void mnt_set_mountpoint(struct vfsmount *, struct dentry *,
 extern int vfs_statfs(struct dentry *, struct kstatfs *);
 
 
-typedef  struct subsystem   _GLOBAL_131_T; extern  _GLOBAL_131_T  global_fs_subsys[NUM_STACKS];    
+typedef  struct subsystem   _GLOBAL_129_T; extern  _GLOBAL_129_T  global_fs_subsys[NUM_STACKS];    
 
 
 
@@ -11143,11 +10807,11 @@ extern void bd_forget(struct inode *inode);
 extern void bdput(struct block_device *);
 extern struct block_device *open_by_devnum(dev_t, unsigned);
 extern struct block_device *open_partition_by_devnum(dev_t, unsigned);
-typedef  const struct file_operations    _GLOBAL_132_T; extern  _GLOBAL_132_T  global_def_blk_fops[NUM_STACKS];     
-typedef  const struct address_space_operations    _GLOBAL_133_T; extern  _GLOBAL_133_T  global_def_blk_aops[NUM_STACKS];     
-typedef  const struct file_operations    _GLOBAL_134_T; extern  _GLOBAL_134_T  global_def_chr_fops[NUM_STACKS];     
-typedef  const struct file_operations    _GLOBAL_135_T; extern  _GLOBAL_135_T  global_bad_sock_fops[NUM_STACKS];     
-typedef  const struct file_operations    _GLOBAL_136_T; extern  _GLOBAL_136_T  global_def_fifo_fops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_130_T; extern  _GLOBAL_130_T  global_def_blk_fops[NUM_STACKS];     
+typedef  const struct address_space_operations    _GLOBAL_131_T; extern  _GLOBAL_131_T  global_def_blk_aops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_132_T; extern  _GLOBAL_132_T  global_def_chr_fops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_133_T; extern  _GLOBAL_133_T  global_bad_sock_fops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_134_T; extern  _GLOBAL_134_T  global_def_fifo_fops[NUM_STACKS];     
 extern int ioctl_by_bdev(struct block_device *, unsigned, unsigned long);
 extern int blkdev_ioctl(struct inode *, struct file *, unsigned, unsigned long);
 extern long compat_blkdev_ioctl(struct file *, unsigned, unsigned long);
@@ -11182,9 +10846,9 @@ extern void init_special_inode(struct inode *, umode_t, dev_t);
 extern void make_bad_inode(struct inode *);
 extern int is_bad_inode(struct inode *);
 
-typedef  const struct file_operations    _GLOBAL_137_T; extern  _GLOBAL_137_T  global_read_fifo_fops[NUM_STACKS];     
-typedef  const struct file_operations    _GLOBAL_138_T; extern  _GLOBAL_138_T  global_write_fifo_fops[NUM_STACKS];     
-typedef  const struct file_operations    _GLOBAL_139_T; extern  _GLOBAL_139_T  global_rdwr_fifo_fops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_135_T; extern  _GLOBAL_135_T  global_read_fifo_fops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_136_T; extern  _GLOBAL_136_T  global_write_fifo_fops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_137_T; extern  _GLOBAL_137_T  global_rdwr_fifo_fops[NUM_STACKS];     
 
 extern int fs_may_remount_ro(struct super_block *);
 # 1514 "linux-2.6.18/include/linux/fs.h"
@@ -11432,7 +11096,7 @@ static inline  __attribute__((always_inline)) ssize_t blockdev_direct_IO_own_loc
     nr_segs, get_block, end_io, DIO_OWN_LOCKING);
 }
 
-typedef  const struct file_operations    _GLOBAL_140_T; extern  _GLOBAL_140_T  global_generic_ro_fops[NUM_STACKS];     
+typedef  const struct file_operations    _GLOBAL_138_T; extern  _GLOBAL_138_T  global_generic_ro_fops[NUM_STACKS];     
 
 
 
@@ -11444,7 +11108,7 @@ extern void page_put_link(struct dentry *, struct nameidata *, void *);
 extern int __page_symlink(struct inode *inode, const char *symname, int len,
   gfp_t gfp_mask);
 extern int page_symlink(struct inode *inode, const char *symname, int len);
-typedef  struct inode_operations   _GLOBAL_141_T; extern  _GLOBAL_141_T  global_page_symlink_inode_operations[NUM_STACKS];    
+typedef  struct inode_operations   _GLOBAL_139_T; extern  _GLOBAL_139_T  global_page_symlink_inode_operations[NUM_STACKS];    
 extern int generic_readlink(struct dentry *, char *, int);
 extern void generic_fillattr(struct inode *, struct kstat *);
 extern int vfs_getattr(struct vfsmount *, struct dentry *, struct kstat *);
@@ -11488,8 +11152,8 @@ extern int simple_commit_write(struct file *file, struct page *page,
 
 extern struct dentry *simple_lookup(struct inode *, struct dentry *, struct nameidata *);
 extern ssize_t generic_read_dir(struct file *, char *, size_t, loff_t *);
-typedef  const struct file_operations    _GLOBAL_142_T; extern  _GLOBAL_142_T  global_simple_dir_operations[NUM_STACKS];     
-typedef  struct inode_operations   _GLOBAL_143_T; extern  _GLOBAL_143_T  global_simple_dir_inode_operations[NUM_STACKS];    
+typedef  const struct file_operations    _GLOBAL_140_T; extern  _GLOBAL_140_T  global_simple_dir_operations[NUM_STACKS];     
+typedef  struct inode_operations   _GLOBAL_141_T; extern  _GLOBAL_141_T  global_simple_dir_inode_operations[NUM_STACKS];    
 struct tree_descr { char *name; const struct file_operations *ops; int mode; };
 struct dentry *d_alloc_name(struct dentry *, const char *);
 extern int simple_fill_super(struct super_block *, int, struct tree_descr *);
@@ -11579,120 +11243,27 @@ struct mempolicy;
 struct anon_vma;
 
 
-typedef  unsigned long   _GLOBAL_144_T; extern  _GLOBAL_144_T  global_max_mapnr[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_142_T; extern  _GLOBAL_142_T  global_max_mapnr[NUM_STACKS];    
 
 
-typedef  unsigned long   _GLOBAL_145_T; extern  _GLOBAL_145_T  global_num_physpages[NUM_STACKS];    
-typedef  void  _GLOBAL_146_T; extern  _GLOBAL_146_T  * global_high_memory[NUM_STACKS];    
-typedef  unsigned long   _GLOBAL_147_T; extern  _GLOBAL_147_T  global_vmalloc_earlyreserve[NUM_STACKS];    
-typedef  int  _GLOBAL_148_T; extern  _GLOBAL_148_T  global_page_cluster[NUM_STACKS];   
+typedef  unsigned long   _GLOBAL_143_T; extern  _GLOBAL_143_T  global_num_physpages[NUM_STACKS];    
+typedef  void  _GLOBAL_144_T; extern  _GLOBAL_144_T  * global_high_memory[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_145_T; extern  _GLOBAL_145_T  global_vmalloc_earlyreserve[NUM_STACKS];    
+typedef  int  _GLOBAL_146_T; extern  _GLOBAL_146_T  global_page_cluster[NUM_STACKS];   
 
 
-typedef  int  _GLOBAL_149_T; extern  _GLOBAL_149_T  global_sysctl_legacy_va_layout[NUM_STACKS];   
+typedef  int  _GLOBAL_147_T; extern  _GLOBAL_147_T  global_sysctl_legacy_va_layout[NUM_STACKS];   
 
 
 
 
 
 # 1 "linux-2.6.18/include/asm/pgtable.h" 1
-# 16 "linux-2.6.18/include/asm/pgtable.h"
+# 9 "linux-2.6.18/include/asm/pgtable.h"
 # 1 "linux-2.6.18/include/asm/fixmap.h" 1
-# 26 "linux-2.6.18/include/asm/fixmap.h"
-# 1 "linux-2.6.18/include/asm/acpi.h" 1
-# 31 "linux-2.6.18/include/asm/acpi.h"
-# 1 "linux-2.6.18/include/acpi/pdc_intel.h" 1
-# 32 "linux-2.6.18/include/asm/acpi.h" 2
-# 60 "linux-2.6.18/include/asm/acpi.h"
-static inline  __attribute__((always_inline)) int
-__acpi_acquire_global_lock (unsigned int *lock)
-{
- unsigned int old, new, val;
- do {
-  old = *lock;
-  new = (((old & ~0x3) + 2) + ((old >> 1) & 0x1));
-  val = ((__typeof__(*(lock)))__cmpxchg((lock),(unsigned long)(old), (unsigned long)(new),sizeof(*(lock))));
- } while (__builtin_expect(!!(val != old), 0));
- return (new < 3) ? -1 : 0;
-}
-
-static inline  __attribute__((always_inline)) int
-__acpi_release_global_lock (unsigned int *lock)
-{
- unsigned int old, new, val;
- do {
-  old = *lock;
-  new = old & ~0x3;
-  val = ((__typeof__(*(lock)))__cmpxchg((lock),(unsigned long)(old), (unsigned long)(new),sizeof(*(lock))));
- } while (__builtin_expect(!!(val != old), 0));
- return old & 0x1;
-}
-# 107 "linux-2.6.18/include/asm/acpi.h"
-extern void check_acpi_pci(void);
-
-
-
-
-
-typedef  int  _GLOBAL_150_T; extern  _GLOBAL_150_T  global_acpi_lapic[NUM_STACKS];   
-typedef  int  _GLOBAL_151_T; extern  _GLOBAL_151_T  global_acpi_ioapic[NUM_STACKS];   
-typedef  int  _GLOBAL_152_T; extern  _GLOBAL_152_T  global_acpi_noirq[NUM_STACKS];   
-typedef  int  _GLOBAL_153_T; extern  _GLOBAL_153_T  global_acpi_strict[NUM_STACKS];   
-typedef  int  _GLOBAL_154_T; extern  _GLOBAL_154_T  global_acpi_disabled[NUM_STACKS];   
-typedef  int  _GLOBAL_155_T; extern  _GLOBAL_155_T  global_acpi_ht[NUM_STACKS];   
-typedef  int  _GLOBAL_156_T; extern  _GLOBAL_156_T  global_acpi_pci_disabled[NUM_STACKS];   
-static inline  __attribute__((always_inline)) void disable_acpi(void)
-{
- global_acpi_disabled[get_stack_id()] = 1;
- global_acpi_ht[get_stack_id()] = 0;
- global_acpi_pci_disabled[get_stack_id()] = 1;
- global_acpi_noirq[get_stack_id()] = 1;
-}
-
-
-
-
-extern int acpi_gsi_to_irq(u32 gsi, unsigned int *irq);
-
-
-typedef  int  _GLOBAL_157_T; extern  _GLOBAL_157_T  global_skip_ioapic_setup[NUM_STACKS];   
-typedef  int  _GLOBAL_158_T; extern  _GLOBAL_158_T  global_acpi_skip_timer_override[NUM_STACKS];   
-
-static inline  __attribute__((always_inline)) void disable_ioapic_setup(void)
-{
- global_skip_ioapic_setup[get_stack_id()] = 1;
-}
-
-static inline  __attribute__((always_inline)) int ioapic_setup_disabled(void)
-{
- return global_skip_ioapic_setup[get_stack_id()];
-}
-
-
-
-
-
-static inline  __attribute__((always_inline)) void acpi_noirq_set(void) { global_acpi_noirq[get_stack_id()] = 1; }
-static inline  __attribute__((always_inline)) void acpi_disable_pci(void)
-{
- global_acpi_pci_disabled[get_stack_id()] = 1;
- acpi_noirq_set();
-}
-extern int acpi_irq_balance_set(char *str);
-# 172 "linux-2.6.18/include/asm/acpi.h"
-extern int acpi_save_state_mem(void);
-extern void acpi_restore_state_mem(void);
-
-typedef  unsigned long   _GLOBAL_159_T; extern  _GLOBAL_159_T  global_acpi_wakeup_address[NUM_STACKS];    
-
-
-extern void acpi_reserve_bootmem(void);
-
-
-
-typedef  u8  _GLOBAL_160_T; extern  _GLOBAL_160_T  _GLOBAL_0_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_1_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_2_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_3_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_4_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_5_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_6_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_7_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_8_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_9_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_10_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_11_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_12_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_13_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_14_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_15_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_16_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_17_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_18_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_19_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_20_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_21_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_22_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_23_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_24_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_25_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_26_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_27_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_28_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_29_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_30_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_31_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_32_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_33_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_34_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_35_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_36_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_37_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_38_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_39_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_40_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_41_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_42_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_43_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_44_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_45_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_46_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_47_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_48_x86_acpiid_to_apicid_I [ ] ; extern  _GLOBAL_160_T  _GLOBAL_49_x86_acpiid_to_apicid_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_x86_acpiid_to_apicid_I) *_GLOBAL_x86_acpiid_to_apicid_18_A[NUM_STACKS];  
-# 27 "linux-2.6.18/include/asm/fixmap.h" 2
+# 15 "linux-2.6.18/include/asm/fixmap.h"
 # 1 "linux-2.6.18/include/asm/apicdef.h" 1
-# 125 "linux-2.6.18/include/asm/apicdef.h"
+# 140 "linux-2.6.18/include/asm/apicdef.h"
 struct local_apic {
 
         struct { unsigned int __reserved[4]; } __reserved_01;
@@ -11940,36 +11511,30 @@ struct local_apic {
         struct { unsigned int __reserved[4]; } __reserved_20;
 
 } __attribute__ ((packed)) ;
-# 28 "linux-2.6.18/include/asm/fixmap.h" 2
-# 52 "linux-2.6.18/include/asm/fixmap.h"
+# 16 "linux-2.6.18/include/asm/fixmap.h" 2
+
+
+# 1 "linux-2.6.18/include/asm/vsyscall32.h" 1
+# 19 "linux-2.6.18/include/asm/fixmap.h" 2
+# 35 "linux-2.6.18/include/asm/fixmap.h"
 enum fixed_addresses {
- FIX_HOLE,
- FIX_VDSO,
+ VSYSCALL_LAST_PAGE,
+ VSYSCALL_FIRST_PAGE = VSYSCALL_LAST_PAGE + (((-2UL << 20)-(-10UL << 20)) >> 12) - 1,
+ VSYSCALL_HPET,
+ FIX_HPET_BASE,
 
  FIX_APIC_BASE,
 
 
  FIX_IO_APIC_BASE_0,
- FIX_IO_APIC_BASE_END = FIX_IO_APIC_BASE_0 + 64 -1,
-# 79 "linux-2.6.18/include/asm/fixmap.h"
- FIX_ACPI_BEGIN,
- FIX_ACPI_END = FIX_ACPI_BEGIN + 4 - 1,
+ FIX_IO_APIC_BASE_END = FIX_IO_APIC_BASE_0 + 128 -1,
 
-
- FIX_PCIE_MCFG,
-
- __end_of_permanent_fixed_addresses,
-
-
- FIX_BTMAP_END = __end_of_permanent_fixed_addresses,
- FIX_BTMAP_BEGIN = FIX_BTMAP_END + 16 - 1,
- FIX_WP_TEST,
  __end_of_fixed_addresses
 };
 
 extern void __set_fixmap (enum fixed_addresses idx,
      unsigned long phys, pgprot_t flags);
-# 118 "linux-2.6.18/include/asm/fixmap.h"
+# 71 "linux-2.6.18/include/asm/fixmap.h"
 extern void __this_fixmap_does_not_exist(void);
 
 
@@ -11979,181 +11544,194 @@ extern void __this_fixmap_does_not_exist(void);
 
 static inline   __attribute__((always_inline)) __attribute__((always_inline)) unsigned long fix_to_virt(const unsigned int idx)
 {
-# 136 "linux-2.6.18/include/asm/fixmap.h"
+# 89 "linux-2.6.18/include/asm/fixmap.h"
  if (idx >= __end_of_fixed_addresses)
   __this_fixmap_does_not_exist();
 
-        return (((unsigned long)0xfffff000) - ((idx) << 12));
+        return (((-2UL << 20)-(1UL << 12)) - ((idx) << 12));
+}
+# 10 "linux-2.6.18/include/asm/pgtable.h" 2
+
+
+
+
+typedef  pud_t  _GLOBAL_148_T; extern  _GLOBAL_148_T  _GLOBAL_0_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_1_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_2_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_3_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_4_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_5_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_6_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_7_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_8_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_9_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_10_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_11_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_12_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_13_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_14_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_15_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_16_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_17_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_18_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_19_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_20_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_21_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_22_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_23_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_24_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_25_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_26_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_27_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_28_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_29_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_30_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_31_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_32_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_33_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_34_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_35_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_36_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_37_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_38_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_39_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_40_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_41_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_42_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_43_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_44_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_45_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_46_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_47_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_48_level3_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_148_T  _GLOBAL_49_level3_kernel_pgt_I [ 512 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_level3_kernel_pgt_I) *_GLOBAL_level3_kernel_pgt_14_A[NUM_STACKS];  
+typedef  pud_t  _GLOBAL_149_T; extern  _GLOBAL_149_T  _GLOBAL_0_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_1_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_2_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_3_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_4_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_5_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_6_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_7_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_8_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_9_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_10_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_11_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_12_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_13_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_14_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_15_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_16_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_17_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_18_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_19_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_20_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_21_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_22_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_23_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_24_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_25_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_26_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_27_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_28_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_29_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_30_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_31_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_32_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_33_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_34_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_35_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_36_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_37_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_38_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_39_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_40_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_41_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_42_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_43_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_44_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_45_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_46_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_47_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_48_level3_physmem_pgt_I [ 512 ] ; extern  _GLOBAL_149_T  _GLOBAL_49_level3_physmem_pgt_I [ 512 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_level3_physmem_pgt_I) *_GLOBAL_level3_physmem_pgt_15_A[NUM_STACKS];  
+typedef  pud_t  _GLOBAL_150_T; extern  _GLOBAL_150_T  _GLOBAL_0_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_1_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_2_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_3_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_4_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_5_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_6_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_7_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_8_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_9_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_10_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_11_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_12_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_13_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_14_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_15_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_16_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_17_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_18_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_19_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_20_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_21_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_22_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_23_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_24_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_25_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_26_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_27_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_28_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_29_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_30_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_31_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_32_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_33_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_34_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_35_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_36_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_37_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_38_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_39_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_40_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_41_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_42_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_43_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_44_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_45_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_46_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_47_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_48_level3_ident_pgt_I [ 512 ] ; extern  _GLOBAL_150_T  _GLOBAL_49_level3_ident_pgt_I [ 512 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_level3_ident_pgt_I) *_GLOBAL_level3_ident_pgt_16_A[NUM_STACKS];  
+typedef  pmd_t  _GLOBAL_151_T; extern  _GLOBAL_151_T  _GLOBAL_0_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_1_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_2_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_3_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_4_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_5_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_6_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_7_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_8_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_9_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_10_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_11_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_12_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_13_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_14_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_15_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_16_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_17_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_18_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_19_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_20_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_21_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_22_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_23_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_24_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_25_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_26_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_27_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_28_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_29_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_30_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_31_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_32_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_33_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_34_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_35_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_36_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_37_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_38_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_39_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_40_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_41_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_42_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_43_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_44_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_45_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_46_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_47_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_48_level2_kernel_pgt_I [ 512 ] ; extern  _GLOBAL_151_T  _GLOBAL_49_level2_kernel_pgt_I [ 512 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_level2_kernel_pgt_I) *_GLOBAL_level2_kernel_pgt_17_A[NUM_STACKS];  
+typedef  pgd_t  _GLOBAL_152_T; extern  _GLOBAL_152_T  _GLOBAL_0_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_1_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_2_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_3_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_4_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_5_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_6_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_7_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_8_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_9_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_10_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_11_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_12_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_13_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_14_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_15_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_16_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_17_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_18_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_19_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_20_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_21_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_22_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_23_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_24_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_25_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_26_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_27_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_28_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_29_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_30_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_31_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_32_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_33_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_34_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_35_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_36_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_37_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_38_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_39_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_40_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_41_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_42_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_43_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_44_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_45_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_46_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_47_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_48_init_level4_pgt_I [ ] ; extern  _GLOBAL_152_T  _GLOBAL_49_init_level4_pgt_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_init_level4_pgt_I) *_GLOBAL_init_level4_pgt_18_A[NUM_STACKS];  
+typedef  pgd_t  _GLOBAL_153_T; extern  _GLOBAL_153_T  _GLOBAL_0_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_1_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_2_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_3_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_4_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_5_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_6_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_7_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_8_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_9_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_10_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_11_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_12_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_13_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_14_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_15_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_16_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_17_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_18_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_19_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_20_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_21_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_22_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_23_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_24_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_25_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_26_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_27_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_28_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_29_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_30_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_31_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_32_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_33_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_34_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_35_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_36_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_37_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_38_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_39_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_40_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_41_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_42_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_43_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_44_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_45_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_46_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_47_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_48_boot_level4_pgt_I [ ] ; extern  _GLOBAL_153_T  _GLOBAL_49_boot_level4_pgt_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_boot_level4_pgt_I) *_GLOBAL_boot_level4_pgt_19_A[NUM_STACKS];  
+typedef  unsigned long   _GLOBAL_154_T; extern  _GLOBAL_154_T  global___supported_pte_mask[NUM_STACKS];    
+
+
+
+extern int nonx_setup(char *str);
+extern void paging_init(void);
+extern void clear_kernel_mapping(unsigned long addr, unsigned long size);
+
+typedef  unsigned long   _GLOBAL_155_T; extern  _GLOBAL_155_T  global_pgkern_mask[NUM_STACKS];    
+
+
+
+
+
+typedef  unsigned long   _GLOBAL_156_T; extern  _GLOBAL_156_T  _GLOBAL_0_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_1_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_2_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_3_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_4_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_5_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_6_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_7_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_8_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_9_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_10_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_11_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_12_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_13_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_14_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_15_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_16_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_17_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_18_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_19_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_20_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_21_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_22_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_23_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_24_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_25_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_26_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_27_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_28_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_29_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_30_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_31_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_32_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_33_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_34_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_35_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_36_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_37_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_38_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_39_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_40_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_41_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_42_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_43_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_44_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_45_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_46_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_47_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_48_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; extern  _GLOBAL_156_T  _GLOBAL_49_empty_zero_page_I [ ( 1UL << 12  )  / sizeof ( unsigned long  )   ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_empty_zero_page_I) *_GLOBAL_empty_zero_page_20_A[NUM_STACKS];      
+# 73 "linux-2.6.18/include/asm/pgtable.h"
+static inline  __attribute__((always_inline)) void set_pte(pte_t *dst, pte_t val)
+{
+ ((*dst).pte) = ((val).pte);
 }
 
-static inline  __attribute__((always_inline)) unsigned long virt_to_fix(const unsigned long vaddr)
+
+static inline  __attribute__((always_inline)) void set_pmd(pmd_t *dst, pmd_t val)
 {
- do { if (vaddr >= ((unsigned long)0xfffff000) || vaddr < (((unsigned long)0xfffff000) - (__end_of_permanent_fixed_addresses << 12))) ; } while(0);
- return ((((unsigned long)0xfffff000) - ((vaddr)&(~((1UL << 12)-1)))) >> 12);
+        ((*dst).pmd) = ((val).pmd);
 }
-# 17 "linux-2.6.18/include/asm/pgtable.h" 2
-# 27 "linux-2.6.18/include/asm/pgtable.h"
+
+static inline  __attribute__((always_inline)) void set_pud(pud_t *dst, pud_t val)
+{
+ ((*dst).pud) = ((val).pud);
+}
+
+static inline  __attribute__((always_inline)) void pud_clear (pud_t *pud)
+{
+ set_pud(pud, ((pud_t) { (0) } ));
+}
+
+static inline  __attribute__((always_inline)) void set_pgd(pgd_t *dst, pgd_t val)
+{
+ ((*dst).pgd) = ((val).pgd);
+}
+
+static inline  __attribute__((always_inline)) void pgd_clear (pgd_t * pgd)
+{
+ set_pgd(pgd, ((pgd_t) { (0) } ));
+}
+
+
+
+
+
+
 struct mm_struct;
-struct vm_area_struct;
-
-
-
-
-
-
-typedef  unsigned long   _GLOBAL_161_T; extern  _GLOBAL_161_T  _GLOBAL_0_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_1_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_2_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_3_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_4_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_5_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_6_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_7_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_8_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_9_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_10_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_11_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_12_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_13_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_14_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_15_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_16_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_17_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_18_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_19_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_20_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_21_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_22_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_23_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_24_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_25_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_26_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_27_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_28_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_29_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_30_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_31_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_32_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_33_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_34_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_35_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_36_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_37_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_38_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_39_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_40_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_41_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_42_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_43_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_44_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_45_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_46_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_47_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_48_empty_zero_page_I [ 1024 ] ; extern  _GLOBAL_161_T  _GLOBAL_49_empty_zero_page_I [ 1024 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_empty_zero_page_I) *_GLOBAL_empty_zero_page_19_A[NUM_STACKS];   
-typedef  pgd_t  _GLOBAL_162_T; extern  _GLOBAL_162_T  _GLOBAL_0_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_1_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_2_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_3_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_4_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_5_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_6_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_7_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_8_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_9_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_10_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_11_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_12_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_13_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_14_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_15_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_16_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_17_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_18_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_19_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_20_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_21_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_22_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_23_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_24_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_25_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_26_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_27_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_28_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_29_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_30_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_31_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_32_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_33_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_34_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_35_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_36_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_37_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_38_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_39_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_40_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_41_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_42_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_43_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_44_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_45_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_46_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_47_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_48_swapper_pg_dir_I [ 1024 ] ; extern  _GLOBAL_162_T  _GLOBAL_49_swapper_pg_dir_I [ 1024 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_swapper_pg_dir_I) *_GLOBAL_swapper_pg_dir_20_A[NUM_STACKS];  
-typedef  kmem_cache_t  _GLOBAL_163_T; extern  _GLOBAL_163_T  * global_pgd_cache[NUM_STACKS];   
-typedef  kmem_cache_t  _GLOBAL_164_T; extern  _GLOBAL_164_T  * global_pmd_cache[NUM_STACKS];   
-typedef  spinlock_t  _GLOBAL_165_T; extern  _GLOBAL_165_T  global_pgd_lock[NUM_STACKS];   
-typedef  struct page   _GLOBAL_166_T; extern  _GLOBAL_166_T  * global_pgd_list[NUM_STACKS];    
-
-void pmd_ctor(void *, kmem_cache_t *, unsigned long);
-void pgd_ctor(void *, kmem_cache_t *, unsigned long);
-void pgd_dtor(void *, kmem_cache_t *, unsigned long);
-void pgtable_cache_init(void);
-void paging_init(void);
-# 58 "linux-2.6.18/include/asm/pgtable.h"
-# 1 "linux-2.6.18/include/asm/pgtable-2level-defs.h" 1
-# 59 "linux-2.6.18/include/asm/pgtable.h" 2
-# 159 "linux-2.6.18/include/asm/pgtable.h"
-typedef  unsigned long long    _GLOBAL_167_T; extern  _GLOBAL_167_T  global___PAGE_KERNEL[NUM_STACKS]; extern  _GLOBAL_167_T  global___PAGE_KERNEL_EXEC[NUM_STACKS];      
-# 203 "linux-2.6.18/include/asm/pgtable.h"
-typedef  unsigned long   _GLOBAL_168_T; extern  _GLOBAL_168_T  _GLOBAL_0_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_1_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_2_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_3_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_4_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_5_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_6_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_7_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_8_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_9_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_10_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_11_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_12_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_13_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_14_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_15_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_16_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_17_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_18_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_19_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_20_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_21_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_22_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_23_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_24_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_25_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_26_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_27_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_28_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_29_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_30_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_31_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_32_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_33_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_34_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_35_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_36_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_37_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_38_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_39_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_40_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_41_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_42_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_43_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_44_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_45_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_46_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_47_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_48_pg0_I [ ] ; extern  _GLOBAL_168_T  _GLOBAL_49_pg0_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_pg0_I) *_GLOBAL_pg0_21_A[NUM_STACKS];   
-# 219 "linux-2.6.18/include/asm/pgtable.h"
-static inline  __attribute__((always_inline)) int pte_user(pte_t pte) { return (pte).pte_low & 0x004; }
-static inline  __attribute__((always_inline)) int pte_read(pte_t pte) { return (pte).pte_low & 0x004; }
-static inline  __attribute__((always_inline)) int pte_dirty(pte_t pte) { return (pte).pte_low & 0x040; }
-static inline  __attribute__((always_inline)) int pte_young(pte_t pte) { return (pte).pte_low & 0x020; }
-static inline  __attribute__((always_inline)) int pte_write(pte_t pte) { return (pte).pte_low & 0x002; }
-static inline  __attribute__((always_inline)) int pte_huge(pte_t pte) { return (pte).pte_low & 0x080; }
-
-
-
-
-static inline  __attribute__((always_inline)) int pte_file(pte_t pte) { return (pte).pte_low & 0x040; }
-
-static inline  __attribute__((always_inline)) pte_t pte_rdprotect(pte_t pte) { (pte).pte_low &= ~0x004; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_exprotect(pte_t pte) { (pte).pte_low &= ~0x004; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkclean(pte_t pte) { (pte).pte_low &= ~0x040; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkold(pte_t pte) { (pte).pte_low &= ~0x020; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_wrprotect(pte_t pte) { (pte).pte_low &= ~0x002; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkread(pte_t pte) { (pte).pte_low |= 0x004; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkexec(pte_t pte) { (pte).pte_low |= 0x004; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkdirty(pte_t pte) { (pte).pte_low |= 0x040; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkyoung(pte_t pte) { (pte).pte_low |= 0x020; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkwrite(pte_t pte) { (pte).pte_low |= 0x002; return pte; }
-static inline  __attribute__((always_inline)) pte_t pte_mkhuge(pte_t pte) { (pte).pte_low |= 0x080; return pte; }
-
-
-
-
-# 1 "linux-2.6.18/include/asm/pgtable-2level.h" 1
-
-
-
-# 1 "linux-2.6.18/include/asm-generic/pgtable-nopmd.h" 1
-
-
-
-
-
-# 1 "linux-2.6.18/include/asm-generic/pgtable-nopud.h" 1
-# 13 "linux-2.6.18/include/asm-generic/pgtable-nopud.h"
-typedef struct { pgd_t pgd; } pud_t;
-# 25 "linux-2.6.18/include/asm-generic/pgtable-nopud.h"
-static inline  __attribute__((always_inline)) int pgd_none(pgd_t pgd) { return 0; }
-static inline  __attribute__((always_inline)) int pgd_bad(pgd_t pgd) { return 0; }
-static inline  __attribute__((always_inline)) int pgd_present(pgd_t pgd) { return 1; }
-static inline  __attribute__((always_inline)) void pgd_clear(pgd_t *pgd) { }
-# 38 "linux-2.6.18/include/asm-generic/pgtable-nopud.h"
-static inline  __attribute__((always_inline)) pud_t * pud_offset(pgd_t * pgd, unsigned long address)
-{
- return (pud_t *)pgd;
-}
-# 7 "linux-2.6.18/include/asm-generic/pgtable-nopmd.h" 2
-# 15 "linux-2.6.18/include/asm-generic/pgtable-nopmd.h"
-typedef struct { pud_t pud; } pmd_t;
-# 27 "linux-2.6.18/include/asm-generic/pgtable-nopmd.h"
-static inline  __attribute__((always_inline)) int pud_none(pud_t pud) { return 0; }
-static inline  __attribute__((always_inline)) int pud_bad(pud_t pud) { return 0; }
-static inline  __attribute__((always_inline)) int pud_present(pud_t pud) { return 1; }
-static inline  __attribute__((always_inline)) void pud_clear(pud_t *pud) { }
-# 41 "linux-2.6.18/include/asm-generic/pgtable-nopmd.h"
-static inline  __attribute__((always_inline)) pmd_t * pmd_offset(pud_t * pud, unsigned long address)
-{
- return (pmd_t *)pud;
-}
-# 5 "linux-2.6.18/include/asm/pgtable-2level.h" 2
-# 35 "linux-2.6.18/include/asm/pgtable-2level.h"
-static inline  __attribute__((always_inline)) int pte_exec(pte_t pte)
-{
- return pte_user(pte);
-}
-
-
-
-
-static inline  __attribute__((always_inline)) int pte_exec_kernel(pte_t pte)
-{
- return 1;
-}
-# 67 "linux-2.6.18/include/asm/pgtable-2level.h"
-void vmalloc_sync_all(void);
-# 247 "linux-2.6.18/include/asm/pgtable.h" 2
-
-
-static inline  __attribute__((always_inline)) int ptep_test_and_clear_dirty(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep)
-{
- if (!pte_dirty(*ptep))
-  return 0;
- return test_and_clear_bit(6, &ptep->pte_low);
-}
-
-static inline  __attribute__((always_inline)) int ptep_test_and_clear_young(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep)
-{
- if (!pte_young(*ptep))
-  return 0;
- return test_and_clear_bit(5, &ptep->pte_low);
-}
 
 static inline  __attribute__((always_inline)) pte_t ptep_get_and_clear_full(struct mm_struct *mm, unsigned long addr, pte_t *ptep, int full)
 {
  pte_t pte;
  if (full) {
   pte = *ptep;
-  do { (*(ptep) = ((pte_t) { (0) } )); } while (0);
+  *ptep = ((pte_t) { (0) } );
  } else {
-  pte = ((pte_t) { (((__typeof__(*(&(ptep)->pte_low)))__xchg((unsigned long)(0),(&(ptep)->pte_low),sizeof(*(&(ptep)->pte_low))))) } );
+  pte = ((pte_t) { (((__typeof__(*(&(ptep)->pte)))__xchg((unsigned long)(0),(&(ptep)->pte),sizeof(*(&(ptep)->pte))))) } );
  }
  return pte;
+}
+# 230 "linux-2.6.18/include/asm/pgtable.h"
+static inline  __attribute__((always_inline)) unsigned long pgd_bad(pgd_t pgd)
+{
+       unsigned long val = ((pgd).pgd);
+       val &= ~(~((1UL << 12)-1) & ((1UL << 46) - 1));
+       val &= ~(0x004 | 0x040);
+       return val & ~(0x001 | 0x002 | 0x020);
+}
+
+static inline  __attribute__((always_inline)) unsigned long pud_bad(pud_t pud)
+{
+       unsigned long val = ((pud).pud);
+       val &= ~(~((1UL << 12)-1) & ((1UL << 46) - 1));
+       val &= ~(0x004 | 0x040);
+       return val & ~(0x001 | 0x002 | 0x020);
+}
+# 255 "linux-2.6.18/include/asm/pgtable.h"
+static inline  __attribute__((always_inline)) pte_t pfn_pte(unsigned long page_nr, pgprot_t pgprot)
+{
+ pte_t pte;
+ ((pte).pte) = (page_nr << 12);
+ ((pte).pte) |= ((pgprot).pgprot);
+ ((pte).pte) &= global___supported_pte_mask[get_stack_id()];
+ return pte;
+}
+
+
+
+
+
+
+static inline  __attribute__((always_inline)) int pte_user(pte_t pte) { return ((pte).pte) & 0x004; }
+static inline  __attribute__((always_inline)) int pte_read(pte_t pte) { return ((pte).pte) & 0x004; }
+static inline  __attribute__((always_inline)) int pte_exec(pte_t pte) { return ((pte).pte) & 0x004; }
+static inline  __attribute__((always_inline)) int pte_dirty(pte_t pte) { return ((pte).pte) & 0x040; }
+static inline  __attribute__((always_inline)) int pte_young(pte_t pte) { return ((pte).pte) & 0x020; }
+static inline  __attribute__((always_inline)) int pte_write(pte_t pte) { return ((pte).pte) & 0x002; }
+static inline  __attribute__((always_inline)) int pte_file(pte_t pte) { return ((pte).pte) & 0x040; }
+static inline  __attribute__((always_inline)) int pte_huge(pte_t pte) { return ((pte).pte) & 0x080; }
+
+static inline  __attribute__((always_inline)) pte_t pte_rdprotect(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) & ~0x004) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_exprotect(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) & ~0x004) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkclean(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) & ~0x040) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkold(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) & ~0x020) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_wrprotect(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) & ~0x002) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkread(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) | 0x004) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkexec(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) | 0x004) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkdirty(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) | 0x040) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkyoung(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) | 0x020) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkwrite(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) | 0x002) } )); return pte; }
+static inline  __attribute__((always_inline)) pte_t pte_mkhuge(pte_t pte) { set_pte(&pte, ((pte_t) { (((pte).pte) | 0x080) } )); return pte; }
+
+struct vm_area_struct;
+
+static inline  __attribute__((always_inline)) int ptep_test_and_clear_dirty(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep)
+{
+ if (!pte_dirty(*ptep))
+  return 0;
+ return test_and_clear_bit(6, &ptep->pte);
+}
+
+static inline  __attribute__((always_inline)) int ptep_test_and_clear_young(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep)
+{
+ if (!pte_young(*ptep))
+  return 0;
+ return test_and_clear_bit(5, &ptep->pte);
 }
 
 static inline  __attribute__((always_inline)) void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
 {
- clear_bit(1, &ptep->pte_low);
+ clear_bit(1, &ptep->pte);
 }
-# 290 "linux-2.6.18/include/asm/pgtable.h"
-static inline  __attribute__((always_inline)) void clone_pgd_range(pgd_t *dst, pgd_t *src, int count)
-{
-       (__builtin_constant_p(count * sizeof(pgd_t)) ? __constant_memcpy((dst),(src),(count * sizeof(pgd_t))) : __memcpy((dst),(src),(count * sizeof(pgd_t))));
+
+
+
+
+
+
+static inline  __attribute__((always_inline)) int pmd_large(pmd_t pte) {
+ return (((pte).pmd) & (0x080|0x001)) == (0x080|0x001);
 }
-# 309 "linux-2.6.18/include/asm/pgtable.h"
-static inline  __attribute__((always_inline)) pte_t pte_modify(pte_t pte, pgprot_t newprot)
+# 367 "linux-2.6.18/include/asm/pgtable.h"
+static inline  __attribute__((always_inline)) pte_t mk_pte_phys(unsigned long physpage, pgprot_t pgprot)
 {
- pte.pte_low &= ((~((1UL << 12)-1)) | 0x020 | 0x040);
- pte.pte_low |= ((newprot).pgprot);
-# 322 "linux-2.6.18/include/asm/pgtable.h"
+ pte_t pte;
+ ((pte).pte) = physpage | ((pgprot).pgprot);
  return pte;
 }
-# 380 "linux-2.6.18/include/asm/pgtable.h"
-extern pte_t *lookup_address(unsigned long address);
-# 391 "linux-2.6.18/include/asm/pgtable.h"
- static inline  __attribute__((always_inline)) int set_kernel_exec(unsigned long vaddr, int enable) { return 0;}
 
 
-extern void noexec_setup(const char *str);
-# 450 "linux-2.6.18/include/asm/pgtable.h"
+static inline  __attribute__((always_inline)) pte_t pte_modify(pte_t pte, pgprot_t newprot)
+{
+ ((pte).pte) &= ((~((1UL << 12)-1) & ((1UL << 46) - 1)) | 0x020 | 0x040);
+ ((pte).pte) |= ((newprot).pgprot);
+ ((pte).pte) &= global___supported_pte_mask[get_stack_id()];
+       return pte;
+}
+# 417 "linux-2.6.18/include/asm/pgtable.h"
+typedef  spinlock_t  _GLOBAL_157_T; extern  _GLOBAL_157_T  global_pgd_lock[NUM_STACKS];   
+typedef  struct page   _GLOBAL_158_T; extern  _GLOBAL_158_T  * global_pgd_list[NUM_STACKS];    
+void vmalloc_sync_all(void);
+
+
+
+extern int kern_addr_valid(unsigned long addr);
+# 451 "linux-2.6.18/include/asm/pgtable.h"
 # 1 "linux-2.6.18/include/asm-generic/pgtable.h" 1
 # 197 "linux-2.6.18/include/asm-generic/pgtable.h"
 void pgd_clear_bad(pgd_t *);
@@ -12162,7 +11740,7 @@ void pmd_clear_bad(pmd_t *);
 
 static inline  __attribute__((always_inline)) int pgd_none_or_clear_bad(pgd_t *pgd)
 {
- if (pgd_none(*pgd))
+ if ((!((*pgd).pgd)))
   return 1;
  if (__builtin_expect(!!(pgd_bad(*pgd)), 0)) {
   pgd_clear_bad(pgd);
@@ -12173,7 +11751,7 @@ static inline  __attribute__((always_inline)) int pgd_none_or_clear_bad(pgd_t *p
 
 static inline  __attribute__((always_inline)) int pud_none_or_clear_bad(pud_t *pud)
 {
- if (pud_none(*pud))
+ if ((!((*pud).pud)))
   return 1;
  if (__builtin_expect(!!(pud_bad(*pud)), 0)) {
   pud_clear_bad(pud);
@@ -12184,15 +11762,15 @@ static inline  __attribute__((always_inline)) int pud_none_or_clear_bad(pud_t *p
 
 static inline  __attribute__((always_inline)) int pmd_none_or_clear_bad(pmd_t *pmd)
 {
- if ((!(unsigned long)((((((*pmd).pud).pgd).pgd)))))
+ if ((!((*pmd).pmd)))
   return 1;
- if (__builtin_expect(!!(((((((((*pmd).pud).pgd).pgd))) & (~(~((1UL << 12)-1)) & ~0x004)) != (0x001 | 0x002 | 0x020 | 0x040))), 0)) {
+ if (__builtin_expect(!!(((((*pmd).pmd) & (~(~((1UL << 12)-1) & ((1UL << 46) - 1)) & ~0x004)) != (0x001 | 0x002 | 0x020 | 0x040) )), 0)) {
   pmd_clear_bad(pmd);
   return 1;
  }
  return 0;
 }
-# 451 "linux-2.6.18/include/asm/pgtable.h" 2
+# 452 "linux-2.6.18/include/asm/pgtable.h" 2
 # 39 "linux-2.6.18/include/linux/mm.h" 2
 # 58 "linux-2.6.18/include/linux/mm.h"
 struct vm_area_struct {
@@ -12262,7 +11840,7 @@ struct vm_list_struct {
  struct vm_area_struct *vma;
 };
 # 188 "linux-2.6.18/include/linux/mm.h"
-typedef  pgprot_t  _GLOBAL_169_T; extern  _GLOBAL_169_T  _GLOBAL_0_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_1_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_2_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_3_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_4_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_5_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_6_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_7_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_8_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_9_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_10_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_11_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_12_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_13_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_14_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_15_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_16_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_17_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_18_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_19_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_20_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_21_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_22_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_23_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_24_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_25_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_26_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_27_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_28_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_29_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_30_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_31_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_32_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_33_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_34_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_35_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_36_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_37_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_38_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_39_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_40_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_41_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_42_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_43_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_44_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_45_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_46_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_47_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_48_protection_map_I [ 16 ] ; extern  _GLOBAL_169_T  _GLOBAL_49_protection_map_I [ 16 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_protection_map_I) *_GLOBAL_protection_map_22_A[NUM_STACKS];  
+typedef  pgprot_t  _GLOBAL_159_T; extern  _GLOBAL_159_T  _GLOBAL_0_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_1_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_2_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_3_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_4_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_5_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_6_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_7_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_8_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_9_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_10_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_11_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_12_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_13_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_14_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_15_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_16_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_17_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_18_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_19_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_20_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_21_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_22_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_23_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_24_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_25_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_26_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_27_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_28_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_29_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_30_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_31_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_32_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_33_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_34_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_35_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_36_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_37_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_38_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_39_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_40_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_41_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_42_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_43_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_44_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_45_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_46_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_47_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_48_protection_map_I [ 16 ] ; extern  _GLOBAL_159_T  _GLOBAL_49_protection_map_I [ 16 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_protection_map_I) *_GLOBAL_protection_map_21_A[NUM_STACKS];  
 
 
 
@@ -12365,7 +11943,7 @@ static inline  __attribute__((always_inline)) int get_page_unless_zero(struct pa
  return ({ int c, old; c = (((&page->_count))->counter); for (;;) { if (__builtin_expect(!!(c == (0)), 0)) break; old = ((int)((__typeof__(*(&((((&page->_count)))->counter))))__cmpxchg((&((((&page->_count)))->counter)),(unsigned long)(c), (unsigned long)(c + (1)),sizeof(*(&((((&page->_count)))->counter)))))); if (__builtin_expect(!!(old == c), 1)) break; c = old; } c != (0); });
 }
 
-extern void __page_cache_release(struct page *) __attribute__((regparm(3))) ;
+extern void __page_cache_release(struct page *);
 
 static inline  __attribute__((always_inline)) int page_count(struct page *page)
 {
@@ -12453,7 +12031,7 @@ static inline  __attribute__((always_inline)) void set_page_links(struct page *p
 
 # 1 "linux-2.6.18/include/linux/vmstat.h" 1
 # 85 "linux-2.6.18/include/linux/vmstat.h"
-typedef  atomic_long_t  _GLOBAL_170_T; extern  _GLOBAL_170_T  vm_stat [ NR_VM_ZONE_STAT_ITEMS ] ;   
+typedef  atomic_long_t  _GLOBAL_160_T; extern  _GLOBAL_160_T  vm_stat [ NR_VM_ZONE_STAT_ITEMS ] ;   
 
 static inline  __attribute__((always_inline)) void zone_page_state_add(long x, struct zone *zone,
      enum zone_stat_item item)
@@ -12485,7 +12063,7 @@ static inline  __attribute__((always_inline)) unsigned long zone_page_state(stru
 # 156 "linux-2.6.18/include/linux/vmstat.h"
 static inline  __attribute__((always_inline)) void zap_zone_vm_stats(struct zone *zone)
 {
- (__builtin_constant_p(0) ? (__builtin_constant_p((sizeof(zone->vm_stat))) ? __constant_c_and_count_memset(((zone->vm_stat)),((0x01010101UL*(unsigned char)(0))),((sizeof(zone->vm_stat)))) : __constant_c_memset(((zone->vm_stat)),((0x01010101UL*(unsigned char)(0))),((sizeof(zone->vm_stat))))) : (__builtin_constant_p((sizeof(zone->vm_stat))) ? __memset_generic((((zone->vm_stat))),(((0))),(((sizeof(zone->vm_stat))))) : __memset_generic(((zone->vm_stat)),((0)),((sizeof(zone->vm_stat))))));
+ memset(zone->vm_stat, 0, sizeof(zone->vm_stat));
 }
 
 extern void inc_zone_state(struct zone *, enum zone_stat_item);
@@ -12521,15 +12099,15 @@ static inline  __attribute__((always_inline)) void refresh_vm_stats(void) { }
 
 
 
-typedef  struct page   _GLOBAL_171_T; extern  _GLOBAL_171_T  * global_mem_map[NUM_STACKS];    
+typedef  struct page   _GLOBAL_161_T; extern  _GLOBAL_161_T  * global_mem_map[NUM_STACKS];    
 
 
 static inline   __attribute__((always_inline)) __attribute__((always_inline)) void *lowmem_page_address(struct page *page)
 {
- return ((void *)((unsigned long)(((unsigned long)((page) - global_mem_map[get_stack_id()]) + (0UL)) << 12)+((unsigned long)((unsigned long)(0xC0000000)))));
+ return ((void *)((unsigned long)(((unsigned long)((page) - global_mem_map[get_stack_id()]) + (0UL)) << 12)+((unsigned long)0xffff810000000000UL)));
 }
 # 570 "linux-2.6.18/include/linux/mm.h"
-typedef  struct address_space   _GLOBAL_172_T; extern  _GLOBAL_172_T  global_swapper_space[NUM_STACKS];    
+typedef  struct address_space   _GLOBAL_162_T; extern  _GLOBAL_162_T  global_swapper_space[NUM_STACKS];    
 static inline  __attribute__((always_inline)) struct address_space *page_mapping(struct page *page)
 {
  struct address_space *mapping = page->mapping;
@@ -12671,7 +12249,7 @@ int __set_page_dirty_buffers(struct page *page);
 int __set_page_dirty_nobuffers(struct page *page);
 int redirty_page_for_writepage(struct writeback_control *wbc,
     struct page *page);
-int set_page_dirty(struct page *page) __attribute__((regparm(3))) ;
+int set_page_dirty(struct page *page);
 int set_page_dirty_lock(struct page *page);
 int clear_page_dirty_for_io(struct page *page);
 
@@ -12691,7 +12269,7 @@ struct shrinker;
 extern struct shrinker *set_shrinker(int, shrinker_t);
 extern void remove_shrinker(struct shrinker *shrinker);
 
-extern pte_t *get_locked_pte(struct mm_struct *mm, unsigned long addr, spinlock_t **ptl) __attribute__((regparm(3))) ;
+extern pte_t *get_locked_pte(struct mm_struct *mm, unsigned long addr, spinlock_t **ptl);
 
 int __pud_alloc(struct mm_struct *mm, pgd_t *pgd, unsigned long address);
 int __pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address);
@@ -12705,14 +12283,14 @@ int __pte_alloc_kernel(pmd_t *pmd, unsigned long address);
 
 static inline  __attribute__((always_inline)) pud_t *pud_alloc(struct mm_struct *mm, pgd_t *pgd, unsigned long address)
 {
- return (__builtin_expect(!!(pgd_none(*pgd)), 0) && __pud_alloc(mm, pgd, address))?
-  ((void *)0): pud_offset(pgd, address);
+ return (__builtin_expect(!!((!((*pgd).pgd))), 0) && __pud_alloc(mm, pgd, address))?
+  ((void *)0): ((pud_t *) ((unsigned long) ((void *)((unsigned long)((unsigned long)((*(pgd)).pgd) & (~((1UL << 12)-1) & ((1UL << 46) - 1)))+((unsigned long)0xffff810000000000UL)))) + (((address) >> 30) & (512 -1)));
 }
 
 static inline  __attribute__((always_inline)) pmd_t *pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
 {
- return (__builtin_expect(!!(pud_none(*pud)), 0) && __pmd_alloc(mm, pud, address))?
-  ((void *)0): pmd_offset(pud, address);
+ return (__builtin_expect(!!((!((*pud).pud))), 0) && __pmd_alloc(mm, pud, address))?
+  ((void *)0): ((pmd_t *) ((unsigned long) ((void *)((unsigned long)(((*(pud)).pud) & (~((1UL << 12)-1) & ((1UL << 46) - 1)))+((unsigned long)0xffff810000000000UL)))) + (((address) >> 21) & (512 -1)));
 }
 # 878 "linux-2.6.18/include/linux/mm.h"
 extern void free_area_init(unsigned long * zones_size);
@@ -12894,7 +12472,7 @@ void drop_slab(void);
 
 
 
-typedef  int  _GLOBAL_173_T; extern  _GLOBAL_173_T  global_randomize_va_space[NUM_STACKS];   
+typedef  int  _GLOBAL_163_T; extern  _GLOBAL_163_T  global_randomize_va_space[NUM_STACKS];   
 
 
 const char *arch_vma_name(struct vm_area_struct *vma);
@@ -12910,6 +12488,7 @@ const char *arch_vma_name(struct vm_area_struct *vma);
 # 26 "linux-2.6.18/include/asm/cacheflush.h"
 void global_flush_tlb(void);
 int change_page_attr(struct page *page, int numpages, pgprot_t prot);
+int change_page_attr_addr(unsigned long addr, int numpages, pgprot_t prot);
 # 8 "linux-2.6.18/include/linux/highmem.h" 2
 
 
@@ -12934,7 +12513,7 @@ static inline  __attribute__((always_inline)) void *kmap(struct page *page)
 static inline  __attribute__((always_inline)) void clear_user_highpage(struct page *page, unsigned long vaddr)
 {
  void *addr = lowmem_page_address(page);
- (__builtin_constant_p(0) ? (__builtin_constant_p(((1UL << 12))) ? __constant_c_and_count_memset((((void *)(addr))),((0x01010101UL*(unsigned char)(0))),(((1UL << 12)))) : __constant_c_memset((((void *)(addr))),((0x01010101UL*(unsigned char)(0))),(((1UL << 12))))) : (__builtin_constant_p(((1UL << 12))) ? __memset_generic(((((void *)(addr)))),(((0))),((((1UL << 12))))) : __memset_generic((((void *)(addr))),((0)),(((1UL << 12))))));
+ clear_page(addr);
  do { } while (0);
 
  __asm__ __volatile__("": : :"memory");
@@ -12943,7 +12522,7 @@ static inline  __attribute__((always_inline)) void clear_user_highpage(struct pa
 static inline  __attribute__((always_inline)) void clear_highpage(struct page *page)
 {
  void *kaddr = lowmem_page_address(page);
- (__builtin_constant_p(0) ? (__builtin_constant_p(((1UL << 12))) ? __constant_c_and_count_memset((((void *)(kaddr))),((0x01010101UL*(unsigned char)(0))),(((1UL << 12)))) : __constant_c_memset((((void *)(kaddr))),((0x01010101UL*(unsigned char)(0))),(((1UL << 12))))) : (__builtin_constant_p(((1UL << 12))) ? __memset_generic(((((void *)(kaddr)))),(((0))),((((1UL << 12))))) : __memset_generic((((void *)(kaddr))),((0)),(((1UL << 12))))));
+ clear_page(kaddr);
  do { } while (0);
 }
 
@@ -12957,7 +12536,7 @@ static inline  __attribute__((always_inline)) void memclear_highpage_flush(struc
  do { if (offset + size > (1UL << 12)) ; } while(0);
 
  kaddr = lowmem_page_address(page);
- (__builtin_constant_p(0) ? (__builtin_constant_p((size)) ? __constant_c_and_count_memset((((char *)kaddr + offset)),((0x01010101UL*(unsigned char)(0))),((size))) : __constant_c_memset((((char *)kaddr + offset)),((0x01010101UL*(unsigned char)(0))),((size)))) : (__builtin_constant_p((size)) ? __memset_generic(((((char *)kaddr + offset))),(((0))),(((size)))) : __memset_generic((((char *)kaddr + offset)),((0)),((size)))));
+ memset((char *)kaddr + offset, 0, size);
  do { } while (0);
  do { } while (0);
 }
@@ -12968,7 +12547,7 @@ static inline  __attribute__((always_inline)) void copy_user_highpage(struct pag
 
  vfrom = lowmem_page_address(from);
  vto = lowmem_page_address(to);
- (__builtin_constant_p((1UL << 12)) ? __constant_memcpy(((void *)(vto)),((void *)(vfrom)),((1UL << 12))) : __memcpy(((void *)(vto)),((void *)(vfrom)),((1UL << 12))));
+ copy_page(vto, vfrom);
  do { } while (0);
  do { } while (0);
 
@@ -12981,7 +12560,7 @@ static inline  __attribute__((always_inline)) void copy_highpage(struct page *to
 
  vfrom = lowmem_page_address(from);
  vto = lowmem_page_address(to);
- (__builtin_constant_p((1UL << 12)) ? __constant_memcpy(((void *)(vto)),((void *)(vfrom)),((1UL << 12))) : __memcpy(((void *)(vto)),((void *)(vfrom)),((1UL << 12))));
+ copy_page(vto, vfrom);
  do { } while (0);
  do { } while (0);
 }
@@ -13006,165 +12585,140 @@ struct pollfd {
 
 
 # 1 "linux-2.6.18/include/asm/uaccess.h" 1
-# 40 "linux-2.6.18/include/asm/uaccess.h"
-typedef  struct movsl_mask { int  mask ;  }   _GLOBAL_174_T; extern  _GLOBAL_174_T  global_movsl_mask[NUM_STACKS];    
-  
- 
-# 98 "linux-2.6.18/include/asm/uaccess.h"
+# 68 "linux-2.6.18/include/asm/uaccess.h"
 struct exception_table_entry
 {
  unsigned long insn, fixup;
 };
-
-extern int fixup_exception(struct pt_regs *regs);
-# 120 "linux-2.6.18/include/asm/uaccess.h"
-extern void __get_user_1(void);
-extern void __get_user_2(void);
-extern void __get_user_4(void);
-# 162 "linux-2.6.18/include/asm/uaccess.h"
-extern void __put_user_bad(void);
-
-
-
-
-
+# 116 "linux-2.6.18/include/asm/uaccess.h"
 extern void __put_user_1(void);
 extern void __put_user_2(void);
 extern void __put_user_4(void);
 extern void __put_user_8(void);
-# 325 "linux-2.6.18/include/asm/uaccess.h"
+extern void __put_user_bad(void);
+# 179 "linux-2.6.18/include/asm/uaccess.h"
 struct __large_struct { unsigned long buf[100]; };
-# 358 "linux-2.6.18/include/asm/uaccess.h"
-extern long __get_user_bad(void);
-# 389 "linux-2.6.18/include/asm/uaccess.h"
-unsigned long  __attribute__((warn_unused_result)) __copy_to_user_ll(void *to,
-    const void *from, unsigned long n);
-unsigned long  __attribute__((warn_unused_result)) __copy_from_user_ll(void *to,
-    const void *from, unsigned long n);
-unsigned long  __attribute__((warn_unused_result)) __copy_from_user_ll_nozero(void *to,
-    const void *from, unsigned long n);
-unsigned long  __attribute__((warn_unused_result)) __copy_from_user_ll_nocache(void *to,
-    const void *from, unsigned long n);
-unsigned long  __attribute__((warn_unused_result)) __copy_from_user_ll_nocache_nozero(void *to,
-    const void *from, unsigned long n);
-# 421 "linux-2.6.18/include/asm/uaccess.h"
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) unsigned long 
-__attribute__((warn_unused_result)) __copy_to_user_inatomic(void *to, const void *from, unsigned long n)
-{
- if (__builtin_constant_p(n)) {
-  unsigned long ret;
+# 212 "linux-2.6.18/include/asm/uaccess.h"
+extern int __get_user_1(void);
+extern int __get_user_2(void);
+extern int __get_user_4(void);
+extern int __get_user_8(void);
+extern int __get_user_bad(void);
+# 252 "linux-2.6.18/include/asm/uaccess.h"
+extern unsigned long copy_user_generic(void *to, const void *from, unsigned len);
 
-  switch (n) {
-  case 1:
-   do { __typeof__(*((u8 *)to)) __pus_tmp = *(u8 *)from; ret = 0; if(__builtin_expect(!!(__copy_to_user_ll((u8 *)to, &__pus_tmp, 1) != 0), 0)) ret = 1; } while (0);
-   return ret;
-  case 2:
-   do { __typeof__(*((u16 *)to)) __pus_tmp = *(u16 *)from; ret = 0; if(__builtin_expect(!!(__copy_to_user_ll((u16 *)to, &__pus_tmp, 2) != 0), 0)) ret = 2; } while (0);
-   return ret;
-  case 4:
-   do { __typeof__(*((u32 *)to)) __pus_tmp = *(u32 *)from; ret = 0; if(__builtin_expect(!!(__copy_to_user_ll((u32 *)to, &__pus_tmp, 4) != 0), 0)) ret = 4; } while (0);
-   return ret;
-  }
+extern unsigned long copy_to_user(void *to, const void *from, unsigned len);
+extern unsigned long copy_from_user(void *to, const void *from, unsigned len);
+extern unsigned long copy_in_user(void *to, const void *from, unsigned len);
+
+static inline   __attribute__((always_inline)) __attribute__((always_inline)) int __copy_from_user(void *dst, const void *src, unsigned size)
+{
+       int ret = 0;
+ if (!__builtin_constant_p(size))
+  return copy_user_generic(dst,( void *)src,size);
+ switch (size) {
+ case 1:__asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u8*)dst) : "m"((*(struct __large_struct *)((u8 *)src))), "i"(1), "0"(ret));
+  return ret;
+ case 2:__asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16*)dst) : "m"((*(struct __large_struct *)((u16 *)src))), "i"(2), "0"(ret));
+  return ret;
+ case 4:__asm__ __volatile__( "1:	mov""l"" %2,%""k""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""l"" %""k""1,%""k""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u32*)dst) : "m"((*(struct __large_struct *)((u32 *)src))), "i"(4), "0"(ret));
+  return ret;
+ case 8:__asm__ __volatile__( "1:	mov""q"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""q"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u64*)dst) : "m"((*(struct __large_struct *)((u64 *)src))), "i"(8), "0"(ret));
+  return ret;
+ case 10:
+         __asm__ __volatile__( "1:	mov""q"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""q"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u64*)dst) : "m"((*(struct __large_struct *)((u64 *)src))), "i"(16), "0"(ret));
+  if (__builtin_expect(!!(ret), 0)) return ret;
+  __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16*)(8+(char*)dst)) : "m"((*(struct __large_struct *)((u16 *)(8+(char *)src)))), "i"(2), "0"(ret));
+  return ret;
+ case 16:
+  __asm__ __volatile__( "1:	mov""q"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""q"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u64*)dst) : "m"((*(struct __large_struct *)((u64 *)src))), "i"(16), "0"(ret));
+  if (__builtin_expect(!!(ret), 0)) return ret;
+  __asm__ __volatile__( "1:	mov""q"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""q"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u64*)(8+(char*)dst)) : "m"((*(struct __large_struct *)((u64 *)(8+(char *)src)))), "i"(8), "0"(ret));
+  return ret;
+ default:
+  return copy_user_generic(dst,( void *)src,size);
  }
- return __copy_to_user_ll(to, from, n);
 }
 
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) unsigned long 
-__attribute__((warn_unused_result)) __copy_to_user(void *to, const void *from, unsigned long n)
+static inline   __attribute__((always_inline)) __attribute__((always_inline)) int __copy_to_user(void *dst, const void *src, unsigned size)
 {
-       do { do { } while (0); } while (0);
-       return __copy_to_user_inatomic(to, from, n);
-}
-# 471 "linux-2.6.18/include/asm/uaccess.h"
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) unsigned long
-__copy_from_user_inatomic(void *to, const void *from, unsigned long n)
-{
-
-
-
-
-
- if (__builtin_constant_p(n)) {
-  unsigned long ret;
-
-  switch (n) {
-  case 1:
-   do { ret = 0; (void)0; switch (1) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; default: (*(u8 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  case 2:
-   do { ret = 0; (void)0; switch (2) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; default: (*(u16 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  case 4:
-   do { ret = 0; (void)0; switch (4) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; default: (*(u32 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  }
+       int ret = 0;
+ if (!__builtin_constant_p(size))
+  return copy_user_generic(( void *)dst,src,size);
+ switch (size) {
+ case 1:__asm__ __volatile__( "1:	mov""b"" %""b""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "iq" (*(u8*)src), "m"((*(struct __large_struct *)((u8 *)dst))), "i"(1), "0"(ret));
+  return ret;
+ case 2:__asm__ __volatile__( "1:	mov""w"" %""w""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (*(u16*)src), "m"((*(struct __large_struct *)((u16 *)dst))), "i"(2), "0"(ret));
+  return ret;
+ case 4:__asm__ __volatile__( "1:	mov""l"" %""k""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (*(u32*)src), "m"((*(struct __large_struct *)((u32 *)dst))), "i"(4), "0"(ret));
+  return ret;
+ case 8:__asm__ __volatile__( "1:	mov""q"" %""""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (*(u64*)src), "m"((*(struct __large_struct *)((u64 *)dst))), "i"(8), "0"(ret));
+  return ret;
+ case 10:
+  __asm__ __volatile__( "1:	mov""q"" %""""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (*(u64*)src), "m"((*(struct __large_struct *)((u64 *)dst))), "i"(10), "0"(ret));
+  if (__builtin_expect(!!(ret), 0)) return ret;
+  asm("":::"memory");
+  __asm__ __volatile__( "1:	mov""w"" %""w""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (4[(u16*)src]), "m"((*(struct __large_struct *)(4+(u16 *)dst))), "i"(2), "0"(ret));
+  return ret;
+ case 16:
+  __asm__ __volatile__( "1:	mov""q"" %""""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (*(u64*)src), "m"((*(struct __large_struct *)((u64 *)dst))), "i"(16), "0"(ret));
+  if (__builtin_expect(!!(ret), 0)) return ret;
+  asm("":::"memory");
+  __asm__ __volatile__( "1:	mov""q"" %""""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (1[(u64*)src]), "m"((*(struct __large_struct *)(1+(u64 *)dst))), "i"(8), "0"(ret));
+  return ret;
+ default:
+  return copy_user_generic(( void *)dst,src,size);
  }
- return __copy_from_user_ll_nozero(to, from, n);
 }
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) unsigned long
-__copy_from_user(void *to, const void *from, unsigned long n)
-{
- do { do { } while (0); } while (0);
- if (__builtin_constant_p(n)) {
-  unsigned long ret;
 
-  switch (n) {
-  case 1:
-   do { ret = 0; (void)0; switch (1) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; default: (*(u8 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  case 2:
-   do { ret = 0; (void)0; switch (2) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; default: (*(u16 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  case 4:
-   do { ret = 0; (void)0; switch (4) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; default: (*(u32 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  }
+
+static inline   __attribute__((always_inline)) __attribute__((always_inline)) int __copy_in_user(void *dst, const void *src, unsigned size)
+{
+       int ret = 0;
+ if (!__builtin_constant_p(size))
+  return copy_user_generic(( void *)dst,( void *)src,size);
+ switch (size) {
+ case 1: {
+  u8 tmp;
+  __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=q" (tmp) : "m"((*(struct __large_struct *)((u8 *)src))), "i"(1), "0"(ret));
+  if (__builtin_expect(!!(!ret), 1))
+   __asm__ __volatile__( "1:	mov""b"" %""b""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "iq" (tmp), "m"((*(struct __large_struct *)((u8 *)dst))), "i"(1), "0"(ret));
+  return ret;
  }
- return __copy_from_user_ll(to, from, n);
-}
-
-
-
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) unsigned long __copy_from_user_nocache(void *to,
-    const void *from, unsigned long n)
-{
- do { do { } while (0); } while (0);
- if (__builtin_constant_p(n)) {
-  unsigned long ret;
-
-  switch (n) {
-  case 1:
-   do { ret = 0; (void)0; switch (1) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u8 *)to) : "m"((*(struct __large_struct *)(from))), "i"(1), "0"(ret));break; default: (*(u8 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  case 2:
-   do { ret = 0; (void)0; switch (2) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u16 *)to) : "m"((*(struct __large_struct *)(from))), "i"(2), "0"(ret));break; default: (*(u16 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  case 4:
-   do { ret = 0; (void)0; switch (4) { case 1: __asm__ __volatile__( "1:	mov""b"" %2,%""b""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""b"" %""b""1,%""b""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=q" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; case 2: __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; case 4: __asm__ __volatile__( "1:	mov""l"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	movl %3,%0\n" "	xor""l"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 4\n" "	.long 1b,3b\n" ".previous" : "=r"(ret), "=r" (*(u32 *)to) : "m"((*(struct __large_struct *)(from))), "i"(4), "0"(ret));break; default: (*(u32 *)to) = __get_user_bad(); } } while (0);
-   return ret;
-  }
+ case 2: {
+  u16 tmp;
+  __asm__ __volatile__( "1:	mov""w"" %2,%""w""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""w"" %""w""1,%""w""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (tmp) : "m"((*(struct __large_struct *)((u16 *)src))), "i"(2), "0"(ret));
+  if (__builtin_expect(!!(!ret), 1))
+   __asm__ __volatile__( "1:	mov""w"" %""w""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (tmp), "m"((*(struct __large_struct *)((u16 *)dst))), "i"(2), "0"(ret));
+  return ret;
  }
- return __copy_from_user_ll_nocache(to, from, n);
+
+ case 4: {
+  u32 tmp;
+  __asm__ __volatile__( "1:	mov""l"" %2,%""k""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""l"" %""k""1,%""k""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (tmp) : "m"((*(struct __large_struct *)((u32 *)src))), "i"(4), "0"(ret));
+  if (__builtin_expect(!!(!ret), 1))
+   __asm__ __volatile__( "1:	mov""l"" %""k""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (tmp), "m"((*(struct __large_struct *)((u32 *)dst))), "i"(4), "0"(ret));
+  return ret;
+ }
+ case 8: {
+  u64 tmp;
+  __asm__ __volatile__( "1:	mov""q"" %2,%""""1\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	xor""q"" %""""1,%""""1\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret), "=r" (tmp) : "m"((*(struct __large_struct *)((u64 *)src))), "i"(8), "0"(ret));
+  if (__builtin_expect(!!(!ret), 1))
+   __asm__ __volatile__( "1:	mov""q"" %""""1,%2\n" "2:\n" ".section .fixup,\"ax\"\n" "3:	mov %3,%0\n" "	jmp 2b\n" ".previous\n" ".section __ex_table,\"a\"\n" "	.align 8\n" "	.quad 1b,3b\n" ".previous" : "=r"(ret) : "ir" (tmp), "m"((*(struct __large_struct *)((u64 *)dst))), "i"(8), "0"(ret));
+  return ret;
+ }
+ default:
+  return copy_user_generic(( void *)dst,( void *)src,size);
+ }
 }
 
-static inline   __attribute__((always_inline)) __attribute__((always_inline)) unsigned long
-__copy_from_user_inatomic_nocache(void *to, const void *from, unsigned long n)
-{
-       return __copy_from_user_ll_nocache_nozero(to, from, n);
-}
-
-unsigned long  __attribute__((warn_unused_result)) copy_to_user(void *to,
-    const void *from, unsigned long n);
-unsigned long  __attribute__((warn_unused_result)) copy_from_user(void *to,
-    const void *from, unsigned long n);
-long  __attribute__((warn_unused_result)) strncpy_from_user(char *dst, const char *src,
-    long count);
-long  __attribute__((warn_unused_result)) __strncpy_from_user(char *dst,
-    const char *src, long count);
-# 573 "linux-2.6.18/include/asm/uaccess.h"
+long strncpy_from_user(char *dst, const char *src, long count);
+long __strncpy_from_user(char *dst, const char *src, long count);
 long strnlen_user(const char *str, long n);
-unsigned long  __attribute__((warn_unused_result)) clear_user(void *mem, unsigned long len);
-unsigned long  __attribute__((warn_unused_result)) __clear_user(void *mem, unsigned long len);
+long __strnlen_user(const char *str, long n);
+long strlen_user(const char *str);
+unsigned long clear_user(void *mem, unsigned long len);
+unsigned long __clear_user(void *mem, unsigned long len);
 # 13 "linux-2.6.18/include/linux/poll.h" 2
 # 23 "linux-2.6.18/include/linux/poll.h"
 struct poll_table_struct;
@@ -13225,7 +12779,7 @@ __attribute__((always_inline)) int get_fd_set(unsigned long nr, void *ufdset, un
  if (ufdset)
   return copy_from_user(fdset, ufdset, nr) ? -14 : 0;
 
- (__builtin_constant_p(0) ? (__builtin_constant_p((nr)) ? __constant_c_and_count_memset(((fdset)),((0x01010101UL*(unsigned char)(0))),((nr))) : __constant_c_memset(((fdset)),((0x01010101UL*(unsigned char)(0))),((nr)))) : (__builtin_constant_p((nr)) ? __memset_generic((((fdset))),(((0))),(((nr)))) : __memset_generic(((fdset)),((0)),((nr)))));
+ memset(fdset, 0, nr);
  return 0;
 }
 
@@ -13240,7 +12794,7 @@ __attribute__((warn_unused_result)) set_fd_set(unsigned long nr, void *ufdset, u
 static inline 
 __attribute__((always_inline)) void zero_fd_set(unsigned long nr, unsigned long *fdset)
 {
- (__builtin_constant_p(0) ? (__builtin_constant_p((((((nr)+(8*sizeof(long))-1)/(8*sizeof(long)))*sizeof(long)))) ? __constant_c_and_count_memset(((fdset)),((0x01010101UL*(unsigned char)(0))),((((((nr)+(8*sizeof(long))-1)/(8*sizeof(long)))*sizeof(long))))) : __constant_c_memset(((fdset)),((0x01010101UL*(unsigned char)(0))),((((((nr)+(8*sizeof(long))-1)/(8*sizeof(long)))*sizeof(long)))))) : (__builtin_constant_p((((((nr)+(8*sizeof(long))-1)/(8*sizeof(long)))*sizeof(long)))) ? __memset_generic((((fdset))),(((0))),(((((((nr)+(8*sizeof(long))-1)/(8*sizeof(long)))*sizeof(long)))))) : __memset_generic(((fdset)),((0)),((((((nr)+(8*sizeof(long))-1)/(8*sizeof(long)))*sizeof(long)))))));
+ memset(fdset, 0, ((((nr)+(8*sizeof(long))-1)/(8*sizeof(long)))*sizeof(long)));
 }
 
 
@@ -14324,9 +13878,9 @@ struct ctl_table_header * register_sysctl_table(ctl_table * table,
       int insert_at_head);
 void unregister_sysctl_table(struct ctl_table_header * table);
 # 302 "linux-2.6.18/include/linux/net.h" 2
-typedef  ctl_table  _GLOBAL_175_T; extern  _GLOBAL_175_T  _GLOBAL_0_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_1_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_2_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_3_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_4_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_5_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_6_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_7_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_8_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_9_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_10_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_11_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_12_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_13_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_14_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_15_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_16_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_17_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_18_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_19_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_20_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_21_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_22_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_23_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_24_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_25_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_26_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_27_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_28_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_29_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_30_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_31_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_32_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_33_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_34_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_35_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_36_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_37_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_38_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_39_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_40_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_41_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_42_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_43_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_44_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_45_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_46_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_47_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_48_net_table_I [ ] ; extern  _GLOBAL_175_T  _GLOBAL_49_net_table_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_net_table_I) *_GLOBAL_net_table_23_A[NUM_STACKS];  
-typedef  int  _GLOBAL_176_T; extern  _GLOBAL_176_T  global_net_msg_cost[NUM_STACKS];   
-typedef  int  _GLOBAL_177_T; extern  _GLOBAL_177_T  global_net_msg_burst[NUM_STACKS];   
+typedef  ctl_table  _GLOBAL_164_T; extern  _GLOBAL_164_T  _GLOBAL_0_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_1_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_2_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_3_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_4_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_5_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_6_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_7_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_8_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_9_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_10_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_11_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_12_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_13_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_14_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_15_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_16_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_17_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_18_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_19_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_20_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_21_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_22_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_23_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_24_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_25_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_26_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_27_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_28_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_29_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_30_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_31_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_32_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_33_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_34_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_35_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_36_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_37_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_38_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_39_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_40_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_41_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_42_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_43_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_44_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_45_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_46_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_47_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_48_net_table_I [ ] ; extern  _GLOBAL_164_T  _GLOBAL_49_net_table_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_net_table_I) *_GLOBAL_net_table_22_A[NUM_STACKS];  
+typedef  int  _GLOBAL_165_T; extern  _GLOBAL_165_T  global_net_msg_cost[NUM_STACKS];   
+typedef  int  _GLOBAL_166_T; extern  _GLOBAL_166_T  global_net_msg_burst[NUM_STACKS];   
 # 29 "linux-2.6.18/include/linux/skbuff.h" 2
 # 1 "linux-2.6.18/include/linux/textsearch.h" 1
 # 13 "linux-2.6.18/include/linux/textsearch.h"
@@ -14428,7 +13982,7 @@ static inline  __attribute__((always_inline)) struct ts_config *alloc_ts_config(
  if (conf == ((void *)0))
   return ERR_PTR(-12);
 
- (__builtin_constant_p(0) ? (__builtin_constant_p(((((sizeof(*conf)) + 8 -1) & ~(8 -1)) + payload)) ? __constant_c_and_count_memset(((conf)),((0x01010101UL*(unsigned char)(0))),(((((sizeof(*conf)) + 8 -1) & ~(8 -1)) + payload))) : __constant_c_memset(((conf)),((0x01010101UL*(unsigned char)(0))),(((((sizeof(*conf)) + 8 -1) & ~(8 -1)) + payload)))) : (__builtin_constant_p(((((sizeof(*conf)) + 8 -1) & ~(8 -1)) + payload)) ? __memset_generic((((conf))),(((0))),((((((sizeof(*conf)) + 8 -1) & ~(8 -1)) + payload)))) : __memset_generic(((conf)),((0)),(((((sizeof(*conf)) + 8 -1) & ~(8 -1)) + payload)))));
+ memset(conf, 0, (((sizeof(*conf)) + 8 -1) & ~(8 -1)) + payload);
  return conf;
 }
 
@@ -14440,103 +13994,39 @@ static inline  __attribute__((always_inline)) void *ts_config_priv(struct ts_con
 # 1 "linux-2.6.18/include/net/checksum.h" 1
 # 26 "linux-2.6.18/include/net/checksum.h"
 # 1 "linux-2.6.18/include/asm/checksum.h" 1
-
-
-
-# 1 "linux-2.6.18/include/linux/in6.h" 1
-# 30 "linux-2.6.18/include/linux/in6.h"
-struct in6_addr
+# 22 "linux-2.6.18/include/asm/checksum.h"
+static inline  __attribute__((always_inline)) unsigned int csum_fold(unsigned int sum)
 {
- union
- {
-  __u8 u6_addr8[16];
-  __u16 u6_addr16[8];
-  __u32 u6_addr32[4];
- } in6_u;
-
-
-
-};
-# 51 "linux-2.6.18/include/linux/in6.h"
-typedef  const struct in6_addr    _GLOBAL_178_T; extern  _GLOBAL_178_T  global_in6addr_loopback[NUM_STACKS];     
-
-
-struct sockaddr_in6 {
- unsigned short int sin6_family;
- __u16 sin6_port;
- __u32 sin6_flowinfo;
- struct in6_addr sin6_addr;
- __u32 sin6_scope_id;
-};
-
-struct ipv6_mreq {
-
- struct in6_addr ipv6mr_multiaddr;
-
-
- int ipv6mr_ifindex;
-};
-
-
-
-struct in6_flowlabel_req
-{
- struct in6_addr flr_dst;
- __u32 flr_label;
- __u8 flr_action;
- __u8 flr_share;
- __u16 flr_flags;
- __u16 flr_expires;
- __u16 flr_linger;
- __u32 __flr_pad;
-
-};
-# 5 "linux-2.6.18/include/asm/checksum.h" 2
-# 20 "linux-2.6.18/include/asm/checksum.h"
-  __attribute__((regparm(0))) unsigned int csum_partial(const unsigned char * buff, int len, unsigned int sum);
-# 30 "linux-2.6.18/include/asm/checksum.h"
-  __attribute__((regparm(0))) unsigned int csum_partial_copy_generic(const unsigned char *src, unsigned char *dst,
-        int len, int sum, int *src_err_ptr, int *dst_err_ptr);
-# 40 "linux-2.6.18/include/asm/checksum.h"
-static __inline__ 
-__attribute__((always_inline)) unsigned int csum_partial_copy_nocheck (const unsigned char *src, unsigned char *dst,
-     int len, int sum)
-{
- return csum_partial_copy_generic ( src, dst, len, sum, ((void *)0), ((void *)0));
+ __asm__(
+  "  addl %1,%0\n"
+  "  adcl $0xffff,%0"
+  : "=r" (sum)
+  : "r" (sum << 16), "0" (sum & 0xffff0000)
+ );
+ return (~sum) >> 16;
 }
-
-static __inline__ 
-__attribute__((always_inline)) unsigned int csum_partial_copy_from_user(const unsigned char *src, unsigned char *dst,
-      int len, int sum, int *err_ptr)
-{
- do { do { } while (0); } while (0);
- return csum_partial_copy_generic(( unsigned char *)src, dst,
-     len, sum, err_ptr, ((void *)0));
-}
-# 63 "linux-2.6.18/include/asm/checksum.h"
-static inline  __attribute__((always_inline)) unsigned short ip_fast_csum(unsigned char * iph,
-       unsigned int ihl)
+# 46 "linux-2.6.18/include/asm/checksum.h"
+static inline  __attribute__((always_inline)) unsigned short ip_fast_csum(unsigned char *iph, unsigned int ihl)
 {
  unsigned int sum;
 
- __asm__ __volatile__(
-     "movl (%1), %0	;\n"
-     "subl $4, %2	;\n"
-     "jbe 2f		;\n"
-     "addl 4(%1), %0	;\n"
-     "adcl 8(%1), %0	;\n"
-     "adcl 12(%1), %0	;\n"
-"1:	    adcl 16(%1), %0	;\n"
-     "lea 4(%1), %1	;\n"
-     "decl %2		;\n"
-     "jne 1b		;\n"
-     "adcl $0, %0	;\n"
-     "movl %0, %2	;\n"
-     "shrl $16, %0	;\n"
-     "addw %w2, %w0	;\n"
-     "adcl $0, %0	;\n"
-     "notl %0		;\n"
-"2:				;\n"
+ asm( "  movl (%1), %0\n"
+  "  subl $4, %2\n"
+  "  jbe 2f\n"
+  "  addl 4(%1), %0\n"
+  "  adcl 8(%1), %0\n"
+  "  adcl 12(%1), %0\n"
+  "1: adcl 16(%1), %0\n"
+  "  lea 4(%1), %1\n"
+  "  decl %2\n"
+  "  jne	1b\n"
+  "  adcl $0, %0\n"
+  "  movl %0, %2\n"
+  "  shrl $16, %0\n"
+  "  addw %w2, %w0\n"
+  "  adcl $0, %0\n"
+  "  notl %0\n"
+  "2:"
 
 
 
@@ -14545,120 +14035,65 @@ static inline  __attribute__((always_inline)) unsigned short ip_fast_csum(unsign
  : "memory");
  return(sum);
 }
-
-
-
-
-
-static inline  __attribute__((always_inline)) unsigned int csum_fold(unsigned int sum)
+# 87 "linux-2.6.18/include/asm/checksum.h"
+static inline  __attribute__((always_inline)) unsigned long
+csum_tcpudp_nofold(unsigned saddr, unsigned daddr, unsigned short len,
+     unsigned short proto, unsigned int sum)
 {
- __asm__(
-  "addl %1, %0		;\n"
-  "adcl $0xffff, %0	;\n"
+ asm("  addl %1, %0\n"
+     "  adcl %2, %0\n"
+     "  adcl %3, %0\n"
+     "  adcl $0, %0\n"
   : "=r" (sum)
-  : "r" (sum << 16), "0" (sum & 0xffff0000)
- );
- return (~sum) >> 16;
-}
-
-static inline  __attribute__((always_inline)) unsigned long csum_tcpudp_nofold(unsigned long saddr,
-         unsigned long daddr,
-         unsigned short len,
-         unsigned short proto,
-         unsigned int sum)
-{
-    __asm__(
- "addl %1, %0	;\n"
- "adcl %2, %0	;\n"
- "adcl %3, %0	;\n"
- "adcl $0, %0	;\n"
- : "=r" (sum)
- : "g" (daddr), "g"(saddr), "g"((ntohs(len)<<16)+proto*256), "0"(sum));
+     : "g" (daddr), "g" (saddr), "g" ((ntohs(len)<<16)+proto*256), "0" (sum));
     return sum;
 }
-
-
-
-
-
-static inline  __attribute__((always_inline)) unsigned short int csum_tcpudp_magic(unsigned long saddr,
-         unsigned long daddr,
-         unsigned short len,
-         unsigned short proto,
-         unsigned int sum)
+# 112 "linux-2.6.18/include/asm/checksum.h"
+static inline  __attribute__((always_inline)) unsigned short int
+csum_tcpudp_magic(unsigned long saddr, unsigned long daddr,
+    unsigned short len, unsigned short proto, unsigned int sum)
 {
  return csum_fold(csum_tcpudp_nofold(saddr,daddr,len,proto,sum));
 }
+# 129 "linux-2.6.18/include/asm/checksum.h"
+extern unsigned int csum_partial(const unsigned char *buff, unsigned len, unsigned int sum);
 
 
 
 
 
 
-static inline  __attribute__((always_inline)) unsigned short ip_compute_csum(unsigned char * buff, int len)
+extern unsigned long csum_partial_copy_generic(const unsigned char *src, const unsigned char *dst,
+            unsigned len,
+            unsigned sum,
+            int *src_err_ptr, int *dst_err_ptr);
+
+
+extern unsigned int csum_partial_copy_from_user(const unsigned char *src, unsigned char *dst,
+           int len, unsigned int isum, int *errp);
+extern unsigned int csum_partial_copy_to_user(const unsigned char *src, unsigned char *dst,
+          int len, unsigned int isum, int *errp);
+extern unsigned int csum_partial_copy_nocheck(const unsigned char *src, unsigned char *dst, int len,
+           unsigned int sum);
+# 161 "linux-2.6.18/include/asm/checksum.h"
+extern unsigned short ip_compute_csum(unsigned char * buff, int len);
+# 176 "linux-2.6.18/include/asm/checksum.h"
+struct in6_addr;
+
+
+extern unsigned short
+csum_ipv6_magic(struct in6_addr *saddr, struct in6_addr *daddr,
+  __u32 len, unsigned short proto, unsigned int sum);
+
+static inline  __attribute__((always_inline)) unsigned add32_with_carry(unsigned a, unsigned b)
 {
-    return csum_fold (csum_partial(buff, len, 0));
-}
-
-
-static __inline__  __attribute__((always_inline)) unsigned short int csum_ipv6_magic(struct in6_addr *saddr,
-           struct in6_addr *daddr,
-           __u32 len,
-           unsigned short proto,
-           unsigned int sum)
-{
- __asm__(
-  "addl 0(%1), %0		;\n"
-  "adcl 4(%1), %0		;\n"
-  "adcl 8(%1), %0		;\n"
-  "adcl 12(%1), %0	;\n"
-  "adcl 0(%2), %0		;\n"
-  "adcl 4(%2), %0		;\n"
-  "adcl 8(%2), %0		;\n"
-  "adcl 12(%2), %0	;\n"
-  "adcl %3, %0		;\n"
-  "adcl %4, %0		;\n"
-  "adcl $0, %0		;\n"
-  : "=&r" (sum)
-  : "r" (saddr), "r" (daddr),
-    "r"(htonl(len)), "r"(htonl(proto)), "0"(sum));
-
- return csum_fold(sum);
-}
-
-
-
-
-
-static __inline__  __attribute__((always_inline)) unsigned int csum_and_copy_to_user(const unsigned char *src,
-           unsigned char *dst,
-           int len, int sum,
-           int *err_ptr)
-{
- do { do { } while (0); } while (0);
- if ((__builtin_expect(!!(({ unsigned long flag,sum; (void)0; asm("addl %3,%1 ; sbbl %0,%0; cmpl %1,%4; sbbl $0,%0" :"=&r" (flag), "=r" (sum) :"1" (dst),"g" ((int)(len)),"rm" (current_thread_info()->addr_limit.seg)); flag; }) == 0), 1)))
-  return csum_partial_copy_generic(src, ( unsigned char *)dst, len, sum, ((void *)0), err_ptr);
-
- if (len)
-  *err_ptr = -14;
-
- return -1;
+ asm("addl %2,%0\n\t"
+     "adcl $0,%0"
+     : "=r" (a)
+     : "0" (a), "r" (b));
+ return a;
 }
 # 27 "linux-2.6.18/include/net/checksum.h" 2
-
-
-static inline 
-__attribute__((always_inline)) unsigned int csum_and_copy_from_user (const unsigned char *src, unsigned char *dst,
-          int len, int sum, int *err_ptr)
-{
- if ((__builtin_expect(!!(({ unsigned long flag,sum; (void)0; asm("addl %3,%1 ; sbbl %0,%0; cmpl %1,%4; sbbl $0,%0" :"=&r" (flag), "=r" (sum) :"1" (src),"g" ((int)(len)),"rm" (current_thread_info()->addr_limit.seg)); flag; }) == 0), 1)))
-  return csum_partial_copy_from_user(src, dst, len, sum, err_ptr);
-
- if (len)
-  *err_ptr = -14;
-
- return sum;
-}
 # 60 "linux-2.6.18/include/net/checksum.h"
 static inline  __attribute__((always_inline)) unsigned int csum_add(unsigned int csum, unsigned int addend)
 {
@@ -15147,7 +14582,7 @@ static inline  __attribute__((always_inline)) unsigned char *skb_put(struct sk_b
  skb->tail += len;
  skb->len += len;
  if (__builtin_expect(!!(skb->tail>skb->end), 0))
-  skb_over_panic(skb, len, ({ void *pc; __asm__("movl $1f,%0\n1:":"=g" (pc)); pc; }));
+  skb_over_panic(skb, len, ({ void *pc; asm volatile("leaq 1f(%%rip),%0\n1:":"=r"(pc)); pc; }));
  return tmp;
 }
 
@@ -15163,7 +14598,7 @@ static inline  __attribute__((always_inline)) unsigned char *skb_push(struct sk_
  skb->data -= len;
  skb->len += len;
  if (__builtin_expect(!!(skb->data<skb->head), 0))
-  skb_under_panic(skb, len, ({ void *pc; __asm__("movl $1f,%0\n1:":"=g" (pc)); pc; }));
+  skb_under_panic(skb, len, ({ void *pc; asm volatile("leaq 1f(%%rip),%0\n1:":"=r"(pc)); pc; }));
  return skb->data;
 }
 
@@ -15338,7 +14773,7 @@ static inline  __attribute__((always_inline)) int skb_add_data(struct sk_buff *s
 
  if (skb->ip_summed == 0) {
   int err = 0;
-  unsigned int csum = csum_and_copy_from_user(from,
+  unsigned int csum = csum_partial_copy_from_user(from,
            skb_put(skb, copy),
            copy, 0, &err);
   if (!err) {
@@ -15504,7 +14939,7 @@ static inline  __attribute__((always_inline)) struct ethhdr *eth_hdr(const struc
 }
 
 
-typedef  struct ctl_table   _GLOBAL_179_T; extern  _GLOBAL_179_T  _GLOBAL_0_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_1_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_2_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_3_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_4_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_5_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_6_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_7_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_8_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_9_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_10_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_11_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_12_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_13_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_14_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_15_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_16_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_17_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_18_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_19_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_20_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_21_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_22_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_23_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_24_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_25_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_26_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_27_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_28_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_29_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_30_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_31_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_32_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_33_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_34_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_35_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_36_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_37_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_38_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_39_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_40_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_41_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_42_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_43_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_44_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_45_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_46_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_47_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_48_ether_table_I [ ] ; extern  _GLOBAL_179_T  _GLOBAL_49_ether_table_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_ether_table_I) *_GLOBAL_ether_table_24_A[NUM_STACKS];   
+typedef  struct ctl_table   _GLOBAL_167_T; extern  _GLOBAL_167_T  _GLOBAL_0_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_1_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_2_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_3_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_4_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_5_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_6_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_7_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_8_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_9_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_10_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_11_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_12_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_13_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_14_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_15_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_16_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_17_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_18_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_19_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_20_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_21_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_22_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_23_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_24_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_25_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_26_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_27_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_28_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_29_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_30_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_31_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_32_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_33_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_34_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_35_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_36_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_37_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_38_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_39_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_40_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_41_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_42_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_43_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_44_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_45_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_46_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_47_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_48_ether_table_I [ ] ; extern  _GLOBAL_167_T  _GLOBAL_49_ether_table_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_ether_table_I) *_GLOBAL_ether_table_23_A[NUM_STACKS];   
 # 30 "linux-2.6.18/include/linux/netdevice.h" 2
 # 1 "linux-2.6.18/include/linux/if_packet.h" 1
 
@@ -15590,8 +15025,8 @@ struct resource_list {
  struct pci_dev *dev;
 };
 # 94 "linux-2.6.18/include/linux/ioport.h"
-typedef  struct resource   _GLOBAL_180_T; extern  _GLOBAL_180_T  global_ioport_resource[NUM_STACKS];    
-typedef  struct resource   _GLOBAL_181_T; extern  _GLOBAL_181_T  global_iomem_resource[NUM_STACKS];    
+typedef  struct resource   _GLOBAL_168_T; extern  _GLOBAL_168_T  global_ioport_resource[NUM_STACKS];    
+typedef  struct resource   _GLOBAL_169_T; extern  _GLOBAL_169_T  global_iomem_resource[NUM_STACKS];    
 
 extern int request_resource(struct resource *root, struct resource *new);
 extern struct resource * ____request_resource(struct resource *root, struct resource *new);
@@ -16020,9 +15455,9 @@ extern void device_destroy(struct class *cls, dev_t devt);
 
 
 
-typedef  int   ( *_GLOBAL_183_T  )  ( struct device   * dev   ) ; extern  _GLOBAL_183_T global_platform_notify[NUM_STACKS];      
+typedef  int   ( *_GLOBAL_171_T  )  ( struct device   * dev   ) ; extern  _GLOBAL_171_T global_platform_notify[NUM_STACKS];      
 
-typedef  int   ( *_GLOBAL_185_T  )  ( struct device   * dev   ) ; extern  _GLOBAL_185_T global_platform_notify_remove[NUM_STACKS];      
+typedef  int   ( *_GLOBAL_173_T  )  ( struct device   * dev   ) ; extern  _GLOBAL_173_T global_platform_notify_remove[NUM_STACKS];      
 
 
 
@@ -16114,7 +15549,7 @@ struct netif_rx_stats
  unsigned cpu_collision;
 };
 
-typedef  __typeof__ ( struct netif_rx_stats  )   _GLOBAL_186_T; extern  _GLOBAL_186_T  global_per_cpu__netdev_rx_stat[NUM_STACKS];    
+typedef  __typeof__ ( struct netif_rx_stats  )   _GLOBAL_174_T; extern  _GLOBAL_174_T  global_per_cpu__netdev_rx_stat[NUM_STACKS];    
 
 
 
@@ -16450,41 +15885,15 @@ typedef int irqreturn_t;
 # 6 "linux-2.6.18/include/linux/hardirq.h" 2
 
 # 1 "linux-2.6.18/include/asm/hardirq.h" 1
-
-
-
-
+# 24 "linux-2.6.18/include/asm/hardirq.h"
 # 1 "linux-2.6.18/include/linux/irq.h" 1
 # 22 "linux-2.6.18/include/linux/irq.h"
 # 1 "linux-2.6.18/include/asm/irq.h" 1
-# 15 "linux-2.6.18/include/asm/irq.h"
-# 1 "linux-2.6.18/include/asm/mach-default/irq_vectors.h" 1
-# 87 "linux-2.6.18/include/asm/mach-default/irq_vectors.h"
-# 1 "linux-2.6.18/include/asm/mach-default/irq_vectors_limits.h" 1
-# 88 "linux-2.6.18/include/asm/mach-default/irq_vectors.h" 2
-# 16 "linux-2.6.18/include/asm/irq.h" 2
-
-
+# 42 "linux-2.6.18/include/asm/irq.h"
 static __inline__  __attribute__((always_inline)) int irq_canonicalize(int irq)
 {
  return ((irq == 2) ? 9 : irq);
 }
-
-
-
-
-
-
-  extern void irq_ctx_init(int cpu);
-  extern void irq_ctx_exit(int cpu);
-
-
-
-
-
-
-
-extern int irqbalance_disable(char *str);
 # 23 "linux-2.6.18/include/linux/irq.h" 2
 # 63 "linux-2.6.18/include/linux/irq.h"
 struct proc_dir_entry;
@@ -16512,7 +15921,7 @@ struct irq_chip {
 };
 # 141 "linux-2.6.18/include/linux/irq.h"
 struct irq_desc {
- void  __attribute__((regparm(3))) (*handle_irq)(unsigned int irq,
+ void (*handle_irq)(unsigned int irq,
            struct irq_desc *desc,
            struct pt_regs *regs);
  struct irq_chip *chip;
@@ -16539,7 +15948,7 @@ struct irq_desc {
 
 } __attribute__((__aligned__((1 << (7))))) ;
 
-typedef  struct irq_desc   _GLOBAL_187_T; extern  _GLOBAL_187_T  _GLOBAL_0_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_1_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_2_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_3_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_4_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_5_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_6_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_7_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_8_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_9_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_10_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_11_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_12_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_13_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_14_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_15_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_16_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_17_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_18_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_19_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_20_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_21_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_22_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_23_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_24_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_25_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_26_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_27_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_28_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_29_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_30_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_31_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_32_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_33_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_34_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_35_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_36_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_37_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_38_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_39_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_40_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_41_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_42_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_43_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_44_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_45_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_46_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_47_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_48_irq_desc_I [ 224 ] ; extern  _GLOBAL_187_T  _GLOBAL_49_irq_desc_I [ 224 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_irq_desc_I) *_GLOBAL_irq_desc_25_A[NUM_STACKS];   
+typedef  struct irq_desc   _GLOBAL_175_T; extern  _GLOBAL_175_T  _GLOBAL_0_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_1_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_2_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_3_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_4_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_5_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_6_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_7_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_8_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_9_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_10_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_11_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_12_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_13_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_14_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_15_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_16_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_17_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_18_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_19_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_20_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_21_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_22_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_23_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_24_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_25_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_26_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_27_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_28_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_29_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_30_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_31_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_32_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_33_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_34_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_35_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_36_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_37_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_38_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_39_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_40_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_41_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_42_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_43_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_44_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_45_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_46_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_47_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_48_irq_desc_I [ 224 ] ; extern  _GLOBAL_175_T  _GLOBAL_49_irq_desc_I [ 224 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_irq_desc_I) *_GLOBAL_irq_desc_24_A[NUM_STACKS];   
 
 
 
@@ -16553,7 +15962,7 @@ typedef struct irq_desc irq_desc_t;
 
 
 # 1 "linux-2.6.18/include/asm/hw_irq.h" 1
-# 15 "linux-2.6.18/include/asm/hw_irq.h"
+# 20 "linux-2.6.18/include/asm/hw_irq.h"
 # 1 "linux-2.6.18/include/linux/profile.h" 1
 # 14 "linux-2.6.18/include/linux/profile.h"
 struct proc_dir_entry;
@@ -16601,92 +16010,54 @@ int register_timer_hook(int (*hook)(struct pt_regs *));
 void unregister_timer_hook(int (*hook)(struct pt_regs *));
 
 
-typedef  int   ( *_GLOBAL_189_T  )  ( struct pt_regs   *  ) ; extern  _GLOBAL_189_T global_timer_hook[NUM_STACKS];     
+typedef  int   ( *_GLOBAL_177_T  )  ( struct pt_regs   *  ) ; extern  _GLOBAL_177_T global_timer_hook[NUM_STACKS];     
 
 struct pt_regs;
-# 16 "linux-2.6.18/include/asm/hw_irq.h" 2
+# 21 "linux-2.6.18/include/asm/hw_irq.h" 2
 
-
-# 1 "linux-2.6.18/include/asm/sections.h" 1
-
-
-
-
-# 1 "linux-2.6.18/include/asm-generic/sections.h" 1
-
-
-
-
-
-typedef  char  _GLOBAL_190_T; extern  _GLOBAL_190_T  _GLOBAL_0__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_1__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_2__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_3__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_4__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_5__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_6__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_7__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_8__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_9__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_10__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_11__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_12__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_13__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_14__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_15__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_16__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_17__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_18__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_19__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_20__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_21__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_22__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_23__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_24__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_25__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_26__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_27__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_28__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_29__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_30__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_31__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_32__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_33__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_34__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_35__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_36__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_37__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_38__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_39__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_40__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_41__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_42__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_43__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_44__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_45__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_46__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_47__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_48__text_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_49__text_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__text_I) *_GLOBAL__text_26_A[NUM_STACKS];extern  _GLOBAL_190_T  _GLOBAL_0__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_1__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_2__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_3__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_4__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_5__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_6__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_7__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_8__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_9__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_10__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_11__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_12__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_13__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_14__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_15__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_16__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_17__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_18__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_19__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_20__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_21__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_22__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_23__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_24__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_25__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_26__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_27__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_28__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_29__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_30__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_31__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_32__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_33__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_34__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_35__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_36__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_37__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_38__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_39__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_40__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_41__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_42__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_43__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_44__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_45__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_46__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_47__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_48__stext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_49__stext_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__stext_I) *_GLOBAL__stext_27_A[NUM_STACKS];extern  _GLOBAL_190_T  _GLOBAL_0__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_1__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_2__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_3__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_4__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_5__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_6__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_7__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_8__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_9__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_10__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_11__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_12__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_13__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_14__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_15__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_16__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_17__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_18__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_19__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_20__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_21__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_22__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_23__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_24__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_25__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_26__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_27__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_28__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_29__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_30__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_31__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_32__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_33__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_34__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_35__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_36__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_37__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_38__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_39__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_40__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_41__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_42__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_43__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_44__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_45__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_46__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_47__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_48__etext_I [ ] ; extern  _GLOBAL_190_T  _GLOBAL_49__etext_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__etext_I) *_GLOBAL__etext_28_A[NUM_STACKS];    
-typedef  char  _GLOBAL_191_T; extern  _GLOBAL_191_T  _GLOBAL_0__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_1__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_2__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_3__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_4__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_5__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_6__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_7__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_8__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_9__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_10__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_11__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_12__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_13__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_14__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_15__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_16__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_17__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_18__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_19__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_20__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_21__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_22__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_23__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_24__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_25__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_26__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_27__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_28__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_29__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_30__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_31__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_32__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_33__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_34__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_35__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_36__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_37__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_38__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_39__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_40__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_41__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_42__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_43__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_44__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_45__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_46__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_47__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_48__data_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_49__data_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__data_I) *_GLOBAL__data_29_A[NUM_STACKS];extern  _GLOBAL_191_T  _GLOBAL_0__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_1__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_2__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_3__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_4__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_5__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_6__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_7__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_8__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_9__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_10__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_11__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_12__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_13__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_14__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_15__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_16__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_17__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_18__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_19__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_20__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_21__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_22__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_23__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_24__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_25__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_26__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_27__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_28__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_29__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_30__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_31__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_32__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_33__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_34__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_35__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_36__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_37__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_38__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_39__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_40__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_41__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_42__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_43__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_44__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_45__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_46__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_47__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_48__sdata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_49__sdata_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__sdata_I) *_GLOBAL__sdata_30_A[NUM_STACKS];extern  _GLOBAL_191_T  _GLOBAL_0__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_1__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_2__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_3__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_4__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_5__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_6__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_7__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_8__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_9__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_10__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_11__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_12__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_13__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_14__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_15__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_16__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_17__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_18__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_19__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_20__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_21__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_22__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_23__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_24__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_25__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_26__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_27__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_28__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_29__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_30__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_31__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_32__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_33__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_34__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_35__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_36__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_37__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_38__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_39__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_40__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_41__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_42__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_43__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_44__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_45__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_46__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_47__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_48__edata_I [ ] ; extern  _GLOBAL_191_T  _GLOBAL_49__edata_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__edata_I) *_GLOBAL__edata_31_A[NUM_STACKS];    
-typedef  char  _GLOBAL_192_T; extern  _GLOBAL_192_T  __bss_start [ ] ; extern  _GLOBAL_192_T  _GLOBAL_0___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_1___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_2___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_3___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_4___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_5___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_6___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_7___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_8___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_9___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_10___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_11___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_12___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_13___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_14___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_15___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_16___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_17___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_18___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_19___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_20___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_21___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_22___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_23___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_24___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_25___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_26___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_27___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_28___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_29___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_30___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_31___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_32___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_33___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_34___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_35___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_36___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_37___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_38___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_39___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_40___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_41___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_42___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_43___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_44___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_45___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_46___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_47___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_48___bss_stop_I [ ] ; extern  _GLOBAL_192_T  _GLOBAL_49___bss_stop_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___bss_stop_I) *_GLOBAL___bss_stop_32_A[NUM_STACKS];   
-typedef  char  _GLOBAL_193_T; extern  _GLOBAL_193_T  _GLOBAL_0___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_1___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_2___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_3___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_4___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_5___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_6___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_7___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_8___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_9___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_10___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_11___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_12___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_13___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_14___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_15___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_16___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_17___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_18___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_19___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_20___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_21___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_22___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_23___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_24___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_25___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_26___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_27___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_28___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_29___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_30___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_31___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_32___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_33___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_34___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_35___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_36___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_37___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_38___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_39___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_40___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_41___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_42___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_43___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_44___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_45___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_46___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_47___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_48___init_begin_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_49___init_begin_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___init_begin_I) *_GLOBAL___init_begin_33_A[NUM_STACKS];extern  _GLOBAL_193_T  _GLOBAL_0___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_1___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_2___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_3___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_4___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_5___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_6___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_7___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_8___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_9___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_10___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_11___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_12___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_13___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_14___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_15___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_16___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_17___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_18___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_19___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_20___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_21___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_22___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_23___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_24___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_25___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_26___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_27___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_28___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_29___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_30___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_31___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_32___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_33___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_34___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_35___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_36___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_37___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_38___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_39___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_40___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_41___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_42___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_43___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_44___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_45___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_46___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_47___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_48___init_end_I [ ] ; extern  _GLOBAL_193_T  _GLOBAL_49___init_end_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___init_end_I) *_GLOBAL___init_end_34_A[NUM_STACKS];   
-typedef  char  _GLOBAL_194_T; extern  _GLOBAL_194_T  _GLOBAL_0__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_1__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_2__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_3__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_4__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_5__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_6__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_7__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_8__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_9__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_10__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_11__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_12__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_13__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_14__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_15__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_16__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_17__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_18__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_19__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_20__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_21__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_22__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_23__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_24__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_25__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_26__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_27__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_28__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_29__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_30__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_31__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_32__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_33__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_34__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_35__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_36__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_37__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_38__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_39__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_40__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_41__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_42__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_43__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_44__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_45__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_46__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_47__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_48__sinittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_49__sinittext_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__sinittext_I) *_GLOBAL__sinittext_35_A[NUM_STACKS];extern  _GLOBAL_194_T  _GLOBAL_0__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_1__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_2__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_3__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_4__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_5__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_6__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_7__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_8__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_9__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_10__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_11__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_12__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_13__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_14__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_15__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_16__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_17__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_18__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_19__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_20__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_21__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_22__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_23__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_24__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_25__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_26__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_27__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_28__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_29__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_30__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_31__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_32__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_33__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_34__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_35__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_36__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_37__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_38__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_39__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_40__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_41__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_42__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_43__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_44__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_45__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_46__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_47__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_48__einittext_I [ ] ; extern  _GLOBAL_194_T  _GLOBAL_49__einittext_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__einittext_I) *_GLOBAL__einittext_36_A[NUM_STACKS];   
-typedef  char  _GLOBAL_195_T; extern  _GLOBAL_195_T  _GLOBAL_0__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_1__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_2__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_3__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_4__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_5__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_6__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_7__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_8__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_9__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_10__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_11__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_12__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_13__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_14__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_15__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_16__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_17__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_18__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_19__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_20__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_21__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_22__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_23__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_24__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_25__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_26__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_27__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_28__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_29__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_30__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_31__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_32__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_33__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_34__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_35__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_36__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_37__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_38__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_39__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_40__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_41__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_42__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_43__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_44__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_45__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_46__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_47__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_48__sextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_195_T  _GLOBAL_49__sextratext_I [ ] __attribute__((weak))  ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__sextratext_I) *_GLOBAL__sextratext_37_A[NUM_STACKS];   
-typedef  char  _GLOBAL_196_T; extern  _GLOBAL_196_T  _GLOBAL_0__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_1__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_2__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_3__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_4__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_5__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_6__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_7__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_8__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_9__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_10__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_11__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_12__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_13__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_14__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_15__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_16__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_17__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_18__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_19__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_20__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_21__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_22__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_23__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_24__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_25__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_26__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_27__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_28__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_29__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_30__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_31__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_32__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_33__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_34__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_35__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_36__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_37__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_38__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_39__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_40__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_41__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_42__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_43__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_44__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_45__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_46__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_47__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_48__eextratext_I [ ] __attribute__((weak))  ; extern  _GLOBAL_196_T  _GLOBAL_49__eextratext_I [ ] __attribute__((weak))  ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__eextratext_I) *_GLOBAL__eextratext_38_A[NUM_STACKS];   
-typedef  char  _GLOBAL_197_T; extern  _GLOBAL_197_T  _GLOBAL_0__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_1__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_2__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_3__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_4__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_5__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_6__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_7__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_8__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_9__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_10__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_11__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_12__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_13__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_14__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_15__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_16__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_17__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_18__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_19__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_20__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_21__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_22__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_23__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_24__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_25__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_26__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_27__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_28__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_29__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_30__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_31__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_32__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_33__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_34__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_35__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_36__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_37__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_38__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_39__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_40__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_41__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_42__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_43__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_44__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_45__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_46__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_47__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_48__end_I [ ] ; extern  _GLOBAL_197_T  _GLOBAL_49__end_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0__end_I) *_GLOBAL__end_39_A[NUM_STACKS];  
-typedef  char  _GLOBAL_198_T; extern  _GLOBAL_198_T  _GLOBAL_0___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_1___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_2___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_3___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_4___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_5___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_6___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_7___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_8___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_9___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_10___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_11___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_12___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_13___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_14___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_15___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_16___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_17___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_18___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_19___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_20___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_21___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_22___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_23___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_24___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_25___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_26___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_27___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_28___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_29___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_30___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_31___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_32___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_33___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_34___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_35___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_36___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_37___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_38___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_39___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_40___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_41___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_42___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_43___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_44___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_45___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_46___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_47___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_48___per_cpu_start_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_49___per_cpu_start_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___per_cpu_start_I) *_GLOBAL___per_cpu_start_40_A[NUM_STACKS];extern  _GLOBAL_198_T  _GLOBAL_0___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_1___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_2___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_3___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_4___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_5___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_6___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_7___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_8___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_9___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_10___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_11___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_12___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_13___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_14___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_15___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_16___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_17___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_18___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_19___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_20___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_21___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_22___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_23___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_24___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_25___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_26___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_27___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_28___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_29___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_30___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_31___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_32___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_33___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_34___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_35___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_36___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_37___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_38___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_39___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_40___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_41___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_42___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_43___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_44___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_45___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_46___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_47___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_48___per_cpu_end_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_49___per_cpu_end_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___per_cpu_end_I) *_GLOBAL___per_cpu_end_41_A[NUM_STACKS];   
-typedef  char  _GLOBAL_199_T; extern  _GLOBAL_199_T  _GLOBAL_0___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_1___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_2___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_3___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_4___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_5___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_6___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_7___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_8___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_9___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_10___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_11___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_12___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_13___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_14___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_15___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_16___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_17___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_18___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_19___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_20___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_21___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_22___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_23___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_24___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_25___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_26___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_27___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_28___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_29___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_30___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_31___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_32___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_33___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_34___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_35___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_36___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_37___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_38___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_39___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_40___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_41___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_42___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_43___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_44___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_45___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_46___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_47___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_48___kprobes_text_start_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_49___kprobes_text_start_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___kprobes_text_start_I) *_GLOBAL___kprobes_text_start_42_A[NUM_STACKS];extern  _GLOBAL_199_T  _GLOBAL_0___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_1___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_2___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_3___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_4___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_5___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_6___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_7___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_8___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_9___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_10___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_11___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_12___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_13___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_14___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_15___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_16___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_17___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_18___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_19___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_20___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_21___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_22___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_23___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_24___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_25___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_26___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_27___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_28___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_29___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_30___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_31___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_32___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_33___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_34___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_35___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_36___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_37___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_38___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_39___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_40___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_41___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_42___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_43___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_44___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_45___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_46___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_47___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_48___kprobes_text_end_I [ ] ; extern  _GLOBAL_199_T  _GLOBAL_49___kprobes_text_end_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___kprobes_text_end_I) *_GLOBAL___kprobes_text_end_43_A[NUM_STACKS];   
-typedef  char  _GLOBAL_200_T; extern  _GLOBAL_200_T  _GLOBAL_0___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_1___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_2___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_3___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_4___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_5___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_6___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_7___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_8___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_9___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_10___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_11___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_12___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_13___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_14___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_15___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_16___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_17___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_18___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_19___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_20___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_21___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_22___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_23___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_24___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_25___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_26___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_27___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_28___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_29___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_30___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_31___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_32___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_33___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_34___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_35___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_36___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_37___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_38___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_39___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_40___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_41___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_42___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_43___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_44___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_45___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_46___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_47___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_48___initdata_begin_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_49___initdata_begin_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___initdata_begin_I) *_GLOBAL___initdata_begin_44_A[NUM_STACKS];extern  _GLOBAL_200_T  _GLOBAL_0___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_1___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_2___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_3___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_4___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_5___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_6___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_7___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_8___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_9___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_10___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_11___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_12___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_13___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_14___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_15___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_16___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_17___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_18___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_19___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_20___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_21___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_22___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_23___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_24___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_25___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_26___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_27___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_28___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_29___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_30___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_31___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_32___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_33___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_34___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_35___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_36___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_37___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_38___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_39___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_40___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_41___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_42___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_43___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_44___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_45___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_46___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_47___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_48___initdata_end_I [ ] ; extern  _GLOBAL_200_T  _GLOBAL_49___initdata_end_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___initdata_end_I) *_GLOBAL___initdata_end_45_A[NUM_STACKS];   
-typedef  char  _GLOBAL_201_T; extern  _GLOBAL_201_T  _GLOBAL_0___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_1___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_2___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_3___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_4___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_5___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_6___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_7___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_8___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_9___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_10___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_11___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_12___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_13___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_14___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_15___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_16___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_17___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_18___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_19___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_20___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_21___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_22___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_23___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_24___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_25___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_26___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_27___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_28___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_29___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_30___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_31___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_32___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_33___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_34___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_35___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_36___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_37___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_38___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_39___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_40___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_41___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_42___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_43___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_44___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_45___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_46___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_47___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_48___start_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_49___start_rodata_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___start_rodata_I) *_GLOBAL___start_rodata_46_A[NUM_STACKS];extern  _GLOBAL_201_T  _GLOBAL_0___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_1___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_2___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_3___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_4___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_5___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_6___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_7___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_8___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_9___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_10___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_11___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_12___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_13___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_14___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_15___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_16___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_17___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_18___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_19___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_20___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_21___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_22___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_23___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_24___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_25___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_26___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_27___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_28___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_29___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_30___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_31___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_32___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_33___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_34___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_35___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_36___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_37___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_38___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_39___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_40___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_41___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_42___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_43___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_44___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_45___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_46___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_47___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_48___end_rodata_I [ ] ; extern  _GLOBAL_201_T  _GLOBAL_49___end_rodata_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0___end_rodata_I) *_GLOBAL___end_rodata_47_A[NUM_STACKS];   
-# 6 "linux-2.6.18/include/asm/sections.h" 2
-# 19 "linux-2.6.18/include/asm/hw_irq.h" 2
 
 struct irq_chip;
-# 31 "linux-2.6.18/include/asm/hw_irq.h"
-typedef  u8  _GLOBAL_202_T; extern  _GLOBAL_202_T  _GLOBAL_0_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_1_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_2_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_3_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_4_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_5_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_6_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_7_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_8_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_9_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_10_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_11_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_12_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_13_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_14_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_15_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_16_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_17_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_18_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_19_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_20_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_21_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_22_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_23_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_24_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_25_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_26_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_27_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_28_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_29_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_30_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_31_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_32_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_33_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_34_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_35_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_36_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_37_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_38_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_39_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_40_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_41_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_42_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_43_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_44_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_45_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_46_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_47_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_48_irq_vector_I [ 224 ] ; extern  _GLOBAL_202_T  _GLOBAL_49_irq_vector_I [ 224 ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_irq_vector_I) *_GLOBAL_irq_vector_48_A[NUM_STACKS];  
+# 78 "linux-2.6.18/include/asm/hw_irq.h"
+typedef  u8  _GLOBAL_178_T; extern  _GLOBAL_178_T  _GLOBAL_0_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_1_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_2_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_3_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_4_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_5_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_6_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_7_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_8_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_9_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_10_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_11_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_12_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_13_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_14_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_15_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_16_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_17_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_18_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_19_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_20_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_21_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_22_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_23_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_24_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_25_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_26_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_27_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_28_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_29_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_30_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_31_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_32_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_33_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_34_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_35_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_36_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_37_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_38_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_39_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_40_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_41_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_42_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_43_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_44_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_45_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_46_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_47_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_48_irq_vector_I [ ( 32 * 1  )  ] ; extern  _GLOBAL_178_T  _GLOBAL_49_irq_vector_I [ ( 32 * 1  )  ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_irq_vector_I) *_GLOBAL_irq_vector_25_A[NUM_STACKS];    
+# 89 "linux-2.6.18/include/asm/hw_irq.h"
+extern void disable_8259A_irq(unsigned int irq);
+extern void enable_8259A_irq(unsigned int irq);
+extern int i8259A_irq_pending(unsigned int irq);
+extern void make_8259A_irq(unsigned int irq);
+extern void init_8259A(int aeoi);
+extern void send_IPI_self(int vector);
+extern void init_VISWS_APIC_irqs(void);
+extern void setup_IO_APIC(void);
+extern void disable_IO_APIC(void);
+extern void print_IO_APIC(void);
+extern int IO_APIC_get_PCI_irq_vector(int bus, int slot, int fn);
+extern void send_IPI(int dest, int vector);
+extern void setup_ioapic_dest(void);
 
+typedef  unsigned long   _GLOBAL_179_T; extern  _GLOBAL_179_T  global_io_apic_irqs[NUM_STACKS];    
 
-
-typedef  void   ( *_GLOBAL_204_T [ 224 ]   )  ( void  ) ; extern  _GLOBAL_204_T _GLOBAL_0_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_1_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_2_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_3_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_4_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_5_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_6_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_7_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_8_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_9_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_10_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_11_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_12_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_13_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_14_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_15_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_16_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_17_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_18_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_19_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_20_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_21_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_22_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_23_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_24_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_25_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_26_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_27_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_28_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_29_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_30_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_31_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_32_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_33_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_34_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_35_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_36_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_37_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_38_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_39_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_40_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_41_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_42_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_43_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_44_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_45_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_46_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_47_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_48_interrupt_I; extern  _GLOBAL_204_T _GLOBAL_49_interrupt_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_interrupt_I) *_GLOBAL_interrupt_49_A[NUM_STACKS];  
-# 44 "linux-2.6.18/include/asm/hw_irq.h"
- void apic_timer_interrupt(void);
- __attribute__((regparm(3))) void error_interrupt(void);
- __attribute__((regparm(3))) void spurious_interrupt(void);
- __attribute__((regparm(3))) void thermal_interrupt(struct pt_regs *);
-
-
-
-void disable_8259A_irq(unsigned int irq);
-void enable_8259A_irq(unsigned int irq);
-int i8259A_irq_pending(unsigned int irq);
-void make_8259A_irq(unsigned int irq);
-void init_8259A(int aeoi);
-void send_IPI_self(int vector) __attribute__((regparm(3))) ;
-void init_VISWS_APIC_irqs(void);
-void setup_IO_APIC(void);
-void disable_IO_APIC(void);
-void print_IO_APIC(void);
-int IO_APIC_get_PCI_irq_vector(int bus, int slot, int fn);
-void send_IPI(int dest, int vector);
-void setup_ioapic_dest(void);
-
-typedef  unsigned long   _GLOBAL_205_T; extern  _GLOBAL_205_T  global_io_apic_irqs[NUM_STACKS];    
-
-typedef  atomic_t  _GLOBAL_206_T; extern  _GLOBAL_206_T  global_irq_err_count[NUM_STACKS];   
-typedef  atomic_t  _GLOBAL_207_T; extern  _GLOBAL_207_T  global_irq_mis_count[NUM_STACKS];   
+typedef  atomic_t  _GLOBAL_180_T; extern  _GLOBAL_180_T  global_irq_err_count[NUM_STACKS];   
+typedef  atomic_t  _GLOBAL_181_T; extern  _GLOBAL_181_T  global_irq_mis_count[NUM_STACKS];   
 # 183 "linux-2.6.18/include/linux/irq.h" 2
 
 extern int setup_irq(unsigned int irq, struct irqaction *new);
-# 6 "linux-2.6.18/include/asm/hardirq.h" 2
+# 25 "linux-2.6.18/include/asm/hardirq.h" 2
 
 typedef struct {
- unsigned int __softirq_pending;
- unsigned long idle_timestamp;
- unsigned int __nmi_count;
- unsigned int apic_timer_irqs;
+        unsigned int __softirq_pending;
+        unsigned long idle_timestamp;
+        unsigned int __nmi_count;
+        unsigned int apic_timer_irqs;
 }  __attribute__((__aligned__((1 << (7))))) irq_cpustat_t;
 
-typedef  __typeof__ ( irq_cpustat_t )   _GLOBAL_208_T; extern  _GLOBAL_208_T  global_per_cpu__irq_stat[NUM_STACKS];   
-typedef  irq_cpustat_t  _GLOBAL_209_T; extern  _GLOBAL_209_T  _GLOBAL_0_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_1_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_2_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_3_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_4_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_5_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_6_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_7_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_8_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_9_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_10_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_11_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_12_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_13_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_14_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_15_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_16_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_17_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_18_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_19_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_20_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_21_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_22_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_23_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_24_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_25_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_26_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_27_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_28_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_29_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_30_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_31_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_32_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_33_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_34_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_35_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_36_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_37_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_38_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_39_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_40_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_41_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_42_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_43_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_44_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_45_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_46_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_47_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_48_irq_stat_I [ ] ; extern  _GLOBAL_209_T  _GLOBAL_49_irq_stat_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_irq_stat_I) *_GLOBAL_irq_stat_50_A[NUM_STACKS];  
+typedef  __typeof__ ( irq_cpustat_t )   _GLOBAL_182_T; extern  _GLOBAL_182_T  global_per_cpu__irq_stat[NUM_STACKS];   
+typedef  irq_cpustat_t  _GLOBAL_183_T; extern  _GLOBAL_183_T  _GLOBAL_0_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_1_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_2_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_3_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_4_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_5_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_6_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_7_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_8_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_9_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_10_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_11_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_12_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_13_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_14_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_15_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_16_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_17_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_18_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_19_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_20_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_21_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_22_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_23_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_24_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_25_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_26_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_27_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_28_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_29_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_30_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_31_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_32_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_33_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_34_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_35_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_36_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_37_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_38_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_39_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_40_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_41_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_42_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_43_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_44_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_45_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_46_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_47_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_48_irq_stat_I [ ] ; extern  _GLOBAL_183_T  _GLOBAL_49_irq_stat_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_irq_stat_I) *_GLOBAL_irq_stat_26_A[NUM_STACKS];  
 
 
 
 
-void ack_bad_irq(unsigned int irq);
 # 1 "linux-2.6.18/include/linux/irq_cpustat.h" 1
-# 22 "linux-2.6.18/include/asm/hardirq.h" 2
+# 40 "linux-2.6.18/include/asm/hardirq.h" 2
 # 8 "linux-2.6.18/include/linux/hardirq.h" 2
 # 90 "linux-2.6.18/include/linux/hardirq.h"
 struct task_struct;
@@ -16773,12 +16144,12 @@ struct softirq_action
  void *data;
 };
 
-  __attribute__((regparm(0))) void do_softirq(void);
+ void do_softirq(void);
 extern void open_softirq(int nr, void (*action)(struct softirq_action*), void *data);
 extern void softirq_init(void);
 
-extern void raise_softirq_irqoff(unsigned int nr) __attribute__((regparm(3))) ;
-extern void raise_softirq(unsigned int nr) __attribute__((regparm(3))) ;
+extern void raise_softirq_irqoff(unsigned int nr);
+extern void raise_softirq(unsigned int nr);
 # 263 "linux-2.6.18/include/linux/interrupt.h"
 struct tasklet_struct
 {
@@ -16795,7 +16166,7 @@ enum
  TASKLET_STATE_RUN
 };
 # 307 "linux-2.6.18/include/linux/interrupt.h"
-extern void __tasklet_schedule(struct tasklet_struct *t) __attribute__((regparm(3))) ;
+extern void __tasklet_schedule(struct tasklet_struct *t);
 
 static inline  __attribute__((always_inline)) void tasklet_schedule(struct tasklet_struct *t)
 {
@@ -16803,7 +16174,7 @@ static inline  __attribute__((always_inline)) void tasklet_schedule(struct taskl
   __tasklet_schedule(t);
 }
 
-extern void __tasklet_hi_schedule(struct tasklet_struct *t) __attribute__((regparm(3))) ;
+extern void __tasklet_hi_schedule(struct tasklet_struct *t);
 
 static inline  __attribute__((always_inline)) void tasklet_hi_schedule(struct tasklet_struct *t)
 {
@@ -16848,9 +16219,9 @@ extern unsigned int probe_irq_mask(unsigned long);
 # 561 "linux-2.6.18/include/linux/netdevice.h" 2
 
 
-typedef  struct net_device   _GLOBAL_210_T; extern  _GLOBAL_210_T  global_loopback_dev[NUM_STACKS];    
-typedef  struct net_device   _GLOBAL_211_T; extern  _GLOBAL_211_T  * global_dev_base[NUM_STACKS];    
-typedef  rwlock_t  _GLOBAL_212_T; extern  _GLOBAL_212_T  global_dev_base_lock[NUM_STACKS];   
+typedef  struct net_device   _GLOBAL_184_T; extern  _GLOBAL_184_T  global_loopback_dev[NUM_STACKS];    
+typedef  struct net_device   _GLOBAL_185_T; extern  _GLOBAL_185_T  * global_dev_base[NUM_STACKS];    
+typedef  rwlock_t  _GLOBAL_186_T; extern  _GLOBAL_186_T  global_dev_base_lock[NUM_STACKS];   
 
 extern int netdev_boot_setup_check(struct net_device *dev);
 extern unsigned long netdev_boot_base(const char *prefix, int unit);
@@ -16907,7 +16278,7 @@ struct softnet_data
 
 };
 
-typedef  __typeof__ ( struct softnet_data  )   _GLOBAL_213_T; extern  _GLOBAL_213_T  global_per_cpu__softnet_data[NUM_STACKS];    
+typedef  __typeof__ ( struct softnet_data  )   _GLOBAL_187_T; extern  _GLOBAL_187_T  global_per_cpu__softnet_data[NUM_STACKS];    
 
 
 
@@ -16996,7 +16367,7 @@ extern int dev_hard_start_xmit(struct sk_buff *skb,
 
 extern void dev_init(void);
 
-typedef  int  _GLOBAL_214_T; extern  _GLOBAL_214_T  global_netdev_budget[NUM_STACKS];   
+typedef  int  _GLOBAL_188_T; extern  _GLOBAL_188_T  global_netdev_budget[NUM_STACKS];   
 
 
 extern void netdev_run_todo(void);
@@ -17236,8 +16607,8 @@ extern void netdev_features_change(struct net_device *dev);
 
 extern void dev_load(const char *name);
 extern void dev_mcast_init(void);
-typedef  int  _GLOBAL_215_T; extern  _GLOBAL_215_T  global_netdev_max_backlog[NUM_STACKS];   
-typedef  int  _GLOBAL_216_T; extern  _GLOBAL_216_T  global_weight_p[NUM_STACKS];   
+typedef  int  _GLOBAL_189_T; extern  _GLOBAL_189_T  global_netdev_max_backlog[NUM_STACKS];   
+typedef  int  _GLOBAL_190_T; extern  _GLOBAL_190_T  global_weight_p[NUM_STACKS];   
 extern int netdev_set_master(struct net_device *dev, struct net_device *master);
 extern int skb_checksum_help(struct sk_buff *skb, int inward);
 extern struct sk_buff *skb_gso_segment(struct sk_buff *skb, int features);
@@ -17352,7 +16723,7 @@ extern void remove_arg_zero(struct linux_binprm *);
 extern int search_binary_handler(struct linux_binprm *,struct pt_regs *);
 extern int flush_old_exec(struct linux_binprm * bprm);
 
-typedef  int  _GLOBAL_217_T; extern  _GLOBAL_217_T  global_suid_dumpable[NUM_STACKS];   
+typedef  int  _GLOBAL_191_T; extern  _GLOBAL_191_T  global_suid_dumpable[NUM_STACKS];   
 # 82 "linux-2.6.18/include/linux/binfmts.h"
 extern int setup_arg_pages(struct linux_binprm * bprm,
       unsigned long stack_top,
@@ -17387,16 +16758,13 @@ struct shmid_ds {
 
 
 # 1 "linux-2.6.18/include/asm/shmbuf.h" 1
-# 14 "linux-2.6.18/include/asm/shmbuf.h"
+# 13 "linux-2.6.18/include/asm/shmbuf.h"
 struct shmid64_ds {
  struct ipc64_perm shm_perm;
  size_t shm_segsz;
  __kernel_time_t shm_atime;
- unsigned long __unused1;
  __kernel_time_t shm_dtime;
- unsigned long __unused2;
  __kernel_time_t shm_ctime;
- unsigned long __unused3;
  __kernel_pid_t shm_cpid;
  __kernel_pid_t shm_lpid;
  unsigned long shm_nattch;
@@ -17472,15 +16840,12 @@ struct msqid_ds {
 
 
 # 1 "linux-2.6.18/include/asm/msgbuf.h" 1
-# 14 "linux-2.6.18/include/asm/msgbuf.h"
+# 13 "linux-2.6.18/include/asm/msgbuf.h"
 struct msqid64_ds {
  struct ipc64_perm msg_perm;
  __kernel_time_t msg_stime;
- unsigned long __unused1;
  __kernel_time_t msg_rtime;
- unsigned long __unused2;
  __kernel_time_t msg_ctime;
- unsigned long __unused3;
  unsigned long msg_cbytes;
  unsigned long msg_qnum;
  unsigned long msg_qbytes;
@@ -17546,8 +16911,8 @@ typedef uint32_t key_perm_t;
 
 struct key;
 # 381 "linux-2.6.18/include/linux/key.h"
-typedef  struct key   _GLOBAL_218_T; extern  _GLOBAL_218_T  _GLOBAL_0_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_1_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_2_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_3_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_4_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_5_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_6_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_7_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_8_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_9_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_10_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_11_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_12_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_13_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_14_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_15_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_16_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_17_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_18_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_19_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_20_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_21_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_22_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_23_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_24_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_25_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_26_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_27_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_28_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_29_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_30_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_31_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_32_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_33_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_34_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_35_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_36_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_37_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_38_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_39_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_40_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_41_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_42_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_43_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_44_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_45_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_46_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_47_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_48_root_user_keyring_I; extern  _GLOBAL_218_T  _GLOBAL_49_root_user_keyring_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_root_user_keyring_I) *_GLOBAL_root_user_keyring_51_A[NUM_STACKS];   
-typedef  struct key   _GLOBAL_219_T; extern  _GLOBAL_219_T  _GLOBAL_0_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_1_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_2_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_3_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_4_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_5_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_6_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_7_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_8_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_9_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_10_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_11_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_12_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_13_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_14_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_15_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_16_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_17_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_18_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_19_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_20_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_21_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_22_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_23_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_24_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_25_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_26_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_27_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_28_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_29_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_30_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_31_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_32_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_33_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_34_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_35_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_36_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_37_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_38_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_39_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_40_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_41_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_42_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_43_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_44_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_45_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_46_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_47_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_48_root_session_keyring_I; extern  _GLOBAL_219_T  _GLOBAL_49_root_session_keyring_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_root_session_keyring_I) *_GLOBAL_root_session_keyring_52_A[NUM_STACKS];   
+typedef  struct key   _GLOBAL_192_T; extern  _GLOBAL_192_T  _GLOBAL_0_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_1_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_2_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_3_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_4_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_5_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_6_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_7_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_8_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_9_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_10_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_11_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_12_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_13_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_14_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_15_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_16_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_17_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_18_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_19_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_20_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_21_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_22_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_23_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_24_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_25_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_26_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_27_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_28_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_29_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_30_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_31_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_32_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_33_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_34_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_35_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_36_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_37_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_38_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_39_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_40_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_41_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_42_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_43_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_44_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_45_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_46_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_47_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_48_root_user_keyring_I; extern  _GLOBAL_192_T  _GLOBAL_49_root_user_keyring_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_root_user_keyring_I) *_GLOBAL_root_user_keyring_27_A[NUM_STACKS];   
+typedef  struct key   _GLOBAL_193_T; extern  _GLOBAL_193_T  _GLOBAL_0_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_1_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_2_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_3_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_4_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_5_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_6_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_7_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_8_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_9_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_10_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_11_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_12_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_13_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_14_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_15_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_16_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_17_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_18_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_19_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_20_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_21_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_22_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_23_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_24_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_25_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_26_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_27_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_28_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_29_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_30_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_31_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_32_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_33_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_34_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_35_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_36_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_37_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_38_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_39_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_40_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_41_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_42_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_43_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_44_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_45_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_46_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_47_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_48_root_session_keyring_I; extern  _GLOBAL_193_T  _GLOBAL_49_root_session_keyring_I; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_root_session_keyring_I) *_GLOBAL_root_session_keyring_28_A[NUM_STACKS];   
 # 34 "linux-2.6.18/include/linux/security.h" 2
 
 struct ctl_table;
@@ -18562,7 +17927,7 @@ __nlmsg_put(struct sk_buff *skb, u32 pid, u32 seq, int type, int len, int flags)
  nlh->nlmsg_flags = flags;
  nlh->nlmsg_pid = pid;
  nlh->nlmsg_seq = seq;
- (__builtin_constant_p(0) ? (__builtin_constant_p((( ((size)+4 -1) & ~(4 -1) ) - size)) ? __constant_c_and_count_memset(((((void*)(((char*)nlh) + ((0)+( ((((int) ( ((sizeof(struct nlmsghdr))+4 -1) & ~(4 -1) )))+4 -1) & ~(4 -1) )))) + len)),((0x01010101UL*(unsigned char)(0))),((( ((size)+4 -1) & ~(4 -1) ) - size))) : __constant_c_memset(((((void*)(((char*)nlh) + ((0)+( ((((int) ( ((sizeof(struct nlmsghdr))+4 -1) & ~(4 -1) )))+4 -1) & ~(4 -1) )))) + len)),((0x01010101UL*(unsigned char)(0))),((( ((size)+4 -1) & ~(4 -1) ) - size)))) : (__builtin_constant_p((( ((size)+4 -1) & ~(4 -1) ) - size)) ? __memset_generic((((((void*)(((char*)nlh) + ((0)+( ((((int) ( ((sizeof(struct nlmsghdr))+4 -1) & ~(4 -1) )))+4 -1) & ~(4 -1) )))) + len))),(((0))),(((( ((size)+4 -1) & ~(4 -1) ) - size)))) : __memset_generic(((((void*)(((char*)nlh) + ((0)+( ((((int) ( ((sizeof(struct nlmsghdr))+4 -1) & ~(4 -1) )))+4 -1) & ~(4 -1) )))) + len)),((0)),((( ((size)+4 -1) & ~(4 -1) ) - size)))));
+ memset(((void*)(((char*)nlh) + ((0)+( ((((int) ( ((sizeof(struct nlmsghdr))+4 -1) & ~(4 -1) )))+4 -1) & ~(4 -1) )))) + len, 0, ( ((size)+4 -1) & ~(4 -1) ) - size);
  return nlh;
 }
 # 229 "linux-2.6.18/include/linux/netlink.h"
@@ -19194,7 +18559,7 @@ extern size_t rtattr_strlcpy(char *dest, const struct rtattr *rta, size_t size);
 static __inline__  __attribute__((always_inline)) int rtattr_strcmp(const struct rtattr *rta, const char *str)
 {
  int len = strlen(str) + 1;
- return len > rta->rta_len || __builtin_memcmp(((void*)(((char*)(rta)) + (( ((sizeof(struct rtattr))+4 -1) & ~(4 -1) ) + (0)))), str, len);
+ return len > rta->rta_len || memcmp(((void*)(((char*)(rta)) + (( ((sizeof(struct rtattr))+4 -1) & ~(4 -1) ) + (0)))), str, len);
 }
 
 extern int rtattr_parse(struct rtattr *tb[], int maxattr, struct rtattr *rta, int len);
@@ -19202,7 +18567,7 @@ extern int rtattr_parse(struct rtattr *tb[], int maxattr, struct rtattr *rta, in
 
 
 
-typedef  struct sock   _GLOBAL_220_T; extern  _GLOBAL_220_T  * global_rtnl[NUM_STACKS];    
+typedef  struct sock   _GLOBAL_194_T; extern  _GLOBAL_194_T  * global_rtnl[NUM_STACKS];    
 
 struct rtnetlink_link
 {
@@ -19210,7 +18575,7 @@ struct rtnetlink_link
  int (*dumpit)(struct sk_buff *, struct netlink_callback *cb);
 };
 
-typedef  struct rtnetlink_link   _GLOBAL_221_T; extern  _GLOBAL_221_T  * _GLOBAL_0_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_1_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_2_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_3_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_4_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_5_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_6_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_7_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_8_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_9_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_10_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_11_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_12_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_13_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_14_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_15_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_16_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_17_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_18_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_19_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_20_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_21_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_22_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_23_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_24_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_25_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_26_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_27_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_28_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_29_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_30_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_31_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_32_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_33_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_34_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_35_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_36_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_37_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_38_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_39_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_40_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_41_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_42_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_43_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_44_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_45_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_46_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_47_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_48_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_221_T  * _GLOBAL_49_rtnetlink_links_I [ 32 ]  ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_rtnetlink_links_I) *_GLOBAL_rtnetlink_links_53_A[NUM_STACKS];    
+typedef  struct rtnetlink_link   _GLOBAL_195_T; extern  _GLOBAL_195_T  * _GLOBAL_0_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_1_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_2_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_3_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_4_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_5_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_6_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_7_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_8_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_9_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_10_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_11_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_12_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_13_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_14_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_15_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_16_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_17_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_18_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_19_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_20_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_21_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_22_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_23_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_24_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_25_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_26_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_27_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_28_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_29_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_30_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_31_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_32_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_33_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_34_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_35_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_36_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_37_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_38_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_39_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_40_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_41_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_42_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_43_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_44_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_45_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_46_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_47_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_48_rtnetlink_links_I [ 32 ]  ; extern  _GLOBAL_195_T  * _GLOBAL_49_rtnetlink_links_I [ 32 ]  ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_rtnetlink_links_I) *_GLOBAL_rtnetlink_links_29_A[NUM_STACKS];    
 extern int rtnetlink_send(struct sk_buff *skb, u32 pid, u32 group, int echo);
 extern int rtnetlink_put_metrics(struct sk_buff *skb, u32 *metrics);
 
@@ -19225,7 +18590,7 @@ __rta_reserve(struct sk_buff *skb, int attrtype, int attrlen)
  rta = (struct rtattr*)skb_put(skb, ( ((size)+4 -1) & ~(4 -1) ));
  rta->rta_type = attrtype;
  rta->rta_len = size;
- (__builtin_constant_p(0) ? (__builtin_constant_p((( ((size)+4 -1) & ~(4 -1) ) - size)) ? __constant_c_and_count_memset(((((void*)(((char*)(rta)) + (( ((sizeof(struct rtattr))+4 -1) & ~(4 -1) ) + (0)))) + attrlen)),((0x01010101UL*(unsigned char)(0))),((( ((size)+4 -1) & ~(4 -1) ) - size))) : __constant_c_memset(((((void*)(((char*)(rta)) + (( ((sizeof(struct rtattr))+4 -1) & ~(4 -1) ) + (0)))) + attrlen)),((0x01010101UL*(unsigned char)(0))),((( ((size)+4 -1) & ~(4 -1) ) - size)))) : (__builtin_constant_p((( ((size)+4 -1) & ~(4 -1) ) - size)) ? __memset_generic((((((void*)(((char*)(rta)) + (( ((sizeof(struct rtattr))+4 -1) & ~(4 -1) ) + (0)))) + attrlen))),(((0))),(((( ((size)+4 -1) & ~(4 -1) ) - size)))) : __memset_generic(((((void*)(((char*)(rta)) + (( ((sizeof(struct rtattr))+4 -1) & ~(4 -1) ) + (0)))) + attrlen)),((0)),((( ((size)+4 -1) & ~(4 -1) ) - size)))));
+ memset(((void*)(((char*)(rta)) + (( ((sizeof(struct rtattr))+4 -1) & ~(4 -1) ) + (0)))) + attrlen, 0, ( ((size)+4 -1) & ~(4 -1) ) - size);
  return rta;
 }
 
@@ -20315,8 +19680,8 @@ static inline  __attribute__((always_inline)) int sk_stream_wmem_schedule(struct
         sk_stream_mem_schedule(sk, size, 0);
 }
 # 749 "linux-2.6.18/include/net/sock.h"
-extern void lock_sock(struct sock *sk) __attribute__((regparm(3))) ;
-extern void release_sock(struct sock *sk) __attribute__((regparm(3))) ;
+extern void lock_sock(struct sock *sk);
+extern void release_sock(struct sock *sk);
 # 759 "linux-2.6.18/include/net/sock.h"
 extern struct sock *sk_alloc(int family,
        gfp_t priority,
@@ -20572,7 +19937,7 @@ static inline  __attribute__((always_inline)) int skb_copy_to_page(struct sock *
 {
  if (skb->ip_summed == 0) {
   int err = 0;
-  unsigned int csum = csum_and_copy_from_user(from,
+  unsigned int csum = csum_partial_copy_from_user(from,
            lowmem_page_address(page) + off,
            copy, 0, &err);
   if (err)
@@ -20779,8 +20144,8 @@ static inline  __attribute__((always_inline)) void sock_valbool_flag(struct sock
   sock_reset_flag(sk, bit);
 }
 
-typedef  __u32  _GLOBAL_222_T; extern  _GLOBAL_222_T  global_sysctl_wmem_max[NUM_STACKS];   
-typedef  __u32  _GLOBAL_223_T; extern  _GLOBAL_223_T  global_sysctl_rmem_max[NUM_STACKS];   
+typedef  __u32  _GLOBAL_196_T; extern  _GLOBAL_196_T  global_sysctl_wmem_max[NUM_STACKS];   
+typedef  __u32  _GLOBAL_197_T; extern  _GLOBAL_197_T  global_sysctl_rmem_max[NUM_STACKS];   
 
 
 int siocdevprivate_ioctl(unsigned int fd, unsigned int cmd, unsigned long arg);
@@ -20794,13 +20159,13 @@ int siocdevprivate_ioctl(unsigned int fd, unsigned int cmd, unsigned long arg);
 extern void sk_init(void);
 
 
-typedef  struct ctl_table   _GLOBAL_224_T; extern  _GLOBAL_224_T  _GLOBAL_0_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_1_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_2_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_3_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_4_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_5_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_6_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_7_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_8_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_9_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_10_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_11_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_12_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_13_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_14_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_15_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_16_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_17_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_18_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_19_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_20_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_21_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_22_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_23_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_24_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_25_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_26_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_27_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_28_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_29_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_30_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_31_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_32_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_33_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_34_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_35_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_36_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_37_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_38_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_39_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_40_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_41_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_42_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_43_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_44_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_45_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_46_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_47_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_48_core_table_I [ ] ; extern  _GLOBAL_224_T  _GLOBAL_49_core_table_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_core_table_I) *_GLOBAL_core_table_54_A[NUM_STACKS];   
+typedef  struct ctl_table   _GLOBAL_198_T; extern  _GLOBAL_198_T  _GLOBAL_0_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_1_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_2_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_3_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_4_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_5_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_6_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_7_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_8_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_9_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_10_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_11_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_12_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_13_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_14_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_15_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_16_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_17_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_18_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_19_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_20_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_21_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_22_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_23_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_24_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_25_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_26_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_27_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_28_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_29_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_30_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_31_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_32_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_33_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_34_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_35_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_36_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_37_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_38_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_39_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_40_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_41_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_42_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_43_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_44_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_45_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_46_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_47_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_48_core_table_I [ ] ; extern  _GLOBAL_198_T  _GLOBAL_49_core_table_I [ ] ; static __attribute__ ((unused)) __typeof__(_GLOBAL_0_core_table_I) *_GLOBAL_core_table_30_A[NUM_STACKS];   
 
 
-typedef  int  _GLOBAL_225_T; extern  _GLOBAL_225_T  global_sysctl_optmem_max[NUM_STACKS];   
+typedef  int  _GLOBAL_199_T; extern  _GLOBAL_199_T  global_sysctl_optmem_max[NUM_STACKS];   
 
-typedef  __u32  _GLOBAL_226_T; extern  _GLOBAL_226_T  global_sysctl_wmem_default[NUM_STACKS];   
-typedef  __u32  _GLOBAL_227_T; extern  _GLOBAL_227_T  global_sysctl_rmem_default[NUM_STACKS];   
+typedef  __u32  _GLOBAL_200_T; extern  _GLOBAL_200_T  global_sysctl_wmem_default[NUM_STACKS];   
+typedef  __u32  _GLOBAL_201_T; extern  _GLOBAL_201_T  global_sysctl_rmem_default[NUM_STACKS];   
 # 18 "linux-2.6.18/net/core/link_watch.c" 2
 # 1 "linux-2.6.18/include/net/pkt_sched.h" 1
 
@@ -21728,8 +21093,8 @@ extern void qdisc_unlock_tree(struct net_device *dev);
 
 
 
-typedef  struct Qdisc   _GLOBAL_228_T; extern  _GLOBAL_228_T  global_noop_qdisc[NUM_STACKS];    
-typedef  struct Qdisc_ops   _GLOBAL_229_T; extern  _GLOBAL_229_T  global_noop_qdisc_ops[NUM_STACKS];    
+typedef  struct Qdisc   _GLOBAL_202_T; extern  _GLOBAL_202_T  global_noop_qdisc[NUM_STACKS];    
+typedef  struct Qdisc_ops   _GLOBAL_203_T; extern  _GLOBAL_203_T  global_noop_qdisc_ops[NUM_STACKS];    
 
 extern void dev_init_scheduler(struct net_device *dev);
 extern void dev_shutdown(struct net_device *dev);
@@ -21872,7 +21237,7 @@ struct qdisc_walker
  int (*fn)(struct Qdisc *, unsigned long cl, struct qdisc_walker *);
 };
 
-typedef  rwlock_t  _GLOBAL_230_T; extern  _GLOBAL_230_T  global_qdisc_tree_lock[NUM_STACKS];   
+typedef  rwlock_t  _GLOBAL_204_T; extern  _GLOBAL_204_T  global_qdisc_tree_lock[NUM_STACKS];   
 
 
 
@@ -21898,8 +21263,8 @@ psched_tod_diff(int delta_sec, int bound)
  return delta;
 }
 # 210 "linux-2.6.18/include/net/pkt_sched.h"
-typedef  struct Qdisc_ops   _GLOBAL_231_T; extern  _GLOBAL_231_T  global_pfifo_qdisc_ops[NUM_STACKS];    
-typedef  struct Qdisc_ops   _GLOBAL_232_T; extern  _GLOBAL_232_T  global_bfifo_qdisc_ops[NUM_STACKS];    
+typedef  struct Qdisc_ops   _GLOBAL_205_T; extern  _GLOBAL_205_T  global_pfifo_qdisc_ops[NUM_STACKS];    
+typedef  struct Qdisc_ops   _GLOBAL_206_T; extern  _GLOBAL_206_T  global_bfifo_qdisc_ops[NUM_STACKS];    
 
 extern int register_qdisc(struct Qdisc_ops *qops);
 extern int unregister_qdisc(struct Qdisc_ops *qops);
@@ -21936,14 +21301,14 @@ enum lw_bits {
  LW_SE_USED
 };
 
-typedef  unsigned long   _GLOBAL_233_T; static  _GLOBAL_233_T  global_linkwatch_flags[NUM_STACKS];    
-typedef  unsigned long   _GLOBAL_234_T; static  _GLOBAL_234_T  global_linkwatch_nextevent[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_207_T; static  _GLOBAL_207_T  global_linkwatch_flags[NUM_STACKS];    
+typedef  unsigned long   _GLOBAL_208_T; static  _GLOBAL_208_T  global_linkwatch_nextevent[NUM_STACKS];    
 
 static void linkwatch_event(void *dummy);
-typedef  struct work_struct   _GLOBAL_235_T; static  _GLOBAL_235_T  global_linkwatch_work[NUM_STACKS] = {  { . entry  = { & ( global_linkwatch_work[0] )  . entry   , & ( global_linkwatch_work[0] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_0_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[1] )  . entry   , & ( global_linkwatch_work[1] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_1_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[2] )  . entry   , & ( global_linkwatch_work[2] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_2_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[3] )  . entry   , & ( global_linkwatch_work[3] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_3_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[4] )  . entry   , & ( global_linkwatch_work[4] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_4_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[5] )  . entry   , & ( global_linkwatch_work[5] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_5_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[6] )  . entry   , & ( global_linkwatch_work[6] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_6_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[7] )  . entry   , & ( global_linkwatch_work[7] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_7_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[8] )  . entry   , & ( global_linkwatch_work[8] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_8_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[9] )  . entry   , & ( global_linkwatch_work[9] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_9_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[10] )  . entry   , & ( global_linkwatch_work[10] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_10_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[11] )  . entry   , & ( global_linkwatch_work[11] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_11_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[12] )  . entry   , & ( global_linkwatch_work[12] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_12_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[13] )  . entry   , & ( global_linkwatch_work[13] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_13_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[14] )  . entry   , & ( global_linkwatch_work[14] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_14_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[15] )  . entry   , & ( global_linkwatch_work[15] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_15_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[16] )  . entry   , & ( global_linkwatch_work[16] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_16_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[17] )  . entry   , & ( global_linkwatch_work[17] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_17_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[18] )  . entry   , & ( global_linkwatch_work[18] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_18_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[19] )  . entry   , & ( global_linkwatch_work[19] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_19_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[20] )  . entry   , & ( global_linkwatch_work[20] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_20_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[21] )  . entry   , & ( global_linkwatch_work[21] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_21_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[22] )  . entry   , & ( global_linkwatch_work[22] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_22_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[23] )  . entry   , & ( global_linkwatch_work[23] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_23_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[24] )  . entry   , & ( global_linkwatch_work[24] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_24_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[25] )  . entry   , & ( global_linkwatch_work[25] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_25_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[26] )  . entry   , & ( global_linkwatch_work[26] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_26_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[27] )  . entry   , & ( global_linkwatch_work[27] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_27_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[28] )  . entry   , & ( global_linkwatch_work[28] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_28_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[29] )  . entry   , & ( global_linkwatch_work[29] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_29_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[30] )  . entry   , & ( global_linkwatch_work[30] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_30_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[31] )  . entry   , & ( global_linkwatch_work[31] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_31_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[32] )  . entry   , & ( global_linkwatch_work[32] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_32_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[33] )  . entry   , & ( global_linkwatch_work[33] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_33_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[34] )  . entry   , & ( global_linkwatch_work[34] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_34_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[35] )  . entry   , & ( global_linkwatch_work[35] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_35_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[36] )  . entry   , & ( global_linkwatch_work[36] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_36_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[37] )  . entry   , & ( global_linkwatch_work[37] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_37_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[38] )  . entry   , & ( global_linkwatch_work[38] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_38_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[39] )  . entry   , & ( global_linkwatch_work[39] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_39_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[40] )  . entry   , & ( global_linkwatch_work[40] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_40_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[41] )  . entry   , & ( global_linkwatch_work[41] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_41_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[42] )  . entry   , & ( global_linkwatch_work[42] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_42_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[43] )  . entry   , & ( global_linkwatch_work[43] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_43_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[44] )  . entry   , & ( global_linkwatch_work[44] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_44_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[45] )  . entry   , & ( global_linkwatch_work[45] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_45_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[46] )  . entry   , & ( global_linkwatch_work[46] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_46_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[47] )  . entry   , & ( global_linkwatch_work[47] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_47_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[48] )  . entry   , & ( global_linkwatch_work[48] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_48_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[49] )  . entry   , & ( global_linkwatch_work[49] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_49_boot_tvec_bases_I    , }    , } ,  };                                     
+typedef  struct work_struct   _GLOBAL_209_T; static  _GLOBAL_209_T  global_linkwatch_work[NUM_STACKS] = {  { . entry  = { & ( global_linkwatch_work[0] )  . entry   , & ( global_linkwatch_work[0] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_0_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[1] )  . entry   , & ( global_linkwatch_work[1] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_1_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[2] )  . entry   , & ( global_linkwatch_work[2] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_2_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[3] )  . entry   , & ( global_linkwatch_work[3] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_3_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[4] )  . entry   , & ( global_linkwatch_work[4] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_4_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[5] )  . entry   , & ( global_linkwatch_work[5] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_5_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[6] )  . entry   , & ( global_linkwatch_work[6] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_6_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[7] )  . entry   , & ( global_linkwatch_work[7] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_7_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[8] )  . entry   , & ( global_linkwatch_work[8] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_8_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[9] )  . entry   , & ( global_linkwatch_work[9] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_9_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[10] )  . entry   , & ( global_linkwatch_work[10] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_10_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[11] )  . entry   , & ( global_linkwatch_work[11] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_11_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[12] )  . entry   , & ( global_linkwatch_work[12] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_12_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[13] )  . entry   , & ( global_linkwatch_work[13] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_13_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[14] )  . entry   , & ( global_linkwatch_work[14] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_14_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[15] )  . entry   , & ( global_linkwatch_work[15] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_15_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[16] )  . entry   , & ( global_linkwatch_work[16] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_16_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[17] )  . entry   , & ( global_linkwatch_work[17] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_17_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[18] )  . entry   , & ( global_linkwatch_work[18] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_18_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[19] )  . entry   , & ( global_linkwatch_work[19] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_19_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[20] )  . entry   , & ( global_linkwatch_work[20] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_20_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[21] )  . entry   , & ( global_linkwatch_work[21] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_21_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[22] )  . entry   , & ( global_linkwatch_work[22] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_22_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[23] )  . entry   , & ( global_linkwatch_work[23] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_23_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[24] )  . entry   , & ( global_linkwatch_work[24] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_24_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[25] )  . entry   , & ( global_linkwatch_work[25] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_25_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[26] )  . entry   , & ( global_linkwatch_work[26] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_26_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[27] )  . entry   , & ( global_linkwatch_work[27] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_27_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[28] )  . entry   , & ( global_linkwatch_work[28] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_28_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[29] )  . entry   , & ( global_linkwatch_work[29] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_29_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[30] )  . entry   , & ( global_linkwatch_work[30] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_30_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[31] )  . entry   , & ( global_linkwatch_work[31] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_31_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[32] )  . entry   , & ( global_linkwatch_work[32] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_32_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[33] )  . entry   , & ( global_linkwatch_work[33] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_33_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[34] )  . entry   , & ( global_linkwatch_work[34] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_34_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[35] )  . entry   , & ( global_linkwatch_work[35] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_35_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[36] )  . entry   , & ( global_linkwatch_work[36] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_36_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[37] )  . entry   , & ( global_linkwatch_work[37] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_37_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[38] )  . entry   , & ( global_linkwatch_work[38] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_38_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[39] )  . entry   , & ( global_linkwatch_work[39] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_39_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[40] )  . entry   , & ( global_linkwatch_work[40] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_40_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[41] )  . entry   , & ( global_linkwatch_work[41] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_41_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[42] )  . entry   , & ( global_linkwatch_work[42] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_42_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[43] )  . entry   , & ( global_linkwatch_work[43] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_43_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[44] )  . entry   , & ( global_linkwatch_work[44] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_44_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[45] )  . entry   , & ( global_linkwatch_work[45] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_45_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[46] )  . entry   , & ( global_linkwatch_work[46] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_46_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[47] )  . entry   , & ( global_linkwatch_work[47] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_47_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[48] )  . entry   , & ( global_linkwatch_work[48] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_48_boot_tvec_bases_I    , }    , } ,  { . entry  = { & ( global_linkwatch_work[49] )  . entry   , & ( global_linkwatch_work[49] )  . entry    }   , . func  = ( linkwatch_event )    , . data  = ( ( ( void *  ) 0  )  )    , . timer  = { . function  = ( ( ( void *  ) 0  )  )   , . expires  = ( 0 )    , . data  = ( 0 )    , . base  = & _GLOBAL_49_boot_tvec_bases_I    , }    , } ,  };                                     
 
-typedef  struct list_head   _GLOBAL_236_T; static  _GLOBAL_236_T  global_lweventlist[NUM_STACKS] = {  { & ( global_lweventlist[0] )   , & ( global_lweventlist[0] )    } ,  { & ( global_lweventlist[1] )   , & ( global_lweventlist[1] )    } ,  { & ( global_lweventlist[2] )   , & ( global_lweventlist[2] )    } ,  { & ( global_lweventlist[3] )   , & ( global_lweventlist[3] )    } ,  { & ( global_lweventlist[4] )   , & ( global_lweventlist[4] )    } ,  { & ( global_lweventlist[5] )   , & ( global_lweventlist[5] )    } ,  { & ( global_lweventlist[6] )   , & ( global_lweventlist[6] )    } ,  { & ( global_lweventlist[7] )   , & ( global_lweventlist[7] )    } ,  { & ( global_lweventlist[8] )   , & ( global_lweventlist[8] )    } ,  { & ( global_lweventlist[9] )   , & ( global_lweventlist[9] )    } ,  { & ( global_lweventlist[10] )   , & ( global_lweventlist[10] )    } ,  { & ( global_lweventlist[11] )   , & ( global_lweventlist[11] )    } ,  { & ( global_lweventlist[12] )   , & ( global_lweventlist[12] )    } ,  { & ( global_lweventlist[13] )   , & ( global_lweventlist[13] )    } ,  { & ( global_lweventlist[14] )   , & ( global_lweventlist[14] )    } ,  { & ( global_lweventlist[15] )   , & ( global_lweventlist[15] )    } ,  { & ( global_lweventlist[16] )   , & ( global_lweventlist[16] )    } ,  { & ( global_lweventlist[17] )   , & ( global_lweventlist[17] )    } ,  { & ( global_lweventlist[18] )   , & ( global_lweventlist[18] )    } ,  { & ( global_lweventlist[19] )   , & ( global_lweventlist[19] )    } ,  { & ( global_lweventlist[20] )   , & ( global_lweventlist[20] )    } ,  { & ( global_lweventlist[21] )   , & ( global_lweventlist[21] )    } ,  { & ( global_lweventlist[22] )   , & ( global_lweventlist[22] )    } ,  { & ( global_lweventlist[23] )   , & ( global_lweventlist[23] )    } ,  { & ( global_lweventlist[24] )   , & ( global_lweventlist[24] )    } ,  { & ( global_lweventlist[25] )   , & ( global_lweventlist[25] )    } ,  { & ( global_lweventlist[26] )   , & ( global_lweventlist[26] )    } ,  { & ( global_lweventlist[27] )   , & ( global_lweventlist[27] )    } ,  { & ( global_lweventlist[28] )   , & ( global_lweventlist[28] )    } ,  { & ( global_lweventlist[29] )   , & ( global_lweventlist[29] )    } ,  { & ( global_lweventlist[30] )   , & ( global_lweventlist[30] )    } ,  { & ( global_lweventlist[31] )   , & ( global_lweventlist[31] )    } ,  { & ( global_lweventlist[32] )   , & ( global_lweventlist[32] )    } ,  { & ( global_lweventlist[33] )   , & ( global_lweventlist[33] )    } ,  { & ( global_lweventlist[34] )   , & ( global_lweventlist[34] )    } ,  { & ( global_lweventlist[35] )   , & ( global_lweventlist[35] )    } ,  { & ( global_lweventlist[36] )   , & ( global_lweventlist[36] )    } ,  { & ( global_lweventlist[37] )   , & ( global_lweventlist[37] )    } ,  { & ( global_lweventlist[38] )   , & ( global_lweventlist[38] )    } ,  { & ( global_lweventlist[39] )   , & ( global_lweventlist[39] )    } ,  { & ( global_lweventlist[40] )   , & ( global_lweventlist[40] )    } ,  { & ( global_lweventlist[41] )   , & ( global_lweventlist[41] )    } ,  { & ( global_lweventlist[42] )   , & ( global_lweventlist[42] )    } ,  { & ( global_lweventlist[43] )   , & ( global_lweventlist[43] )    } ,  { & ( global_lweventlist[44] )   , & ( global_lweventlist[44] )    } ,  { & ( global_lweventlist[45] )   , & ( global_lweventlist[45] )    } ,  { & ( global_lweventlist[46] )   , & ( global_lweventlist[46] )    } ,  { & ( global_lweventlist[47] )   , & ( global_lweventlist[47] )    } ,  { & ( global_lweventlist[48] )   , & ( global_lweventlist[48] )    } ,  { & ( global_lweventlist[49] )   , & ( global_lweventlist[49] )    } ,  };         
-typedef  spinlock_t  _GLOBAL_237_T; static  _GLOBAL_237_T  global_lweventlist_lock[NUM_STACKS] = {  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  };           
+typedef  struct list_head   _GLOBAL_210_T; static  _GLOBAL_210_T  global_lweventlist[NUM_STACKS] = {  { & ( global_lweventlist[0] )   , & ( global_lweventlist[0] )    } ,  { & ( global_lweventlist[1] )   , & ( global_lweventlist[1] )    } ,  { & ( global_lweventlist[2] )   , & ( global_lweventlist[2] )    } ,  { & ( global_lweventlist[3] )   , & ( global_lweventlist[3] )    } ,  { & ( global_lweventlist[4] )   , & ( global_lweventlist[4] )    } ,  { & ( global_lweventlist[5] )   , & ( global_lweventlist[5] )    } ,  { & ( global_lweventlist[6] )   , & ( global_lweventlist[6] )    } ,  { & ( global_lweventlist[7] )   , & ( global_lweventlist[7] )    } ,  { & ( global_lweventlist[8] )   , & ( global_lweventlist[8] )    } ,  { & ( global_lweventlist[9] )   , & ( global_lweventlist[9] )    } ,  { & ( global_lweventlist[10] )   , & ( global_lweventlist[10] )    } ,  { & ( global_lweventlist[11] )   , & ( global_lweventlist[11] )    } ,  { & ( global_lweventlist[12] )   , & ( global_lweventlist[12] )    } ,  { & ( global_lweventlist[13] )   , & ( global_lweventlist[13] )    } ,  { & ( global_lweventlist[14] )   , & ( global_lweventlist[14] )    } ,  { & ( global_lweventlist[15] )   , & ( global_lweventlist[15] )    } ,  { & ( global_lweventlist[16] )   , & ( global_lweventlist[16] )    } ,  { & ( global_lweventlist[17] )   , & ( global_lweventlist[17] )    } ,  { & ( global_lweventlist[18] )   , & ( global_lweventlist[18] )    } ,  { & ( global_lweventlist[19] )   , & ( global_lweventlist[19] )    } ,  { & ( global_lweventlist[20] )   , & ( global_lweventlist[20] )    } ,  { & ( global_lweventlist[21] )   , & ( global_lweventlist[21] )    } ,  { & ( global_lweventlist[22] )   , & ( global_lweventlist[22] )    } ,  { & ( global_lweventlist[23] )   , & ( global_lweventlist[23] )    } ,  { & ( global_lweventlist[24] )   , & ( global_lweventlist[24] )    } ,  { & ( global_lweventlist[25] )   , & ( global_lweventlist[25] )    } ,  { & ( global_lweventlist[26] )   , & ( global_lweventlist[26] )    } ,  { & ( global_lweventlist[27] )   , & ( global_lweventlist[27] )    } ,  { & ( global_lweventlist[28] )   , & ( global_lweventlist[28] )    } ,  { & ( global_lweventlist[29] )   , & ( global_lweventlist[29] )    } ,  { & ( global_lweventlist[30] )   , & ( global_lweventlist[30] )    } ,  { & ( global_lweventlist[31] )   , & ( global_lweventlist[31] )    } ,  { & ( global_lweventlist[32] )   , & ( global_lweventlist[32] )    } ,  { & ( global_lweventlist[33] )   , & ( global_lweventlist[33] )    } ,  { & ( global_lweventlist[34] )   , & ( global_lweventlist[34] )    } ,  { & ( global_lweventlist[35] )   , & ( global_lweventlist[35] )    } ,  { & ( global_lweventlist[36] )   , & ( global_lweventlist[36] )    } ,  { & ( global_lweventlist[37] )   , & ( global_lweventlist[37] )    } ,  { & ( global_lweventlist[38] )   , & ( global_lweventlist[38] )    } ,  { & ( global_lweventlist[39] )   , & ( global_lweventlist[39] )    } ,  { & ( global_lweventlist[40] )   , & ( global_lweventlist[40] )    } ,  { & ( global_lweventlist[41] )   , & ( global_lweventlist[41] )    } ,  { & ( global_lweventlist[42] )   , & ( global_lweventlist[42] )    } ,  { & ( global_lweventlist[43] )   , & ( global_lweventlist[43] )    } ,  { & ( global_lweventlist[44] )   , & ( global_lweventlist[44] )    } ,  { & ( global_lweventlist[45] )   , & ( global_lweventlist[45] )    } ,  { & ( global_lweventlist[46] )   , & ( global_lweventlist[46] )    } ,  { & ( global_lweventlist[47] )   , & ( global_lweventlist[47] )    } ,  { & ( global_lweventlist[48] )   , & ( global_lweventlist[48] )    } ,  { & ( global_lweventlist[49] )   , & ( global_lweventlist[49] )    } ,  };         
+typedef  spinlock_t  _GLOBAL_211_T; static  _GLOBAL_211_T  global_lweventlist_lock[NUM_STACKS] = {  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  ( spinlock_t ) { . raw_lock  = { }   , } ,  };           
 
 struct lw_event {
  struct list_head list;
@@ -21951,7 +21316,7 @@ struct lw_event {
 };
 
 
-typedef  struct lw_event   _GLOBAL_238_T; static  _GLOBAL_238_T  global_singleevent[NUM_STACKS];    
+typedef  struct lw_event   _GLOBAL_212_T; static  _GLOBAL_212_T  global_singleevent[NUM_STACKS];    
 
 static unsigned char default_operstate(const struct net_device *dev)
 {
