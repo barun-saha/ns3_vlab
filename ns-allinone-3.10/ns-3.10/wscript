@@ -497,6 +497,27 @@ def add_scratch_programs(bld):
             obj.name = obj.target
 
 
+# Added by Barun for ns3 interface in ANT; 06-Feb-2011
+def add_ns3ant_programs(bld):
+    all_modules = [mod[len("ns3-"):] for mod in bld.env['NS3_MODULES']]
+    for filename in os.listdir("ns3ant"):
+        if filename.startswith('.') or filename == 'CVS':
+	        continue
+        if os.path.isdir(os.path.join("ns3ant", filename)):
+            obj = bld.create_ns3_program(filename, all_modules)
+            obj.path = obj.path.find_dir('ns3ant').find_dir(filename)
+            obj.find_sources_in_dirs('.')
+            obj.target = filename
+            obj.name = obj.target
+        elif filename.endswith(".cc"):
+            name = filename[:-len(".cc")]
+            obj = bld.create_ns3_program(name, all_modules)
+            obj.path = obj.path.find_dir('ns3ant')
+            obj.source = filename
+            obj.target = name
+            obj.name = obj.target
+
+
 def build(bld):
     wutils.bld = bld
     if Options.options.no_task_lines:
@@ -519,8 +540,14 @@ def build(bld):
     bld.add_subdirs('samples')
     bld.add_subdirs('utils')
 
+    # Added by Barun for ns3 interface in ANT; 06-Feb-2011
+    #bld.add_subdirs('ns3ant')
+    #bld.add_subdirs('ns3ant_demo')
+
     add_examples_programs(bld)
     add_scratch_programs(bld)
+    # Added by Barun for ns3 interface in ANT; 06-Feb-2011
+    add_ns3ant_programs(bld)
 
     ## if --enabled-modules option was given, we disable building the
     ## modules that were not enabled, and programs that depend on
