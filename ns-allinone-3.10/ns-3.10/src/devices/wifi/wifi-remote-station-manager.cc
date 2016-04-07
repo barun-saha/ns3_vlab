@@ -480,6 +480,10 @@ WifiRemoteStationManager::NeedDataRetransmission (Mac48Address address, const Wi
   NS_ASSERT (!address.IsGroup ());
   WifiRemoteStation *station = Lookup (address, header);
   bool normally = station->m_slrc < GetMaxSlrc ();
+  // For Wifi, ANT; Barun, 06-Feb-2011
+  if (normally)
+    NS_LOG_FUNCTION("Retransmission :: " << address);
+
   return DoNeedDataRetransmission (station, packet, normally);
 }
 bool
